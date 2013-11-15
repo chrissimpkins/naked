@@ -4,29 +4,29 @@
 # unittest
 #======================================================================
 # Install:
-#		part of standard library 
+#		part of standard library
 #
 # Usage:
 #  		-->> Run all tests in a suite <<--
 #  				python test_app.py
-#  
+#
 #  		-->> Run specific test(s) <<--
 #  				python test_app.py test_true
-#-----------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------
 
 #======================================================================
 # Nose
 #======================================================================
 # Install:
-#		pip install nose 
+#		pip install nose
 #
 # Usage:
 #  		-->> Run all tests in a suite <<--
 #  				nosetests --verbosity=3 test_app.py
-#  
+#
 #  		-->> Run specific test(s) <<--
 #  				nosetests --verbosity=3 "test_app.py:NakedTest.test_true"
-#-----------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------
 
 #=======================================================================
 # Pytest
@@ -39,13 +39,13 @@
 #
 #  		-->> Run specific test(s) <<--
 #  				py.test --verbose -k test_true
-#-----------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------
 
 import unittest
 
 class NakedTest(unittest.TestCase):
 
-	def setUp(self): 
+	def setUp(self):
 		print("setup!")
 
 	def tearDown(self):
@@ -72,5 +72,5 @@ if __name__ == "__main__":
 	else:
 		for the_test in sys.argv[1:]:
 			suite.addTest(NakedTest(the_test))
-	# run tests		
+	# run tests
 	unittest.TextTestRunner(verbosity=2).run(suite)
