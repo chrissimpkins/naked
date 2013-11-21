@@ -14,5 +14,13 @@ if (( $? )); then
   exit 1
 fi
 
+python setup.py bdist_wheel upload
+
+# Confirm that wheel distribution worked
+if (( $? )); then
+  echo "Unable to distribute your wheel to PyPi" >&2
+  exit 1
+fi
+
 # Exit success
 exit 0
