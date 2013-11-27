@@ -7,9 +7,9 @@ def read(fname):
 
 setup(
     name='Naked',
-    version='0.1.2',
+    version='0.1.4',
     description='A command line application framework',
-    long_description=(read('README.rst')),
+    long_description=(read('docs/README.rst')),
     url='http://github.com/chrissimpkins/naked/',
     license='MIT',
     author='Christopher Simpkins',
