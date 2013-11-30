@@ -16,7 +16,7 @@ class FileReader(IO):
 		pass
 
 # read remote git repositories
-class GitReader(IO):
+class GitCloner(IO):
 	pass
 
 if __name__ == '__main__':
