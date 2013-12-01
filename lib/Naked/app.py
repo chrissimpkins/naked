@@ -6,7 +6,7 @@ def main():
 	# TODO: wrap in a try/catch block
     c = Naked.commandline.Command(sys.argv[0], sys.argv[1:])
     if c.cmd == "test":
-        if ( c.option("-l") and c.arg("-l") ):
+        if c.option("-l", True):
             print(c.arg("-l"))
         else:
             print("Not found")
