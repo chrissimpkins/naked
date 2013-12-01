@@ -2,14 +2,15 @@ import os
 from setuptools import setup, find_packages
 from Naked.toolshed.versioning import VersionEditor
 
-def read(fname):
+
+def description_read(fname):
     return open(os.path.join(os.path.dirname(__file__), 'docs', fname)).read()
 
 setup(
     name='Naked',
     version=VersionEditor().get_version(),
     description='A command line application framework',
-    long_description=(read('README.rst')),
+    long_description=(description_read('README.rst')),
     url='http://github.com/chrissimpkins/naked/',
     license='MIT',
     author='Christopher Simpkins',

@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
-from Naked.settings import version as App_Version
+from Naked.settings import major_version as major_version
+from Naked.settings import minor_version as minor_version
+from Naked.settings import patch_version as patch_version
 
 class VersionEditor:
 	def __init__(self):
-		self.app_version = App_Version
+		self.app_version = major_version + "." + minor_version + "." + patch_version
 
 	def get_version(self):
 		return self.app_version
@@ -16,3 +18,4 @@ class VersionEditor:
 		pass
 
 	def bump_version_major(self):
+		pass

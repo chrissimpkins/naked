@@ -4,7 +4,9 @@
 app_name = "naked"
 
 ## Current version number
-version = "0.1.7"
+major_version = "0"
+minor_version = "1"
+patch_version = "8"
 
 ## Usage string for help documentation
 usage = """command [option(s)] [argument(s)]
