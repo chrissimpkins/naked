@@ -12,7 +12,7 @@
 #
 #  		-->> Run specific test(s) <<--
 #  				python test_app.py test_true
-#----------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------
 
 #==========================================================
 # Nose
@@ -26,7 +26,7 @@
 #
 #  		-->> Run specific test(s) <<--
 #  				nosetests --verbosity=3 "test_app.py:NakedTest.test_true"
-#-----------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------
 
 #==========================================================
 # Pytest
@@ -39,11 +39,11 @@
 #
 #  		-->> Run specific test(s) <<--
 #  				py.test --verbose -k test_true
-#-----------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------
 
 import unittest
 
-class NakedTest(unittest.TestCase):
+class AppTest(unittest.TestCase):
 
 	def setUp(self):
 		print("setup!")
@@ -67,10 +67,10 @@ if __name__ == "__main__":
 	suite = unittest.TestSuite()
 	# default to load all tests from the test suite
 	if len(sys.argv) == 1:
-		suite = unittest.TestLoader().loadTestsFromTestCase(NakedTest)
+		suite = unittest.TestLoader().loadTestsFromTestCase(AppTest)
 	# user can indicate specific tests that they would like to run
 	else:
 		for the_test in sys.argv[1:]:
-			suite.addTest(NakedTest(the_test))
+			suite.addTest(AppTest(the_test))
 	# run tests
 	unittest.TextTestRunner(verbosity=2).run(suite)

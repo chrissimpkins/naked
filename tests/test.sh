@@ -1,13 +1,16 @@
 #!/bin/sh
 
-NOSE_FLAGS="--verbosity=3"
+NOSE_FLAGS="--verbosity=2"
 TEST_COMMAND="nosetests"
-CL_TESTS="test_COMMAND.py"
+COM_PARSE_TESTS="test_COMMAND_PARSE.py"
+COM_ALL_COMMANDS="test_COMMANDS.py"
 
 if [ "$1" = "all" ];then
-	"$TEST_COMMAND" "$NOSE_FLAGS" "$CL_TESTS"
-elif [ "$1" = "commandline" ];then
-	"$TEST_COMMAND" "$NOSE_FLAGS" "$CL_TESTS"
+	"$TEST_COMMAND" "$NOSE_FLAGS" "$COM_PARSE_TESTS" "$COM_ALL_COMMANDS"
+elif [ "$1" = "commandparse" ];then
+	"$TEST_COMMAND" "$NOSE_FLAGS" "$COM_PARSE_TESTS"
+elif [ "$1" = "commands" ];then
+	"$TEST_COMMAND" "$NOSE_FLAGS" "$COM_ALL_COMMANDS"
 else
 	echo "Enter 'all' or a command suite to test."
 	exit 1
