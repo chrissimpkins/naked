@@ -22,19 +22,21 @@ class Command:
 		self.arglp = self.argobj._getArg(len(argv) - 1) # define the last positional argument as a local variable
 		self.cmd = self.arg0  # define the primary command variable as the first positional argument (user dependent & optional, may be something else)
 		self.cmd2 = self.arg1 # define the secondary command variable as the second positional argument (user dependent & optional, may be something else)
-		# self.options
 
 	# test that the command includes an option (option_string parameter)
 	def option(self, option_string, argument_required = False):
 		if (option_string in self.optobj):
-			return True
+			argument_to_option = self.argobj._getArgNext(self.argobj._getArgPosition(option_string))
+			if argument_required and ( argument_to_option == "" or argument_to_option.startswith("-") ):
+				return False
+			else:
+				return True
 		else:
 			return False
 
 	# test that the command includes a primary command suite command (cmd_str parameter)
 	def command(self, cmd_str, argument_required = False):
 		if (cmd_str == self.cmd):
-			## TODO: add handling for command that requires additional arguments
 			return True
 		else:
 			return False
