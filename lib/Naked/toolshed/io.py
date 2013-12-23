@@ -44,6 +44,11 @@ class FileReader(IO):
 class GitCloner(IO):
 	pass
 
+# HTTP file reader class
+class HTTPReader(IO):
+	def read(self):
+		pass
+
 
 if __name__ == '__main__':
 	pass
