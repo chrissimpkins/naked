@@ -1,6 +1,6 @@
 import os
 from setuptools import setup, find_packages
-from Naked.toolshed.versioning import VersionEditor
+from Naked.commands.version import Version
 
 
 def description_read(fname):
@@ -8,7 +8,7 @@ def description_read(fname):
 
 setup(
     name='Naked',
-    version=VersionEditor().get_version(),
+    version=Version().get_version(),
     description='A command line application framework',
     long_description=(description_read('README.rst')),
     url='http://github.com/chrissimpkins/naked/',
