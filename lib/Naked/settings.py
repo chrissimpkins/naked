@@ -6,10 +6,10 @@ app_name = "naked"
 ## Current version number
 major_version = "0"
 minor_version = "1"
-patch_version = "8"
+patch_version = "9"
 
 ## Usage string for help documentation
-usage = """command [option(s)] [argument(s)]
+usage = """<primary command> [secondary command] [option(s)] [argument(s)]
 --- Use 'naked help' for detailed help ---
 """
 
@@ -23,7 +23,7 @@ Naked
 --------------------------------------
 
 USAGE
-  naked
+  naked <primary command> [secondary command] [option(s)] [argument(s)]
 
 COMMANDS
 
