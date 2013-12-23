@@ -4,11 +4,11 @@
 # Command line command string object
 #   argv = list of command line arguments and options
 #   argc = count of command line arguments and options
-#   arg0 = first argument to command
-#   arg1 = second argument to command
+#   arg0 = first positional argument to command
+#   arg1 = second positional argument to command
 #   arglp = last positional argument to command
-#   cmd = primary command for command suite application
-#   cmd2 = secondary command for command suite application
+#   cmd = primary command for command suite application (=arg0)
+#   cmd2 = secondary command for command suite application (=arg1)
 #####################################################################
 class Command:
 	def __init__(self, app_path, argv):
@@ -25,6 +25,18 @@ class Command:
 
 	# test that the command includes an option (option_string parameter)
 	def option(self, option_string, argument_required = False):
+		if (option_string in self.optobj):
+			argument_to_option = self.argobj._getArgNext(self.argobj._getArgPosition(option_string))
+			if argument_required and ( argument_to_option == "" or argument_to_option.startswith("-") ):
+				return False
+			else:
+				return True
+		else:
+			return False
+
+	# TODO : add to tests
+	# test that command includes an option (option_string parameter) that includes an argument (=option(option_string, True))
+	def option_with_arg(self, option_string, argument_required = True):
 		if (option_string in self.optobj):
 			argument_to_option = self.argobj._getArgNext(self.argobj._getArgPosition(option_string))
 			if argument_required and ( argument_to_option == "" or argument_to_option.startswith("-") ):
