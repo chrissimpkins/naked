@@ -6,10 +6,10 @@ def main():
 	# TODO: wrap in a try/catch block
     c = Naked.commandline.Command(sys.argv[0], sys.argv[1:])
     if c.cmd == "test":
-        if c.option("-l", True):
-            print(c.arg("-l"))
+        if c.option_with_arg("--list"):
+            print(c.arg("--list"))
         else:
-            print("Not found")
+            print("Not Found")
         #if c.option("-t"): c.truth = True
         #print(c.truth)
     elif c.cmd == "bump":
