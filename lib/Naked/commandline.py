@@ -11,6 +11,7 @@ import sys
 #   arglp = last positional argument to command
 #   cmd = primary command for command suite application (=arg0)
 #   cmd2 = secondary command for command suite application (=arg1)
+#      snippet for py block comment = #py + TAB
 #####################################################################
 class Command:
 	def __init__(self, app_path, argv):
@@ -141,7 +142,7 @@ class Command:
 			print((str(e)))
 			sys.exit(1)
 
-	#
+
 	# Naked provided commands for all applications that use framework:
 	#  -- help
 	#  -- usage
