@@ -8,7 +8,7 @@ IO_TESTS="test_IO.py"
 
 if [ "$1" = "all" ];then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$COM_PARSE_TESTS" "$COM_ALL_COMMANDS" "$IO_TESTS"
-elif [ "$1" = "commandparse" ];then
+elif [ "$1" = "parse" ];then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$COM_PARSE_TESTS"
 elif [ "$1" = "commands" ];then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$COM_ALL_COMMANDS"
