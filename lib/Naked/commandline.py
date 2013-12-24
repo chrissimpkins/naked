@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
+import sys
 #####################################################################
+# [ Command class ]
 # Command line command string object
 #   argv = list of command line arguments and options
 #   argc = count of command line arguments and options
@@ -23,58 +25,145 @@ class Command:
 		self.cmd = self.arg0  # define the primary command variable as the first positional argument (user dependent & optional, may be something else)
 		self.cmd2 = self.arg1 # define the secondary command variable as the second positional argument (user dependent & optional, may be something else)
 
-	# test that the command includes an option (option_string parameter)
-	def option(self, option_string, argument_required = False):
-		if (option_string in self.optobj):
-			argument_to_option = self.argobj._getArgNext(self.argobj._getArgPosition(option_string))
-			if argument_required and ( argument_to_option == "" or argument_to_option.startswith("-") ):
-				return False
-			else:
-				return True
-		else:
-			return False
-
-	# TODO : add to tests
-	# test that command includes an option (option_string parameter) that includes an argument (=option(option_string, True))
-	def option_with_arg(self, option_string, argument_required = True):
-		if (option_string in self.optobj):
-			argument_to_option = self.argobj._getArgNext(self.argobj._getArgPosition(option_string))
-			if argument_required and ( argument_to_option == "" or argument_to_option.startswith("-") ):
-				return False
-			else:
-				return True
-		else:
-			return False
-
-	# test that the command includes a primary command suite command (cmd_str parameter)
-	def command(self, cmd_str, argument_required = False):
-		if (cmd_str == self.cmd):
-			return True
-		else:
-			return False
-
-	# return the next positional argument to a command line object (e.g. an option that requires an argument)
+	#------------------------------------------------------------------------------------------
+	# [ arg method ]
+	# Return the next positional argument to a command line object (e.g. an option that requires an argument)
+	#    arg_recipient = the positional argument to test for next positional argument
+	#    returns next positional argument string
+	#------------------------------------------------------------------------------------------
 	def arg(self, arg_recipient):
 		recipient_position = self.argobj._getArgPosition(arg_recipient)
 		return self.argobj._getArgNext(recipient_position)
 
+	#------------------------------------------------------------------------------------------
+	# [ command method ]
+	# Test that the command includes requested primary command suite command (cmd_str parameter)
+	#    cmd_str = the command string to test for in command
+	#    arugment_required = boolean - is an argument to this command required (default = no)?
+	#    returns boolean for presence of the cmd_str
+	#------------------------------------------------------------------------------------------
+	def command(self, cmd_str):
+		try:
+			if (cmd_str == self.cmd):
+				return True
+			else:
+				return False # if command is missing, return false
+		except Exception, e:
+			print("Naked Framework Error: Error parsing command with command method.")
+			print((str(e)))
+			sys.exit(1)
+
+	## TODO: add to tests
+	#------------------------------------------------------------------------------------------
+	# [ command_with_argument method ]
+	# Test that the command includes requested primary command suite command (cmd_str parameter) and argument to it
+	#    cmd_str = the command string to test for in command
+	#    returns boolean for presence of the cmd_str AND presence of argument to the command
+	#------------------------------------------------------------------------------------------
+	def command_with_argument(self, cmd_str):
+		try:
+			if (cmd_str == self.cmd):
+				argument_to_cmd = self.argobj._getArgNext(0)
+				if argument_to_cmd == "": # if the argument is missing return false
+					return False
+				else:
+					return True
+			else:
+				return False # if command is missing return false
+		except Exception, e:
+			print("Naked Framework Error: Error parsing command and argument with command_with_argument method.")
+			print((str(e)))
+			sys.exit(1)
+
+	## TODO : add to tests
+	#------------------------------------------------------------------------------------------
+	# [ command_suite_validates method ]
+	#    Test that there is a primary command in a command suite application (to be used at the top level of logic for command line application)
+	#	 returns boolean for presence of the primary command
+	#------------------------------------------------------------------------------------------
+	def command_suite_validates(self, accept_options_as_argument = True):
+		try:
+			if self.argc > 0:
+				if self.arg0.startswith("-") and accept_options_as_argument == False:
+					return False # if no command and option present, return False
+				else:
+					return True # if a primary command present, return True
+			else:
+				return False # if user only entered the application name, return False
+		except Exception, e:
+			print("Naked Framework Error: Command suite validation error with the command_suite_validation method.")
+			print((str(e)))
+			sys.exit(1)
+
+	#------------------------------------------------------------------------------------------
+	# [ option method ]
+	# Test that the command includes an option (option_string parameter)
+	#    option_string = the option string to test for in the command
+	#    arugment_required = boolean - is an argument to this option required (default = no)?
+	#    returns boolean for presence of the cmd_str
+	#------------------------------------------------------------------------------------------
+	def option(self, option_string, argument_required = False):
+		try:
+			if (option_string in self.optobj):
+				argument_to_option = self.argobj._getArgNext(self.argobj._getArgPosition(option_string))
+				if argument_required and ( argument_to_option == "" or argument_to_option.startswith("-") ):
+					return False
+				else:
+					return True
+			else:
+				return False
+		except Exception, e:
+			print("Naked Framework Error: Error parsing option with option method.")
+			print((str(e)))
+			sys.exit(1)
+
+	# TODO : add to tests
+	#------------------------------------------------------------------------------------------
+	# [ option_with_arg method ]
+	# Test that the command includes an option (option_string parameter) and argument to that option
+	#    option_string = the option string to test for in the command
+	#    arugment_required = boolean - is an argument to this option required (default = yes)?
+	#    returns boolean for presence of the option_string AND the argument
+	#------------------------------------------------------------------------------------------
+	# test that command includes an option (option_string parameter) that includes an argument (=option(option_string, True))
+	def option_with_arg(self, option_string, argument_required = True):
+		try:
+			if (option_string in self.optobj):
+				argument_to_option = self.argobj._getArgNext(self.argobj._getArgPosition(option_string))
+				if argument_required and ( argument_to_option == "" or argument_to_option.startswith("-") ):
+					return False # argument is either missing or is another option, return false
+				else:
+					return True
+			else:
+				return False # option is not present
+		except Exception, e:
+			print("Naked Framework Error: Error parsing option and argument with option_with_arg method.")
+			print((str(e)))
+			sys.exit(1)
+
+	#
+	# Naked provided commands for all applications that use framework:
+	#  -- help
+	#  -- usage
+	#  -- version
+
 	# did user request help?
 	def help(self):
-		if ( (self.option("--help")) or (self.option("-h")) or (self.cmd == "help") ):
+		if ( (self.option("--help")) or (self.cmd == "help") ):
 			return True
 		else:
 			return False
 
 	# did user request usage info?
 	def usage(self):
-		if ( (self.argc == 0) or (self.option("--usage")) or (self.cmd == "usage") ):
+		if ( (self.option("--usage")) or (self.cmd == "usage") ):
 			return True
 		else:
 			return False
 
 	# did user request version info?
 	def version(self):
-		if ( (self.option("--version")) or (self.option("-v")) or (self.cmd == "version") ):
+		if ( (self.option("--version")) or (self.cmd == "version") ):
 			return True
 		else:
 			return False
