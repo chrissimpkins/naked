@@ -23,19 +23,32 @@ Naked
 --------------------------------------
 
 USAGE
+
   naked <primary command> [secondary command] [option(s)] [argument(s)]
 
-COMMANDS
+The <primary command> is mandatory and includes one of the commands in the following section.  The [bracketed] usage structure is optional and dependent upon the primary command that you use.  Use the command 'naked <primary command> help' for more information about a specific primary command.
+
+PRIMARY COMMANDS
 
 OPTIONS
 
-EXAMPLES
+Options are dependent upon the primary command that you use.  You can enter:
+
+  naked <primary command> help
+
+for more information about available options for a primary command.
+
+COMMONLY USED COMMANDS
 
 NOTES
 
 SOURCE REPOSITORY
 
+  https://github.com/chrissimpkins/naked
+
 ISSUE REPORTING
+
+  https://github.com/chrissimpkins/naked/issues
 
 """
 
