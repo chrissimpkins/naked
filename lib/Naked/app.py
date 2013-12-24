@@ -1,10 +1,36 @@
 #!/usr/bin/env python
 
+#------------------------------------
+# c.cmd = primary command
+# c.cmd2 = secondary command
+# c.option(option_string, bool argument_required) = test for option
+# c.option_with_arg(option_string) = test for option and positional argument
+# c.arg(arg_string) = returns the next positional argument to the arg_string argument
+#-------------------------------------
+
+
+# Application start
 def main():
     import sys
     import Naked.commandline
-	# TODO: wrap in a try/catch block
+
+    #------------------------------------------------------------------------------------------
+    # [ Create command line object ]
+    #   used for all subsequent conditional logic of the CLI application
+    #------------------------------------------------------------------------------------------
     c = Naked.commandline.Command(sys.argv[0], sys.argv[1:])
+    #------------------------------------------------------------------------------------------
+    # [ Validation ]
+    # Test that user entered a primary command, print usage if not
+    #------------------------------------------------------------------------------------------
+    if not c.command_suite_validates():
+        from Naked.commands.usage import Usage
+        Usage().print_usage()
+        sys.exit(1)
+    #------------------------------------------------------------------------------------------
+    # [ PRIMARY COMMAND LOGIC ]
+    # Test for primary commands and handle them
+    #------------------------------------------------------------------------------------------
     if c.cmd == "test":
         if c.option_with_arg("--list"):
             print(c.arg("--list"))
@@ -19,19 +45,27 @@ def main():
             pass
         elif c.cmd2 == "major":
             pass
-    elif c.help():
+    #------------------------------------------------------------------------------------------
+    # [ NAKED FRAMEWORK COMMANDS ]
+    # Naked framework provides the help, usage, and version commands for all applications
+    #   --> settings for messages in the PROJECT/settings.py file
+    #------------------------------------------------------------------------------------------
+    elif c.help():  # User requested naked help (help.py module in commands directory)
         from Naked.commands.help import Help
         Help().print_help()
-    elif c.usage():
+    elif c.usage():  # user requested naked usage info (usage.py module in commands directory)
         from Naked.commands.usage import Usage
         Usage().print_usage()
-    elif c.version():
+    elif c.version(): # user requested naked version (version.py module in commands directory)
         from Naked.commands.version import Version
         Version().print_version()
-    elif c.cmd == "nakedtest":
-        pass
+    #------------------------------------------------------------------------------------------
+    # [ DEFAULT MESSAGE FOR MATCH FAILURE ]
+    # Message to provide to the user when all above conditional logic fails to meet a true condition
+    #------------------------------------------------------------------------------------------
     else:
         print("Could not parse the command that you entered.  Please try again.")
+        sys.exit(1) #exit
 
 if __name__ == '__main__':
 	main()
