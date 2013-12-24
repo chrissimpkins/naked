@@ -15,9 +15,6 @@ class NakedHelpCommandTest(unittest.TestCase):
 		# test the --help option
 		output = subprocess.check_output(["naked", "--help"])
 		self.assertEqual(output, output_standard)
-		# test the -h option
-		output = subprocess.check_output(["naked", "-h"])
-		self.assertEqual(output, output_standard)
 		# test the 'help' primary command
 		output = subprocess.check_output(["naked", "help"])
 		self.assertEqual(output, output_standard)
@@ -46,9 +43,6 @@ class NakedVersionCommandTest(unittest.TestCase):
 
 		#test the --version option
 		output = subprocess.check_output(["naked", "--version"])
-		self.assertEqual(output, version_standard)
-		#test the -v option
-		output = subprocess.check_output(["naked", "-v"])
 		self.assertEqual(output, version_standard)
 		#test the 'version' primary command
 		output = subprocess.check_output(["naked", "version"])
