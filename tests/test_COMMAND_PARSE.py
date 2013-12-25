@@ -109,6 +109,8 @@ class NakedCommandParseTest(unittest.TestCase):
 		"""Test correct argument string returned for option that requires argument"""
 		self.assertEqual(self.cmd_obj.arg("-f"), "arg1") #confirm that correct argument is returned for short option that requires argument
 		self.assertEqual(self.cmd_obj.arg("--flag2"), "arg2") #confirm that correct argument is returned for long option that requires argument
+		self.assertEqual(self.cmd_obj.option_arg("-f"), "arg1") # short option argument (method 2)
+		self.assertEqual(self.cmd_obj.option_arg("--flag2"), "arg2") # long option argument (method 2)
 
 	def test_options_in_first_positional_location(self):
 		"""Test that first positional argument as option correctly interpreted"""
@@ -126,7 +128,8 @@ class NakedCommandParseTest(unittest.TestCase):
 		self.assertEqual(self.cmd_with_flag.flag("--bogus"), False)
 
 	def test_flag_option_argument_result(self):
-		pass
+		"""Test returned argument from a flag assignment"""
+		self.assertEqual(self.cmd_with_flag.flag_arg("--flag"), "fresult")
 
 	#------------------------------------------------------------------------------
 	# Primary command tests
@@ -147,6 +150,14 @@ class NakedCommandParseTest(unittest.TestCase):
 		"""Test primary command with no arguments presented to it"""
 		self.assertEqual(self.cmd_no_arg_obj.cmd2, "") #confirm that when primary command entered alone, empty string returned
 		self.assertEqual(self.cmd_no_arg_obj.argc, 0) # test length of primary command alone is 0 (the arg list only includes arguments to application cmd)
+
+	#------------------------------------------------------------------------------
+	# Argument to primary command tests
+	#------------------------------------------------------------------------------
+	def test_argument_to_primary_command(self):
+		"""Test return of argument to the primary command"""
+		self.assertEqual(self.cmd_obj.command_arg(), "testcmd2") # argument to command returns appropriately
+		self.assertEqual(self.cmd_no_arg_obj.command_arg(), "") # no argument to command returns empty string
 
 	#------------------------------------------------------------------------------
 	# Command suite validation tests

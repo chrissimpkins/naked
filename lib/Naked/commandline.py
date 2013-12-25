@@ -27,7 +27,7 @@ class Command:
 		self.cmd2 = self.arg1 # define the secondary command variable as the second positional argument (user dependent & optional, may be something else)
 
 	#------------------------------------------------------------------------------------------
-	# [ arg method ]
+	# [ arg method ] (string)
 	# Return the NEXT positional argument to a command line object (e.g. an option that requires an argument)
 	#    arg_recipient = the positional argument (at position n) to test for next positional argument
 	#    returns next positional argument string at position n + 1
@@ -37,7 +37,7 @@ class Command:
 		return self.argobj._getArgNext(recipient_position)
 
 	#------------------------------------------------------------------------------------------
-	# [ command method ]
+	# [ command method ] (boolean)
 	# Test that the command includes requested primary command suite command (cmd_str parameter)
 	#    cmd_str = the command string to test for in command
 	#    arugment_required = boolean - is an argument to this command required (default = no)?
@@ -54,8 +54,19 @@ class Command:
 			print((str(e)))
 			sys.exit(1)
 
+	#------------------------------------------------------------------------------
+	# [ command_arg method ] (string)
+	#  Return the argument to the primary command as a string
+	#------------------------------------------------------------------------------
+	def command_arg(self):
+		try:
+			return self.arg1
+		except Exception, e:
+			print("Naked Framework Error: Error parsing command argument with command_arg method (Naked.commandline.py).")
+			print((str(e)))
+			sys.exit(1)
 	#------------------------------------------------------------------------------------------
-	# [ command_with_argument method ]
+	# [ command_with_argument method ] (boolean)
 	# Test that the command includes requested primary command suite command (cmd_str parameter) and argument to it
 	#    cmd_str = the command string to test for in command
 	#    returns boolean for presence of the cmd_str AND presence of argument to the command
@@ -76,7 +87,7 @@ class Command:
 			sys.exit(1)
 
 	#------------------------------------------------------------------------------------------
-	# [ command_suite_validates method ]
+	# [ command_suite_validates method ] (boolean)
 	#    Test that there is a primary command in a command suite application (to be used at the top level of logic for command line application)
 	#	 returns boolean for presence of the primary command
 	#------------------------------------------------------------------------------------------
@@ -95,9 +106,8 @@ class Command:
 			sys.exit(1)
 
 	#------------------------------------------------------------------------------
-	# [ flag method ]
+	# [ flag method ] (boolean)
 	#   Test for presence of flag in the command
-	#
 	#------------------------------------------------------------------------------
 	def flag(self, flag_string):
 		try:
@@ -113,7 +123,7 @@ class Command:
 			sys.exit(1)
 
 	#------------------------------------------------------------------------------
-	# [flag_arg method]
+	# [flag_arg method] (string)
 	#   Return the argument string assigned to a flag
 	#
 	#------------------------------------------------------------------------------
@@ -133,7 +143,7 @@ class Command:
 			sys.exit(1)
 
 	#------------------------------------------------------------------------------------------
-	# [ option method ]
+	# [ option method ] (boolean)
 	#   Test that the command includes an option (option_string parameter)
 	#    option_string = the option string to test for in the command
 	#    arugment_required = boolean - is an argument to this option required (default = no)?
@@ -154,8 +164,20 @@ class Command:
 			print((str(e)))
 			sys.exit(1)
 
+	#------------------------------------------------------------------------------
+	# [ option_arg method ] (string)
+	#  Return the argument string to an option
+	#------------------------------------------------------------------------------
+	def option_arg(self, option_string):
+		try:
+			return self.argobj._getArgNext(self.argobj._getArgPosition(option_string))
+		except Exception, e:
+			print("Naked Framework Error: Error returning argument to option with option_arg method (Naked.commandline.py).")
+			print((str(e)))
+			sys.exit(1)
+
 	#------------------------------------------------------------------------------------------
-	# [ option_with_arg method ]
+	# [ option_with_arg method ] (boolean)
 	# Test that the command includes an option (option_string parameter) and argument to that option
 	#    option_string = the option string to test for in the command
 	#    arugment_required = boolean - is an argument to this option required (default = yes)?
