@@ -28,9 +28,9 @@ class Command:
 
 	#------------------------------------------------------------------------------------------
 	# [ arg method ]
-	# Return the next positional argument to a command line object (e.g. an option that requires an argument)
-	#    arg_recipient = the positional argument to test for next positional argument
-	#    returns next positional argument string
+	# Return the NEXT positional argument to a command line object (e.g. an option that requires an argument)
+	#    arg_recipient = the positional argument (at position n) to test for next positional argument
+	#    returns next positional argument string at position n + 1
 	#------------------------------------------------------------------------------------------
 	def arg(self, arg_recipient):
 		recipient_position = self.argobj._getArgPosition(arg_recipient)
@@ -50,11 +50,10 @@ class Command:
 			else:
 				return False # if command is missing, return false
 		except Exception, e:
-			print("Naked Framework Error: Error parsing command with command method.")
+			print("Naked Framework Error: Error parsing command with command method (Naked.commandline.py).")
 			print((str(e)))
 			sys.exit(1)
 
-	## TODO: add to tests
 	#------------------------------------------------------------------------------------------
 	# [ command_with_argument method ]
 	# Test that the command includes requested primary command suite command (cmd_str parameter) and argument to it
@@ -65,18 +64,17 @@ class Command:
 		try:
 			if (cmd_str == self.cmd):
 				argument_to_cmd = self.argobj._getArgNext(0)
-				if argument_to_cmd == "": # if the argument is missing return false
+				if argument_to_cmd == "": # if the argument is missing, then return false
 					return False
 				else:
 					return True
 			else:
 				return False # if command is missing return false
 		except Exception, e:
-			print("Naked Framework Error: Error parsing command and argument with command_with_argument method.")
+			print("Naked Framework Error: Error parsing command and argument with command_with_argument method (Naked.commandline.py).")
 			print((str(e)))
 			sys.exit(1)
 
-	## TODO : add to tests
 	#------------------------------------------------------------------------------------------
 	# [ command_suite_validates method ]
 	#    Test that there is a primary command in a command suite application (to be used at the top level of logic for command line application)
@@ -92,13 +90,51 @@ class Command:
 			else:
 				return False # if user only entered the application name, return False
 		except Exception, e:
-			print("Naked Framework Error: Command suite validation error with the command_suite_validation method.")
+			print("Naked Framework Error: Command suite validation error with the command_suite_validation method (Naked.commandline.py).")
+			print((str(e)))
+			sys.exit(1)
+
+	#------------------------------------------------------------------------------
+	# [ flag method ]
+	#   Test for presence of flag in the command
+	#
+	#------------------------------------------------------------------------------
+	def flag(self, flag_string):
+		try:
+			for match_string in self.optobj: #iterate through the options and attempt to match beginning of option to the requested flag
+				if match_string.startswith(flag_string):
+					return True
+				else:
+					pass
+			return False
+		except Exception, e:
+			print("Naked Framework Error: Error parsing flags with the flag method (Naked.commandline.py).")
+			print((str(e)))
+			sys.exit(1)
+
+	#------------------------------------------------------------------------------
+	# [flag_arg method]
+	#   Return the argument string assigned to a flag
+	#
+	#------------------------------------------------------------------------------
+	def flag_arg(self, flag_string):
+		try:
+			for match_string in self.optobj:
+				if match_string.startswith(flag_string):
+					flag_argument = match_string
+					flag_list = flag_argument.split("=") #split the flag on the equal symbol = list with [option, argument]
+					return flag_list[1] #return the argument to the flag option
+				else:
+					pass
+			return "" # return an empty string if unable to parse the argument
+		except Exception, e:
+			print("Naked Framework Error: Error parsing flags with the flag_arg method (Naked.commandline.py).")
 			print((str(e)))
 			sys.exit(1)
 
 	#------------------------------------------------------------------------------------------
 	# [ option method ]
-	# Test that the command includes an option (option_string parameter)
+	#   Test that the command includes an option (option_string parameter)
 	#    option_string = the option string to test for in the command
 	#    arugment_required = boolean - is an argument to this option required (default = no)?
 	#    returns boolean for presence of the cmd_str
@@ -114,11 +150,10 @@ class Command:
 			else:
 				return False
 		except Exception, e:
-			print("Naked Framework Error: Error parsing option with option method.")
+			print("Naked Framework Error: Error parsing option with option method (Naked.commandline.py).")
 			print((str(e)))
 			sys.exit(1)
 
-	# TODO : add to tests
 	#------------------------------------------------------------------------------------------
 	# [ option_with_arg method ]
 	# Test that the command includes an option (option_string parameter) and argument to that option
@@ -138,31 +173,40 @@ class Command:
 			else:
 				return False # option is not present
 		except Exception, e:
-			print("Naked Framework Error: Error parsing option and argument with option_with_arg method.")
+			print("Naked Framework Error: Error parsing option and argument with option_with_arg method (Naked.commandline.py).")
 			print((str(e)))
 			sys.exit(1)
 
-
-	# Naked provided commands for all applications that use framework:
+	#------------------------------------------------------------------------------
+	#  Naked provides commands for all applications that use framework:
 	#  -- help
 	#  -- usage
 	#  -- version
+	#  These methods are accessed from the app.py module, main() as method calls on the command line object
+	#  Parsing logic is coded below
+	#------------------------------------------------------------------------------
 
-	# did user request help?
+	#------------------------------------------------------------------------------
+	# Help Command/Option Handler
+	#------------------------------------------------------------------------------
 	def help(self):
 		if ( (self.option("--help")) or (self.cmd == "help") ):
 			return True
 		else:
 			return False
 
-	# did user request usage info?
+	#------------------------------------------------------------------------------
+	# Usage Command/Option Handler
+	#------------------------------------------------------------------------------
 	def usage(self):
 		if ( (self.option("--usage")) or (self.cmd == "usage") ):
 			return True
 		else:
 			return False
 
-	# did user request version info?
+	#------------------------------------------------------------------------------
+	# Version Command/Option Handler
+	#------------------------------------------------------------------------------
 	def version(self):
 		if ( (self.option("--version")) or (self.cmd == "version") ):
 			return True
@@ -176,8 +220,10 @@ class Command:
 			print("argv[" + str(x) + "] = " + arg)
 			x = x + 1
 
-
-# Command line argument object (list object inherited from Python list)
+#------------------------------------------------------------------------------
+# [ Argument Class ]
+#   all command line arguments (object inherited from Python list)
+#------------------------------------------------------------------------------
 class Argument(list):
 	def __init__(self, argv):
 		self.argv = argv
@@ -206,7 +252,11 @@ class Argument(list):
 		else:
 			return ""
 
-# Command line option object (list object inherited from Python list)
+#------------------------------------------------------------------------------
+# [ Option Class ]
+#   Command line options (object inherited from Python list)
+#   Definition: string that begins with "-" (i.e. can be -h or --long)
+#------------------------------------------------------------------------------
 class Option(list):
 	def __init__(self, argv):
 		self.argv = argv

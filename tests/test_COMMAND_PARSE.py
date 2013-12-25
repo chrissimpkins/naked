@@ -23,13 +23,19 @@ class NakedCommandParseTest(unittest.TestCase):
 		#------------------------------------------------------------------------------
 		self.cl3_argv = ["naked", "--help"]
 		self.test3_argv = self.cl3_argv[1:]
-		self.cmd_arg_is_option_obj = Naked.commandline.Command(self.cl3_argv, self.test3_argv)
+		self.cmd_arg_is_option_obj = Naked.commandline.Command(self.cl3_argv[0], self.test3_argv)
 		#------------------------------------------------------------------------------
 		# setup for no secondary command to primary command test
 		#------------------------------------------------------------------------------
 		self.cl4_argv = ["naked", "nakedtest"]
 		self.test4_argv = self.cl4_argv[1:]
-		self.cmd_no_secondary_cmd_obj = Naked.commandline.Command(self.cl4_argv, self.test4_argv)
+		self.cmd_no_secondary_cmd_obj = Naked.commandline.Command(self.cl4_argv[0], self.test4_argv)
+		#------------------------------------------------------------------------------
+		# setup for option flags and assignments
+		#------------------------------------------------------------------------------
+		self.cl5_argv = ["naked", "nakedtest", "--flag=fresult"]
+		self.test5_argv = self.cl5_argv[1:]
+		self.cmd_with_flag = Naked.commandline.Command(self.cl5_argv[0], self.test5_argv)
 
 	#------------------------------------------------------------------------------
 	# Command object tests
@@ -107,6 +113,20 @@ class NakedCommandParseTest(unittest.TestCase):
 	def test_options_in_first_positional_location(self):
 		"""Test that first positional argument as option correctly interpreted"""
 		self.assertEqual(self.cmd_arg_is_option_obj.arg0, "--help")
+
+	#------------------------------------------------------------------------------
+	# Flag tests (definition: flag is a long option with an = assignment on the command line, e.g. --flag=arg)
+	#------------------------------------------------------------------------------
+	def test_flag_present(self):
+		"""Test that flag is appropriately detected in command"""
+		self.assertEqual(self.cmd_with_flag.flag("--flag"), True)
+
+	def test_flag_absent(self):
+		"""Test that flag that is not present is not detected"""
+		self.assertEqual(self.cmd_with_flag.flag("--bogus"), False)
+
+	def test_flag_option_argument_result(self):
+		pass
 
 	#------------------------------------------------------------------------------
 	# Primary command tests
