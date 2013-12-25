@@ -32,10 +32,8 @@ def main():
     # Test for primary commands and handle them
     #------------------------------------------------------------------------------------------
     if c.cmd == "test":
-        if c.option_with_arg("--list"):
-            print(c.arg("--list"))
-        else:
-            print("Not Found")
+        if c.flag("--flag="):
+            print(c.flag_arg("--flag="))
         #if c.option("-t"): c.truth = True
         #print(c.truth)
     elif c.cmd == "bump":
