@@ -16,11 +16,11 @@ def main():
 
     #------------------------------------------------------------------------------------------
     # [ Create command line object ]
-    #   used for all subsequent conditional logic of the CLI application
+    #   used for all subsequent conditional logic in the CLI application
     #------------------------------------------------------------------------------------------
     c = Naked.commandline.Command(sys.argv[0], sys.argv[1:])
     #------------------------------------------------------------------------------------------
-    # [ Validation ]
+    # [ Command Suite Validation ] - early validation of appropriate syntax
     # Test that user entered a primary command, print usage if not
     #------------------------------------------------------------------------------------------
     if not c.command_suite_validates():
@@ -32,8 +32,7 @@ def main():
     # Test for primary commands and handle them
     #------------------------------------------------------------------------------------------
     if c.cmd == "test":
-        if c.flag("--flag="):
-            print(c.flag_arg("--flag="))
+        pass
         #if c.option("-t"): c.truth = True
         #print(c.truth)
     elif c.cmd == "bump":
