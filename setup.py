@@ -3,14 +3,14 @@ from setuptools import setup, find_packages
 from Naked.commands.version import Version
 
 
-def description_read(fname):
+def file_read(fname):
     return open(os.path.join(os.path.dirname(__file__), 'docs', fname)).read()
 
 setup(
     name='Naked',
     version=Version().get_version(),
     description='A command line application framework',
-    long_description=(description_read('README.rst')),
+    long_description=(file_read('README.rst')),
     url='http://github.com/chrissimpkins/naked/',
     license='MIT',
     author='Christopher Simpkins',
@@ -25,7 +25,7 @@ setup(
     },
     packages=find_packages("lib"),
     package_dir={'': 'lib'},
-    install_requires=['Naked'],
+    install_requires=['Naked', 'requests'],
     keywords='python,command line,system,application,framework,CLI,bootstrap',
     include_package_data=True,
     classifiers=[
