@@ -13,7 +13,7 @@ minor_version = "1"
 patch_version = "10"
 
 #------------------------------------------------------------------------------
-# Debug Flag
+# Debug Flag (switch to False for production release code)
 #------------------------------------------------------------------------------
 debug = True
 
@@ -52,8 +52,6 @@ Options are dependent upon the primary command that you use.  You can enter:
 for more information about available options for a primary command.
 
 COMMONLY USED COMMANDS
-
-NOTES
 
 SOURCE REPOSITORY
 
