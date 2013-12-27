@@ -2,6 +2,7 @@
 
 import sys
 import requests
+from Naked.settings import debug as DEBUG_FLAG
 
 ## TODO: re-raise exception for any errors rather than handle them in this file (for other users)
 
@@ -28,12 +29,12 @@ class HTTP():
 			self.res = response # assign the response object from requests to a property on the instance
 			return response.text
 		except Exception, e:
-			print("Unable to perform GET request with the URL " + self.url)
-			print((str(e)))
-			sys.exit(1)
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to perform GET request with the URL " + self.url + "using the get() method (Naked.toolshed.network.py)")
+			raise e
 
 	#------------------------------------------------------------------------------
-	# [ get_data method ] (raw binary data)
+	# [ get_data method ] (binary data)
 	#   open HTTP data stream with GET request and return binary data
 	#   returns data stream with raw binary data
 	#------------------------------------------------------------------------------
@@ -43,12 +44,12 @@ class HTTP():
 			self.res = response # assign the response object from requests to a property on the instance
 			return response.content # return binary data instead of text (get() returns text)
 		except Exception, e:
-			print("Unable to perform GET request with the URL " + self.url)
-			print((str(e)))
-			sys.exit(1)
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to perform GET request with the URL " + self.url + "using the get_data() method (Naked.toolshed.network.py)")
+			raise e
 
 	#------------------------------------------------------------------------------
-	# [ get_data_make_file method ] (remote to local binary data file generator)
+	# [ get_data_make_file method ] (boolean)
 	#   open HTTP data stream with GET request, make file with the returned binary data
 	#   file path is passed to the method by the developer
 	#   return True on successful pull and write to disk
@@ -67,6 +68,8 @@ class HTTP():
 					os.fsync(f.fileno()) # flush all internal buffers to disk
 			return True # return True if successful write
 		except Exception, e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to perform GET request and write file with the URL " + self.url + "using the get_data_make_file() method (Naked.toolshed.network.py)")
 			raise e
 
 	#------------------------------------------------------------------------------
@@ -76,7 +79,13 @@ class HTTP():
 	#   note: must run one of these HTTP methods to assign this property (None by default)
 	#------------------------------------------------------------------------------
 	def response(self):
-		return self.res
+		try:
+			return self.res
+		except Exception, e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to return the response from your HTTP request with the response() method (Naked.toolshed.network.py).")
+			raise e
+
 
 if __name__ == '__main__':
 	pass

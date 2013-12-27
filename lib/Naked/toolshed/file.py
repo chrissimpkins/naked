@@ -3,6 +3,7 @@
 
 import sys
 import codecs
+from Naked.settings import debug as DEBUG_FLAG
 
 #------------------------------------------------------------------------------
 # [ IO class ]
@@ -31,14 +32,15 @@ class FileWriter(IO):
 		try:
 			f = codecs.open(self.filepath, encoding='utf-8', mode='w')
 		except IOError, ioe:
-			pass
-			## TODO : Handle missing file exception here
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to open file for write with the write_utf8() method (Naked.toolshed.file.py).")
+			raise e
 		try:
 			f.write(text)
 		except Exception as e:
-			print("Unable to write to the file " + self.filepath)
-			print((str(e)))
-			sys.exit(1)
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to write UTF-8 encoded text to file with the write_utf8() method (Naked.toolshed.file.py).")
+			raise e
 		finally:
 			f.close()
 
@@ -62,15 +64,16 @@ class FileReader(IO):
 		try:
 			f = codecs.open(self.filepath, encoding='utf-8', mode='r')
 		except IOError, ioe:
-			pass
-			## TODO: handle missing file exceptions here
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to open file for read with read_utf8() method (Naked.toolshed.file.py).")
+			raise ioe
 		try:
 			textstring = f.read()
 			return textstring
 		except Exception as e:
-			print("Unable to read the file " + self.filepath)
-			print((str(e)))
-			sys.exit(1)
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to read the file with UTF-8 encoding using the read_utf8() method (Naked.toolshed.file.py).")
+			raise e
 		finally:
 			f.close()
 

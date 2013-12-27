@@ -35,10 +35,9 @@ class NakedIOReadWriteTest(unittest.TestCase):
 		self.assertEqual(unicode_file, self.unicode_string)
 
 	def test_filereader_missing_file(self):
-		"""Test that missing file throws SystemExit exception"""
-		with self.assertRaises(SystemExit) as cm:
+		"""Test that missing file throws IOError"""
+		with (self.assertRaises(IOError)):
 			FileReader(self.bogus_path).read_utf8()
-			self.assertEqual(cm.exception.code, 1)
 
 
 
