@@ -27,6 +27,21 @@ class Command:
 		self.cmd = self.arg0  # define the primary command variable as the first positional argument (user dependent & optional, may be something else)
 		self.cmd2 = self.arg1 # define the secondary command variable as the second positional argument (user dependent & optional, may be something else)
 
+	#------------------------------------------------------------------------------
+	# [ app_validates_args method ] (boolean)
+	#   Test whether app validates on the criterion arguments (argc) > 0, i.e. there is at least one argument to the executable
+	#------------------------------------------------------------------------------
+	def app_validates_args(self):
+		try:
+			if self.argc > 0:
+				return True
+			else:
+				return False
+		except Exception, e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Validation of application error in the app_validates() method (Naked.commandline.py).")
+			raise e
+
 	#------------------------------------------------------------------------------------------
 	# [ arg method ] (string)
 	# Return the NEXT positional argument to a command line object (e.g. an option that requires an argument)
@@ -137,8 +152,7 @@ class Command:
 		try:
 			for match_string in self.optobj:
 				if match_string.startswith(flag_string):
-					flag_argument = match_string
-					flag_list = flag_argument.split("=") #split the flag on the equal symbol = list with [option, argument]
+					flag_list = match_string.split("=") #split the flag on the equal symbol = list with [option, argument]
 					return flag_list[1] #return the argument to the flag option
 				else:
 					pass
@@ -206,7 +220,7 @@ class Command:
 			raise e
 
 	#------------------------------------------------------------------------------
-	#  Naked provides commands for all applications that use framework:
+	#  Naked provides the following commands for all applications that use the framework:
 	#  -- help
 	#  -- usage
 	#  -- version
