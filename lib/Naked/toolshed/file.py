@@ -16,15 +16,49 @@ class IO:
 #------------------------------------------------------------------------------
 # [ FileWriter class ]
 #  writes data to local files
-#  methods: write_utf8(text)
+#  methods: write(text), safe_write(text), write_utf8(text)
 #------------------------------------------------------------------------------
 class FileWriter(IO):
 	def __init__(self, filepath):
 		IO.__init__(self, filepath)
 
+	## TODO : tests
+	#------------------------------------------------------------------------------
+	# [ write method ]
+	#   Universal text file writer that uses system default text encoding
+	#------------------------------------------------------------------------------
+	def write(self,text):
+		try:
+			with open(self.filepath, 'wt') as writer:
+				writer.write(text)
+		except Exception, e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to write to requested file with the write() method (Naked.toolshed.file.py).")
+			raise e
+
+	## TODO : tests
+	#------------------------------------------------------------------------------
+	# [ safe_write method ] (boolean)
+	#   Universal text file writer that will NOT overwrite existing file at the requested filepath
+	#   returns boolean indicator for success of write based upon test for existence of file
+	#------------------------------------------------------------------------------
+	def safe_write(self,text):
+	try:
+		import os.path
+		if not os.path.exists(self.filepath):
+			with open(self.filepath, 'wt') as writer:
+				writer.write(text)
+				return True
+		else:
+			return False
+	except Exception, e:
+		if DEBUG_FLAG:
+			sys.stderr.write("Naked Framework Error: Unable to write to requested file with the safe_write() method (Naked.toolshed.file.py).")
+		raise e
+
 	#------------------------------------------------------------------------------
 	# [ write_utf8 method ]
-	#   write to file with UTF-8 encoding
+	#   write to file with explicit UTF-8 encoding
 	#   uses filepath from class constructor
 	#   requires text to passed as a method parameter
 	#------------------------------------------------------------------------------
@@ -48,15 +82,31 @@ class FileWriter(IO):
 # [ FileReader class ]
 #  reads data from local files
 #  filename assigned in constructor (inherited from IO class interface)
-#  methods: read_utf8(text)
+#  methods: read(), read_utf8()
 #------------------------------------------------------------------------------
 class FileReader(IO):
 	def __init__(self, filepath):
 		IO.__init__(self, filepath)
 
+	## TODO : tests
 	#------------------------------------------------------------------------------
-	# [ read_utf8 method ]
-	#   read data from a file with UTF-8 encoding
+	# [ read method ] (string)
+	#    Universal text file reader that uses the default system text encoding
+	#    returns string that is encoded in the default system text encoding
+	#------------------------------------------------------------------------------
+	def read(self):
+		try:
+			with open(self.filepath, 'rt') as reader:
+				data = reader.read()
+				return data
+		except Exception, e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to read text from the requested file with the read() method (Naked.toolshed.file.py).")
+			raise e
+
+	#------------------------------------------------------------------------------
+	# [ read_utf8 method ] (string)
+	#   read data from a file with explicit UTF-8 encoding
 	#   uses filepath from class constructor
 	#   returns a string containing the file data
 	#------------------------------------------------------------------------------
