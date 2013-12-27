@@ -169,5 +169,14 @@ class NakedCommandParseTest(unittest.TestCase):
 		self.assertEqual(self.cmd_arg_is_option_obj.command_suite_validates(), True) #argument to application that is option validates by default
 		self.assertEqual(self.cmd_arg_is_option_obj.command_suite_validates(False), False) #arugment to application that is option does not validate if explicitly specified by user
 
+	#------------------------------------------------------------------------------
+	# Application validation tests (only validates that argc > 0 = at least one argument to excecutable)
+	#------------------------------------------------------------------------------
+	def test_app_validation(self):
+		"""Test validation of application for presence of at least one arg"""
+		self.assertEqual(self.cmd_obj.app_validates_args(), True) # command that includes multiple arguments returns True
+		self.assertEqual(self.cmd_arg_is_option_obj.app_validates_args(), True) # command that includes option argument at position 1 returns True
+		self.assertEqual(self.cmd_no_secondary_cmd_obj.app_validates_args(), True) # command that only includes a primary command returns True (defer to user to handle with command suite validation as appropriate)
+		self.assertEqual(self.cmd_no_arg_obj.app_validates_args(), False) # command that only includes the executable returns False
 
 
