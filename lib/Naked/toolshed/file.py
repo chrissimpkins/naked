@@ -39,26 +39,26 @@ class FileWriter(IO):
 	## TODO : tests
 	#------------------------------------------------------------------------------
 	# [ safe_write method ] (boolean)
-	#   Universal text file writer that will NOT overwrite existing file at the requested filepath
+	#   Universal text file writer (system default text encoding) that will NOT overwrite existing file at the requested filepath
 	#   returns boolean indicator for success of write based upon test for existence of file
 	#------------------------------------------------------------------------------
 	def safe_write(self,text):
-	try:
-		import os.path
-		if not os.path.exists(self.filepath):
-			with open(self.filepath, 'wt') as writer:
-				writer.write(text)
-				return True
-		else:
-			return False
-	except Exception, e:
-		if DEBUG_FLAG:
-			sys.stderr.write("Naked Framework Error: Unable to write to requested file with the safe_write() method (Naked.toolshed.file.py).")
-		raise e
+		try:
+			import os.path
+			if not os.path.exists(self.filepath):
+				with open(self.filepath, 'wt') as writer:
+					writer.write(text)
+					return True
+			else:
+				return False
+		except Exception, e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to write to requested file with the safe_write() method (Naked.toolshed.file.py).")
+			raise e
 
 	#------------------------------------------------------------------------------
 	# [ write_utf8 method ]
-	#   write to file with explicit UTF-8 encoding
+	#   Text file writer with explicit UTF-8 text encoding
 	#   uses filepath from class constructor
 	#   requires text to passed as a method parameter
 	#------------------------------------------------------------------------------
