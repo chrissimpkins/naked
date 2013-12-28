@@ -14,6 +14,5 @@ def stderr(text):
 	sys.stderr.write(text)
 
 
-
 if __name__ == '__main__':
 	pass
