@@ -2,6 +2,7 @@
 # coding=utf-8
 
 import unittest
+import os
 from Naked.toolshed.file import FileReader
 from Naked.toolshed.file import FileWriter
 from Naked.toolshed.ospaths import PathMaker
@@ -20,7 +21,7 @@ class NakedIOReadWriteTest(unittest.TestCase):
 		self.bogus_path = self.pm.make_os_independent_path("testfiles", "bogus.txt")
 
 	def tearDown(self):
-		pass #remove the newly created files
+		pass
 
     #------------------------------------------------------------------------------
     # ASCII file tests
@@ -38,6 +39,19 @@ class NakedIOReadWriteTest(unittest.TestCase):
 
 	def test_file_ascii_safewrite(self):
 		"""Test safe_write() to confirm does not overwrite existing file"""
+		os.remove(self.ascii_path) #remove the existing text file for tests
+		if os.path.exists(self.ascii_path):
+			raise IOError("The ascii test file was not deleted. (test_IO.py.test_file_ascii_safewrite)")
+		else:
+			safe_response = FileWriter(self.ascii_path).safe_write(self.ascii_string) # attempt safe_write when no preexisting file present
+			ascii_text = FileReader(self.ascii_path).read()
+			self.assertEqual(ascii_text, self.ascii_string) # assert that the correct text was written
+			self.assertEqual(safe_response, True) # assert that returns True when file not present and writes
+
+			if os.path.exists(self.ascii_path):
+					self.assertEqual(FileWriter(self.ascii_path).safe_write(self.ascii_string), False) #confirm that returns False to calling function when there is a pre-existing file
+			else:
+				raise IOError("The ascii test file is not present (test_IO.py.test_file_ascii_safewrite)")
 
 
 	#------------------------------------------------------------------------------
