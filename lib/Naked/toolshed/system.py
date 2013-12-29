@@ -3,6 +3,7 @@
 import sys
 import os
 
+## TODO : try/catch blocks around all of these functions
 #------------------------------------------------------------------------------
 #
 # FILE & DIRECTORY PATHS
@@ -280,6 +281,20 @@ def stderr(text, exit=0):
 #------------------------------------------------------------------------------
 def exit_with_status(exit=1):
 	raise SystemExit(exit)
+
+#------------------------------------------------------------------------------
+# [ exit_fail function ]
+#   application exit with status code 1
+#------------------------------------------------------------------------------
+def exit_fail():
+	sys.exit(1)
+
+#------------------------------------------------------------------------------
+# [ exit_success function]
+#   application exit with status code 0
+#------------------------------------------------------------------------------
+def exit_success():
+	sys.exit(0)
 
 if __name__ == '__main__':
 	pass
