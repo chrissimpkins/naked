@@ -4,6 +4,12 @@ import os
 import sys
 from Naked.settings import debug as DEBUG_FLAG
 
+#------------------------------------------------------------------------------
+# [ Environment Class ]
+# 	shell environment variables class
+#   self.env = the environment variable dictionary
+#	self.vars = the environment variable names list
+#------------------------------------------------------------------------------
 class Environment():
 	def __init__(self):
 		self.env = os.environ
@@ -33,15 +39,29 @@ class Environment():
 			else:
 				return ""
 		except Exception, e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: unable to return the requested shell variable with the get_var() method (Naked.toolshed.shell).")
 			raise e
 
 	#------------------------------------------------------------------------------
 	# [ get_split_var_list method ] (list of strings)
 	#   return a list of strings split by OS dependent separator from the shell variable assigment string
+	#   if the variable name is not in the environment list, returns an empty list
 	#------------------------------------------------------------------------------
 	def get_split_var_list(self, var_name):
-
+		try:
+			if var_name in self.vars:
+				return self.env[var_name].split(os.pathsep)
+			else:
+				return []
+		except Exception, e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: unable to return environment variable list with the get_split_var_list() method (Naked.toolshed.shell).")
+			raise e
 
 
 if __name__ == '__main__':
 	pass
+	# e = Environment()
+	# user = e.get_split_var_list("PATH")
+	# print(user)
