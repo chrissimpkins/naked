@@ -2,7 +2,6 @@
 
 
 import sys
-import codecs
 from Naked.settings import debug as DEBUG_FLAG
 
 #------------------------------------------------------------------------------
@@ -34,17 +33,52 @@ class FileWriter(IO):
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to append text to the file with the append() method (Naked.toolshed.file.py).")
 			raise e
+
+	## TODO: tests
+	#------------------------------------------------------------------------------
+	# [ gzip method (writer) ]
+	#   writes text to gzip compressed file
+	#   Note: adds .gz extension to filename if user did not specify it in the FileWriter class constructor
+	#   Note: uses compresslevel = 6 as default to balance speed and compression level (which in general is not significantly less than 9)
+	#------------------------------------------------------------------------------
+	def gzip(self, text, compression_level=6):
+		try:
+			import gzip
+			if not self.filepath.endswith(".gz"):
+				self.filepath = self.filepath + ".gz"
+			with gzip.open(self.filepath, 'wb', compresslevel=compression_level) as gzip_writer:
+				gzip_writer.write(text)
+		except Exception, e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: unable to gzip compress the file with the gzip method (Naked.toolshed.file.py).")
+			raise e
+
 	#------------------------------------------------------------------------------
 	# [ write method ]
 	#   Universal text file writer that uses system default text encoding
 	#------------------------------------------------------------------------------
-	def write(self,text):
+	def write(self, text):
 		try:
 			with open(self.filepath, 'wt') as writer:
 				writer.write(text)
 		except Exception, e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to write to requested file with the write() method (Naked.toolshed.file.py).")
+			raise e
+
+	#------------------------------------------------------------------------------
+	# [ write_as method ]
+	#   text file writer that uses developer specified text encoding
+	#------------------------------------------------------------------------------
+	def write_as(self, text, dev_spec_encoding=""):
+		try:
+			if dev_spec_encoding == "": #if the developer did not include the encoding type, raise an exception
+				raise RuntimeError("The text encoding was not specified as an argument to the write_as() method (Naked.toolshed.file.py:write_as).")
+			with open(self.filepath, 'wt', encoding=dev_spec_encoding) as writer:
+				writer.write(text)
+		except Exception, e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: unable to write file with the specified encoding using the write_as() method (Naked.toolshed.file.py).")
 			raise e
 
 	#------------------------------------------------------------------------------
@@ -65,7 +99,7 @@ class FileWriter(IO):
 	#   Universal text file writer (system default text encoding) that will NOT overwrite existing file at the requested filepath
 	#   returns boolean indicator for success of write based upon test for existence of file
 	#------------------------------------------------------------------------------
-	def safe_write(self,text):
+	def safe_write(self, text):
 		try:
 			import os.path
 			if not os.path.exists(self.filepath):
@@ -87,6 +121,7 @@ class FileWriter(IO):
 	#------------------------------------------------------------------------------
 	def write_utf8(self, text):
 		try:
+			import codecs
 			f = codecs.open(self.filepath, encoding='utf-8', mode='w')
 		except IOError, ioe:
 			if DEBUG_FLAG:
@@ -150,6 +185,8 @@ class FileReader(IO):
 	#------------------------------------------------------------------------------
 	def read_as(self, dev_spec_encoding):
 		try:
+			if dev_spec_encoding == "":
+				raise RuntimeError("The text file encoding was not specified as an argument to the read_as method (Naked.toolshed.file.py:read_as).")
 			with open(self.filepath, 'rt', encoding=dev_spec_encoding) as reader:
 				data = reader.read()
 				return data
@@ -175,6 +212,22 @@ class FileReader(IO):
 			raise e
 
 	#------------------------------------------------------------------------------
+	# [ read_gzip ] (byte string)
+	#   reads data from a gzip compressed file
+	#	returns the decompressed binary data from the file
+	#------------------------------------------------------------------------------
+	def read_gzip(self):
+		try:
+			import gzip
+			with gzip.open(self.filepath, 'rb') as gzip_reader:
+				file_data = gzip_reader.read()
+				return file_data
+		except Exception, e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to read from the gzip compressed file with the read_gzip() method (Naked.toolshed.file.py).")
+			raise e
+
+	#------------------------------------------------------------------------------
 	# [ read_utf8 method ] (string)
 	#   read data from a file with explicit UTF-8 encoding
 	#   uses filepath from class constructor
@@ -182,6 +235,7 @@ class FileReader(IO):
 	#------------------------------------------------------------------------------
 	def read_utf8(self):
 		try:
+			import codecs
 			f = codecs.open(self.filepath, encoding='utf-8', mode='r')
 		except IOError, ioe:
 			if DEBUG_FLAG:
@@ -203,12 +257,12 @@ class FileReader(IO):
 
 	## TODO: tests
 	#------------------------------------------------------------------------------
-	# [ read_with_function ] (string)
+	# [ read_apply_function ] (string)
 	#   read a text file and modify with a developer specified function that takes single parameter for the text in the file
 	#   the developer's function should return the modified string
 	#	returns a string that contains the modified file text
 	#------------------------------------------------------------------------------
-	def read_with_function(self, function):
+	def read_apply_function(self, function):
 		try:
 			with open(self.filepath, 'rt') as read_data:
 				modified_data = function(read_data)
@@ -220,12 +274,12 @@ class FileReader(IO):
 
 	## TODO: tests
 	#------------------------------------------------------------------------------
-	# [ readlines_with_function ] (list of strings)
+	# [ readlines_apply_function ] (list of strings)
 	#   read a text file by line, apply a developer specified function that takes single parameter for the line string to each line
 	#   the developer's function should return the modified string
 	#   returns a list containing each modified line string
 	#------------------------------------------------------------------------------
-	def readlines_with_function(self, function):
+	def readlines_apply_function(self, function):
 		try:
 			with open(self.filepath, 'rt') as read_data:
 				modified_text_list = []
