@@ -34,3 +34,7 @@ nosetests.xml
 .project
 .pydevproject
 ascii.txt
+ascii.txt.gz
+unicode.txt
+unicode.txt.gz
+unicode2.txt
