@@ -19,13 +19,16 @@ class FileWriter(IO):
 	def __init__(self, filepath):
 		IO.__init__(self, filepath)
 
-	## TODO : tests for append method
 	#------------------------------------------------------------------------------
 	# [ append method ]
 	#   Universal text file writer that appends to existing file using system default text encoding
+	#   Tests: test_IO.py:: test_file_ascii_readwrite_append, test_file_ascii_readwrite_append_missingfile
 	#------------------------------------------------------------------------------
 	def append(self, text):
 		try:
+			from Naked.toolshed.system import file_exists
+			if not file_exists(self.filepath): #confirm that file exists, if not raise IOError (assuming that developer expected existing file if using append)
+				raise IOError("The file specified for the text append does not exist (Naked.toolshed.file.py:append).")
 			with open(self.filepath, 'a') as appender:
 				appender.write(text)
 		except Exception as e:
@@ -33,12 +36,31 @@ class FileWriter(IO):
 				sys.stderr.write("Naked Framework Error: Unable to append text to the file with the append() method (Naked.toolshed.file.py).")
 			raise e
 
-	## TODO: tests
+	#------------------------------------------------------------------------------
+	# [ append_utf8 method ]
+	#   Text writer that appends text to existing file with utf-8 encoding
+	#   Tests: test_IO.py :: test_file_utf8_readwrite_append
+	#------------------------------------------------------------------------------
+	def append_utf8(self, text):
+		try:
+			from Naked.toolshed.system import file_exists
+			if not file_exists(self.filepath):
+				raise IOError("The file specified for the text append does not exist (Naked.toolshed.file.py:append_utf8).")
+			import codecs
+			with codecs.open(self.filepath, 'a', encoding="utf_8") as appender:
+				appender.write(text)
+		except Exception as e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to append text to the file with the append_utf8 method (Naked.toolshed.file.py).")
+			raise e
+
 	#------------------------------------------------------------------------------
 	# [ gzip method (writer) ]
 	#   writes text to gzip compressed file
 	#   Note: adds .gz extension to filename if user did not specify it in the FileWriter class constructor
 	#   Note: uses compresslevel = 6 as default to balance speed and compression level (which in general is not significantly less than 9)
+	#   Tests: test_IO.py :: test_file_gzip_ascii_readwrite, test_file_gzip_utf8_readwrite,
+	#               test_file_gzip_utf8_readwrite_explicit_decode
 	#------------------------------------------------------------------------------
 	def gzip(self, text, compression_level=6):
 		try:
@@ -47,6 +69,11 @@ class FileWriter(IO):
 				self.filepath = self.filepath + ".gz"
 			with gzip.open(self.filepath, 'wb', compresslevel=compression_level) as gzip_writer:
 				gzip_writer.write(text)
+		except UnicodeEncodeError as ue:
+			import codecs
+			binary_data = codecs.encode(text, "utf_8")
+			with gzip.open(self.filepath, 'wb', compresslevel=compression_level) as gzip_writer:
+				gzip_writer.write(binary_data)
 		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: unable to gzip compress the file with the gzip method (Naked.toolshed.file.py).")
@@ -55,6 +82,8 @@ class FileWriter(IO):
 	#------------------------------------------------------------------------------
 	# [ write method ]
 	#   Universal text file writer that uses system default text encoding
+	#   Tests: test_IO.py :: test_file_ascii_readwrite, test_file_ascii_readwrite_missing_file,
+	#	 test_file_utf8_write_raises_unicodeerror
 	#------------------------------------------------------------------------------
 	def write(self, text):
 		try:
@@ -68,13 +97,15 @@ class FileWriter(IO):
 	#------------------------------------------------------------------------------
 	# [ write_as method ]
 	#   text file writer that uses developer specified text encoding
+	#   Tests: test_IO.py :: test_file_utf8_readas_writeas
 	#------------------------------------------------------------------------------
 	def write_as(self, text, dev_spec_encoding=""):
 		try:
 			if dev_spec_encoding == "": #if the developer did not include the encoding type, raise an exception
 				raise RuntimeError("The text encoding was not specified as an argument to the write_as() method (Naked.toolshed.file.py:write_as).")
-			with open(self.filepath, 'wt', encoding=dev_spec_encoding) as writer:
-				writer.write(text)
+			import codecs
+			with codecs.open(self.filepath, encoding=dev_spec_encoding, mode='w') as f:
+				f.write(text)
 		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: unable to write file with the specified encoding using the write_as() method (Naked.toolshed.file.py).")
@@ -97,6 +128,7 @@ class FileWriter(IO):
 	# [ safe_write method ] (boolean)
 	#   Universal text file writer (system default text encoding) that will NOT overwrite existing file at the requested filepath
 	#   returns boolean indicator for success of write based upon test for existence of file (False = write failed because file exists)
+	#   Tests: test_IO.py :: test_file_ascii_safewrite
 	#------------------------------------------------------------------------------
 	def safe_write(self, text):
 		try:
@@ -141,7 +173,7 @@ class FileWriter(IO):
 	def write_utf8(self, text):
 		try:
 			import codecs
-			f = codecs.open(self.filepath, encoding='utf-8', mode='w')
+			f = codecs.open(self.filepath, encoding='utf_8', mode='w')
 		except IOError as ioe:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to open file for write with the write_utf8() method (Naked.toolshed.file.py).")
@@ -196,19 +228,20 @@ class FileReader(IO):
 				sys.stderr.write("Naked Framework Error: Unable to read the binary data from the file with the read_bin method (Naked.toolshed.file.py).")
 			raise e
 
-	## TODO: tests for read_as
 	#------------------------------------------------------------------------------
 	# [ read_as method ] (string with developer specified text encoding)
 	#   Text file reader with developer specified text encoding
 	#   returns file contents in developer specified text encoding
+	#   Tests: test_IO.py :: test_file_utf8_readas_writeas
 	#------------------------------------------------------------------------------
 	def read_as(self, dev_spec_encoding):
 		try:
 			if dev_spec_encoding == "":
 				raise RuntimeError("The text file encoding was not specified as an argument to the read_as method (Naked.toolshed.file.py:read_as).")
-			with open(self.filepath, 'rt', encoding=dev_spec_encoding) as reader:
-				data = reader.read()
-				return data
+			import codecs
+			with codecs.open(self.filepath, encoding=dev_spec_encoding, mode='r') as f:
+				data = f.read()
+			return data
 		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to read the file with the developer specified text encoding with the read_as method (Naked.toolshed.file.py).")
@@ -234,12 +267,17 @@ class FileReader(IO):
 	# [ read_gzip ] (byte string)
 	#   reads data from a gzip compressed file
 	#	returns the decompressed binary data from the file
+	#	Note: if decompressing unicode file, set encoding="utf-8"
+	#   Tests: test_IO.py :: test_file_gzip_ascii_readwrite, test_file_gzip_utf8_readwrite
 	#------------------------------------------------------------------------------
-	def read_gzip(self):
+	def read_gzip(self, encoding="system_default"):
 		try:
 			import gzip
 			with gzip.open(self.filepath, 'rb') as gzip_reader:
 				file_data = gzip_reader.read()
+				if encoding in ["utf-8", "utf8", "utf_8", "UTF-8", "UTF8", "UTF_8"]:
+					import codecs
+					file_data = codecs.decode(file_data, "utf-8")
 				return file_data
 		except Exception as e:
 			if DEBUG_FLAG:
@@ -255,7 +293,7 @@ class FileReader(IO):
 	def read_utf8(self):
 		try:
 			import codecs
-			f = codecs.open(self.filepath, encoding='utf-8', mode='r')
+			f = codecs.open(self.filepath, encoding='utf_8', mode='r')
 		except IOError, ioe:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to open file for read with read_utf8() method (Naked.toolshed.file.py).")
