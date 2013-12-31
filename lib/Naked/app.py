@@ -32,7 +32,10 @@ def main():
     # Test for primary commands and handle them
     #------------------------------------------------------------------------------------------
     if c.cmd == "test":
-        pass
+        from Naked.toolshed.system import fullpath, filename, list_match_files
+        filenames = list_match_files(c.arg1, True)
+        for name in filenames:
+            print(name)
         #if c.option("-t"): c.truth = True
         #print(c.truth)
     elif c.cmd == "bump":
@@ -45,7 +48,7 @@ def main():
     #------------------------------------------------------------------------------------------
     # [ NAKED FRAMEWORK COMMANDS ]
     # Naked framework provides the help, usage, and version commands for all applications
-    #   --> settings for messages in the PROJECT/settings.py file
+    #   --> settings for messages in the lib/PROJECT/settings.py file
     #------------------------------------------------------------------------------------------
     elif c.help():  # User requested naked help (help.py module in commands directory)
         from Naked.commands.help import Help
