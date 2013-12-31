@@ -22,7 +22,7 @@ class Environment():
 	def is_var(self, var_name):
 		try:
 			return (var_name in self.vars)
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: unable to determine if the variable is included in the shell variable list with the is_var() method (Naked.toolshed.shell).")
 			raise e
@@ -38,7 +38,7 @@ class Environment():
 				return self.env[var_name]
 			else:
 				return ""
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: unable to return the requested shell variable with the get_var() method (Naked.toolshed.shell).")
 			raise e
@@ -54,7 +54,7 @@ class Environment():
 				return self.env[var_name].split(os.pathsep)
 			else:
 				return []
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: unable to return environment variable list with the get_split_var_list() method (Naked.toolshed.shell).")
 			raise e
@@ -63,5 +63,6 @@ class Environment():
 if __name__ == '__main__':
 	pass
 	# e = Environment()
-	# user = e.get_split_var_list("PATH")
-	# print(user)
+	# pathlist = e.get_split_var_list("PATH")
+	# for item in pathlist:
+	# 	print(item)

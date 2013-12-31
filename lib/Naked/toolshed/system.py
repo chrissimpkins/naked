@@ -17,7 +17,7 @@ from Naked.settings import debug as DEBUG_FLAG
 def filename(filepath):
 	try:
 		return os.path.basename(filepath)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return base filename from filename() function (Naked.toolshed.system).")
 		raise e
@@ -29,7 +29,7 @@ def filename(filepath):
 def file_extension(filepath):
 	try:
 		return os.path.splitext(filepath)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return file extension with file_extension() function (Naked.toolshed.system).")
 		raise e
@@ -42,7 +42,7 @@ def file_extension(filepath):
 def directory(filepath):
 	try:
 		return os.path.dirname(filepath)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return directory path to file with directory() function (Naked.toolshed.system).")
 		raise e
@@ -54,7 +54,7 @@ def directory(filepath):
 def make_path(*path_list):
 	try:
 		return os.path.join(*path_list)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to make OS independent path with the make_path() function (Naked.toolshed.system).")
 		raise e
@@ -74,7 +74,7 @@ def currentdir_to_basefile(func):
 			full_path = os.path.join(current_directory, file_name) # join cwd path to the filename for full path
 			return func(full_path, *args, **kwargs) #return the original function with the full path to file as first argument
 		return wrapper
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: error with the currentdir_to_basefile() decorator function (Naked.toolshed.system).")
 		raise e
@@ -92,7 +92,7 @@ def currentdir_firstargument(func):
 			current_directory = os.getcwd()
 			return func(current_directory, *args, **kwargs)
 		return wrapper
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: error with the currentdir_firstargument() decorator function (Naked.toolshed.system).")
 		raise e
@@ -113,7 +113,7 @@ def currentdir_lastargument(func):
 			the_cwd = os.getcwd()
 			return func(*args, current_dir=the_cwd)
 		return wrapper
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: error with the currentdir_lastargument() decorator function (Naked.toolshed.system).")
 		raise e
@@ -129,7 +129,7 @@ def currentdir_lastargument(func):
 def fullpath(file_name):
 	try:
 		return file_name
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return absolute path to the file with the fullpath() function (Naked.toolshed.system).")
 		raise e
@@ -145,7 +145,7 @@ def fullpath(file_name):
 def cwd(dir=""):
 	try:
 		return dir
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return the current working directory with the cwd() function (Naked.toolshed.system).")
 		raise e
@@ -163,7 +163,7 @@ def cwd(dir=""):
 def file_exists(filepath):
 	try:
 		return os.path.exists(filepath)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: error with test for the presence of the file with the file_exists() method (Naked.toolshed.system).")
 		raise e
@@ -175,7 +175,7 @@ def file_exists(filepath):
 def is_file(filepath):
 	try:
 		return os.path.isfile(filepath)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: error with test for file with the is_file() function (Naked.toolshed.system).")
 		raise e
@@ -187,7 +187,7 @@ def is_file(filepath):
 def dir_exists(dirpath):
 	try:
 		return os.path.exists(dirpath)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: error with test for directory with the dir_exists() function (Naked.toolshed.system).")
 		raise e
@@ -199,7 +199,7 @@ def dir_exists(dirpath):
 def is_dir(filepath):
 	try:
 		return os.path.isdir(filepath)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: error with test for directory with the is_dir() function (Naked.toolshed.system).")
 		raise e
@@ -217,7 +217,7 @@ def is_dir(filepath):
 def file_size(filepath):
 	try:
 		return os.path.getsize(filepath)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return file size with the file_size() function (Naked.toolshed.system).")
 		raise e
@@ -230,7 +230,7 @@ def file_mod_time(filepath):
 	try:
 		import time
 		return time.ctime(os.path.getmtime(filepath))
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return file modification data with the file_mod_time() function (Naked.toolshed.system).")
 		raise e
@@ -249,7 +249,7 @@ def list_all_files(dir):
 	try:
 		filenames = [name for name in os.listdir(dir) if os.path.isfile(os.path.join(dir, name))]
 		return filenames
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to generate directory file list with the list_all_files() function (Naked.toolshed.system).")
 		raise e
@@ -266,7 +266,7 @@ def list_filter_files(extension_filter, dir):
 		extension_filter = "." + extension_filter #add a period to the extension if the developer did not include it
 		filenames = [name for name in os.listdir(dir) if name.endswith(extension_filter)]
 		return filenames
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return list of filtered files with the list_filter_files() function (Naked.toolshed.system).")
 		raise e
@@ -282,7 +282,7 @@ def list_filter_files(extension_filter, dir):
 def list_all_files_cwd(dir=""):
 	try:
 		return list_all_files(dir)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return list of all files in current working directory with the list_all_files_cwd() function (Naked.toolshed.system).")
 		raise e
@@ -298,7 +298,7 @@ def list_all_files_cwd(dir=""):
 def list_filter_files_cwd(extension_filter, current_dir=""):
 	try:
 		return list_filter_files(extension_filter, current_dir)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return list of filtered files in current working directory with the list_filter_files_cwd() function (Naked.toolshed.system).")
 		raise e
@@ -308,7 +308,7 @@ def list_filter_files_cwd(extension_filter, current_dir=""):
 # [ list_match_files function ] (list)
 #   returns a list of all files that match the developer specified match pattern
 #	can optionally specify return of full path to the files (rather than relative path from cwd) by setting full_path to True
-#   	Usage example:
+#   	Usage examples:
 #			file_list = list_match_files("*.py")
 #			file_list_fullpath = list_match_files("*.py", True)
 #------------------------------------------------------------------------------
@@ -325,7 +325,7 @@ def list_match_files(match_pattern, full_path = False):
 			return filenames_fullpath #then return that list
 		else:
 			return filenames
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return list of matched files with the list_match_files() function (Naked.toolshed.system).")
 		raise e
@@ -343,7 +343,7 @@ def list_match_files(match_pattern, full_path = False):
 def is_link(filepath):
 	try:
 		return os.path.islink(filepath)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to determine whether path is a symbolic link with the is_link() function (Naked.toolshed.system).")
 		raise e
@@ -355,7 +355,7 @@ def is_link(filepath):
 def real_path(filepath):
 	try:
 		return os.path.realpath(filepath)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return real path for symbolic link with the real_path() function (Naked.toolshed.system).")
 		raise e
@@ -373,7 +373,7 @@ def real_path(filepath):
 def stdout(text):
 	try:
 		print(text)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to print to the standard output stream with the stdout() function (Naked.toolshed.system).")
 		raise e
@@ -388,7 +388,7 @@ def stderr(text, exit=0):
 		sys.stderr.write(text)
 		if exit:
 			raise SystemExit(exit)
-	except Exception, e:
+	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to print to the standard error stream with the stderr() function (Naked.toolshed.system).")
 		raise e

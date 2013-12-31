@@ -29,7 +29,7 @@ class HTTP():
 			response = requests.get(self.url, timeout=self.request_timeout)
 			self.res = response # assign the response object from requests to a property on the instance of HTTP class
 			return response.text
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to perform GET request with the URL " + self.url + " using the get() method (Naked.toolshed.network.py)")
 			raise e
@@ -44,7 +44,7 @@ class HTTP():
 			response = requests.get(self.url, timeout=self.request_timeout)
 			self.res = response # assign the response object from requests to a property on the instance
 			return response.content # return binary data instead of text (get() returns text)
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to perform GET request with the URL " + self.url + " using the get_data() method (Naked.toolshed.network.py)")
 			raise e
@@ -68,7 +68,7 @@ class HTTP():
 					f.flush()
 					os.fsync(f.fileno()) # flush all internal buffers to disk
 			return True # return True if successful write
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to perform GET request and write file with the URL " + self.url + " using the get_data_write_bin() method (Naked.toolshed.network.py)")
 			raise e
@@ -92,7 +92,7 @@ class HTTP():
 					f.flush()
 					os.fsync(f.fileno()) # flush all internal buffers to disk
 			return True # return True if successful write
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to perform GET request and write file with the URL " + self.url + " using the get_data_write_txt() method (Naked.toolshed.network.py)")
 			raise e
@@ -106,7 +106,7 @@ class HTTP():
 	def response(self):
 		try:
 			return self.res
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to return the response from your HTTP request with the response() method (Naked.toolshed.network.py).")
 			raise e
@@ -122,7 +122,7 @@ class HTTP():
 				return (self.res.status_code == requests.codes.ok)
 			else:
 				return False
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to obtain the HTTP status with the status_ok() method (Naked.toolshed.network.py).")
 			raise e

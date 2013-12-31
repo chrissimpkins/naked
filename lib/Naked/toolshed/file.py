@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 import sys
 from Naked.settings import debug as DEBUG_FLAG
 
@@ -29,7 +28,7 @@ class FileWriter(IO):
 		try:
 			with open(self.filepath, 'a') as appender:
 				appender.write(text)
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to append text to the file with the append() method (Naked.toolshed.file.py).")
 			raise e
@@ -48,7 +47,7 @@ class FileWriter(IO):
 				self.filepath = self.filepath + ".gz"
 			with gzip.open(self.filepath, 'wb', compresslevel=compression_level) as gzip_writer:
 				gzip_writer.write(text)
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: unable to gzip compress the file with the gzip method (Naked.toolshed.file.py).")
 			raise e
@@ -61,7 +60,7 @@ class FileWriter(IO):
 		try:
 			with open(self.filepath, 'wt') as writer:
 				writer.write(text)
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to write to requested file with the write() method (Naked.toolshed.file.py).")
 			raise e
@@ -76,7 +75,7 @@ class FileWriter(IO):
 				raise RuntimeError("The text encoding was not specified as an argument to the write_as() method (Naked.toolshed.file.py:write_as).")
 			with open(self.filepath, 'wt', encoding=dev_spec_encoding) as writer:
 				writer.write(text)
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: unable to write file with the specified encoding using the write_as() method (Naked.toolshed.file.py).")
 			raise e
@@ -89,7 +88,7 @@ class FileWriter(IO):
 		try:
 			with open(self.filepath, 'wb') as bin_writer:
 				bin_writer.write(binary_data)
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to write binary data to file with the write_bin method (Naked.toolshed.file.py).")
 			raise e
@@ -97,7 +96,7 @@ class FileWriter(IO):
 	#------------------------------------------------------------------------------
 	# [ safe_write method ] (boolean)
 	#   Universal text file writer (system default text encoding) that will NOT overwrite existing file at the requested filepath
-	#   returns boolean indicator for success of write based upon test for existence of file
+	#   returns boolean indicator for success of write based upon test for existence of file (False = write failed because file exists)
 	#------------------------------------------------------------------------------
 	def safe_write(self, text):
 		try:
@@ -105,13 +104,33 @@ class FileWriter(IO):
 			if not os.path.exists(self.filepath):
 				with open(self.filepath, 'wt') as writer:
 					writer.write(text)
-					return True
+				return True
 			else:
 				return False
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to write to requested file with the safe_write() method (Naked.toolshed.file.py).")
 			raise e
+
+	#------------------------------------------------------------------------------
+	# [ safe_write_bin method ]
+	#   Binary data file writer that will NOT overwrite existing file at the requested filepath
+	#   returns boolean indicator for success of write based upon test for existence of file (False = write failed because file exists)
+	#------------------------------------------------------------------------------
+	def safe_write_bin(self, file_data):
+		try:
+			import os.path
+			if not os.path.exists(self.filepath):
+				with open(self.filepath, 'wb') as writer:
+					writer.write(file_data)
+				return True
+			else:
+				return False
+		except Exception as e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: Unable to write to requested file with the safe_write_bin() method (Naked.toolshed.file.py).")
+			raise e
+
 
 	#------------------------------------------------------------------------------
 	# [ write_utf8 method ]
@@ -123,7 +142,7 @@ class FileWriter(IO):
 		try:
 			import codecs
 			f = codecs.open(self.filepath, encoding='utf-8', mode='w')
-		except IOError, ioe:
+		except IOError as ioe:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to open file for write with the write_utf8() method (Naked.toolshed.file.py).")
 			raise e
@@ -156,7 +175,7 @@ class FileReader(IO):
 			with open(self.filepath, 'rt') as reader:
 				data = reader.read()
 				return data
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to read text from the requested file with the read() method (Naked.toolshed.file.py).")
 			raise e
@@ -172,7 +191,7 @@ class FileReader(IO):
 			with open(self.filepath, 'rb') as bin_reader:
 				data = bin_reader.read()
 				return data
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to read the binary data from the file with the read_bin method (Naked.toolshed.file.py).")
 			raise e
@@ -190,7 +209,7 @@ class FileReader(IO):
 			with open(self.filepath, 'rt', encoding=dev_spec_encoding) as reader:
 				data = reader.read()
 				return data
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to read the file with the developer specified text encoding with the read_as method (Naked.toolshed.file.py).")
 			raise e
@@ -206,7 +225,7 @@ class FileReader(IO):
 			with open(self.filepath, 'rt') as reader:
 				file_list = reader.readlines()
 				return file_list
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to read text from the requested file with the readlines() method (Naked.toolshed.file.py).")
 			raise e
@@ -222,7 +241,7 @@ class FileReader(IO):
 			with gzip.open(self.filepath, 'rb') as gzip_reader:
 				file_data = gzip_reader.read()
 				return file_data
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to read from the gzip compressed file with the read_gzip() method (Naked.toolshed.file.py).")
 			raise e
@@ -267,7 +286,7 @@ class FileReader(IO):
 			with open(self.filepath, 'rt') as read_data:
 				modified_data = function(read_data)
 			return modified_data
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to read and modify file text with the read_with_function() method (Naked.toolshed.file.py).")
 			raise e
@@ -287,7 +306,7 @@ class FileReader(IO):
 					modified_line = function(line)
 					modified_text_list.append(modified_line)
 				return modified_text_list
-		except Exception, e:
+		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to read and modify file text with the readlines_with_function() method (Naked.toolshed.file.py).")
 			raise e
