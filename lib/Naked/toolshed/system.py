@@ -263,7 +263,7 @@ def list_all_files(dir):
 def list_filter_files(extension_filter, dir):
 	try:
 		if not extension_filter.startswith("."):
-		extension_filter = "." + extension_filter #add a period to the extension if the developer did not include it
+			extension_filter = "." + extension_filter
 		filenames = [name for name in os.listdir(dir) if name.endswith(extension_filter)]
 		return filenames
 	except Exception as e:
