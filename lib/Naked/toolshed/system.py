@@ -402,23 +402,43 @@ def stderr(text, exit=0):
 #------------------------------------------------------------------------------
 # [ exit_with_status function ]
 #   application exit with developer specified exit status code (default = 1)
+#   use an exit status integer argument
+#   optionally pass a cleanup function as an argument, runs before exit
 #------------------------------------------------------------------------------
-def exit_with_status(exit=1):
-	raise SystemExit(exit)
+def exit_with_status(exit=1, func=None, *args, **kwargs):
+	try:
+		raise SystemExit(exit)
+	except SystemExit as sysexit:
+		if func:
+			func(*args, **kwargs)
+		raise sysexit
+
 
 #------------------------------------------------------------------------------
 # [ exit_fail function ]
 #   application exit with status code 1
+#   optionally pass a cleanup function as an argument, runs before exit
 #------------------------------------------------------------------------------
-def exit_fail():
-	sys.exit(1)
+def exit_fail(func=None, *args, **kwargs):
+	try:
+		sys.exit(1)
+	except SystemExit as sysexit:
+		if func:
+			func(*args, **kwargs)
+		raise sysexit
 
 #------------------------------------------------------------------------------
 # [ exit_success function]
 #   application exit with status code 0
+#   optionally pass a cleanup function as an argument, runs before exit
 #------------------------------------------------------------------------------
-def exit_success():
-	sys.exit(0)
+def exit_success(func=None, *args, **kwargs):
+	try:
+		raise sys.exit(0)
+	except SystemExit as sysexit:
+		if func:
+			func(*args, **kwargs)
+		raise sysexit
 
 if __name__ == '__main__':
 	pass
