@@ -13,6 +13,7 @@ from Naked.settings import debug as DEBUG_FLAG
 #------------------------------------------------------------------------------
 # [ filename function ] (string)
 #   returns file name from a file path (including the file extension)
+#   Tests: test_SYSTEM.py :: test_sys_filename
 #------------------------------------------------------------------------------
 def filename(filepath):
 	try:
@@ -25,10 +26,11 @@ def filename(filepath):
 #------------------------------------------------------------------------------
 # [ file_extension function ] (string)
 #   returns file extension from a filepath
+#   Tests: test_SYSTEM.py :: test_sys_file_extension
 #------------------------------------------------------------------------------
 def file_extension(filepath):
 	try:
-		return os.path.splitext(filepath)
+		return os.path.splitext(filepath)[1]
 	except Exception as e:
 		if DEBUG_FLAG:
 			sys.stderr.write("Naked Framework Error: unable to return file extension with file_extension() function (Naked.toolshed.system).")
@@ -38,6 +40,7 @@ def file_extension(filepath):
 #------------------------------------------------------------------------------
 # [ directory function ] (string)
 #  returns directory path to the filepath
+#  Tests: test_SYSTEM.py :: test_sys_dir_path
 #------------------------------------------------------------------------------
 def directory(filepath):
 	try:
@@ -50,6 +53,7 @@ def directory(filepath):
 #------------------------------------------------------------------------------
 #  [ make_path function ] (string)
 #   returns OS independent file path from tuple of path components
+#   Tests: test_SYSTEM.py :: test_sys_make_filepath
 #------------------------------------------------------------------------------
 def make_path(*path_list):
 	try:
@@ -63,6 +67,7 @@ def make_path(*path_list):
 #------------------------------------------------------------------------------
 #  [ currentdir_to_basefile decorator function ] (returns decorated original function)
 #    adds the full working directory path to the basename of file in the first argument of the undecorated function
+#    Tests: test_SYSTEM.py :: test_sys_add_currentdir_path_to_basefile
 #------------------------------------------------------------------------------
 def currentdir_to_basefile(func):
 	try:
@@ -82,6 +87,7 @@ def currentdir_to_basefile(func):
 #------------------------------------------------------------------------------
 # [ currentdir_firstargument decorator function ] (returns decorated original function)
 #   adds the current working directory as the first function argument to the original function
+#   Tests: test_SYSTEM.py :: test_sys_add_currentdir_path_first_arg
 #------------------------------------------------------------------------------
 def currentdir_firstargument(func):
 	try:
@@ -103,6 +109,7 @@ def currentdir_firstargument(func):
 #   adds the current working directory as the last function argument to the original function
 #   Note: you cannot use other named arguments in the original function with this decorator
 #   Note: the current directory argument in the last position must be named current_dir
+#   Tests: test_SYSTEM.py :: test_sys_add_currentdir_last_arg
 #------------------------------------------------------------------------------
 def currentdir_lastargument(func):
 	try:
@@ -124,6 +131,7 @@ def currentdir_lastargument(func):
 #    file_name = the basename of the file in the current working directory
 #    	Example usage where test.txt is in working directory:
 #			filepath = fullpath("test.txt")
+#    Tests: test_SYSTEM.py :: test_sys_full_path_to_file
 #------------------------------------------------------------------------------
 @currentdir_to_basefile # current directory decorator - adds the directory path up to the filename to the basefile name argument to original function
 def fullpath(file_name):
@@ -140,6 +148,7 @@ def fullpath(file_name):
 #   does not need to be called with an argument, the decorator assigns it
 #   	Example usage:
 #       	current_dir = cwd()
+#   Tests: test_SYSTEM.py :: test_sys_cwd_path
 #------------------------------------------------------------------------------
 @currentdir_firstargument
 def cwd(dir=""):
@@ -159,6 +168,7 @@ def cwd(dir=""):
 #------------------------------------------------------------------------------
 # [ file_exists function ] (boolean)
 #  return boolean for existence of file in specified path
+#  Tests: test_SYSTEM.py :: test_file_exists
 #------------------------------------------------------------------------------
 def file_exists(filepath):
 	try:
@@ -171,6 +181,8 @@ def file_exists(filepath):
 #------------------------------------------------------------------------------
 # [ is_file function ] (boolean)
 #  returns boolean for determination of whether filepath is a file
+#  Tests: test_SYSTEM.py :: test_sys_is_file, test_sys_is_file_missing_file,
+#        test_sys_is_file_when_dir
 #------------------------------------------------------------------------------
 def is_file(filepath):
 	try:
@@ -183,6 +195,7 @@ def is_file(filepath):
 #------------------------------------------------------------------------------
 # [ dir_exists function ] (boolean)
 #   return boolean for existence of directory in specified path
+#   Tests: test_SYSTEM.py :: test_dir_exists, test_dir_exists_missing_dir
 #------------------------------------------------------------------------------
 def dir_exists(dirpath):
 	try:
@@ -195,6 +208,8 @@ def dir_exists(dirpath):
 #------------------------------------------------------------------------------
 # [ is_dir function ] (boolean)
 #   returns boolean for determination of whether filepath is a directory
+#   Tests: test_SYSTEM.py :: test_sys_dir_is_dir, test_sys_dir_is_dir_when_file,
+#    		test_sys_dir_is_dir_when_missing
 #------------------------------------------------------------------------------
 def is_dir(filepath):
 	try:
@@ -224,7 +239,7 @@ def file_size(filepath):
 
 #------------------------------------------------------------------------------
 # [ mod_time function ] (string)
-#   return the file modification date/time
+#   return the last file modification date/time
 #------------------------------------------------------------------------------
 def file_mod_time(filepath):
 	try:
