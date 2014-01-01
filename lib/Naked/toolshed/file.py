@@ -22,7 +22,7 @@ class FileWriter(IO):
 	#------------------------------------------------------------------------------
 	# [ append method ]
 	#   Universal text file writer that appends to existing file using system default text encoding
-	#   Tests: test_IO.py:: test_file_ascii_readwrite_append, test_file_ascii_readwrite_append_missingfile
+	#   Tests: test_IO.py:: test_file_ascii_readwrite_append, test_file_append_missingfile
 	#------------------------------------------------------------------------------
 	def append(self, text):
 		try:
@@ -114,6 +114,7 @@ class FileWriter(IO):
 	#------------------------------------------------------------------------------
 	# [ write_bin method ]
 	#   binary data file writer
+	#   Tests: test_IO.py :: test_file_bin_readwrite
 	#------------------------------------------------------------------------------
 	def write_bin(self, binary_data):
 		try:
@@ -169,6 +170,7 @@ class FileWriter(IO):
 	#   Text file writer with explicit UTF-8 text encoding
 	#   uses filepath from class constructor
 	#   requires text to passed as a method parameter
+	#   Tests: test_IO.py :: test_file_utf8_readwrite, test_file_utf8_readwrite_raises_unicodeerror
 	#------------------------------------------------------------------------------
 	def write_utf8(self, text):
 		try:
@@ -191,7 +193,6 @@ class FileWriter(IO):
 # [ FileReader class ]
 #  reads data from local files
 #  filename assigned in constructor (inherited from IO class interface)
-#  methods: read(), read_utf8()
 #------------------------------------------------------------------------------
 class FileReader(IO):
 	def __init__(self, filepath):
@@ -201,6 +202,7 @@ class FileReader(IO):
 	# [ read method ] (string)
 	#    Universal text file reader that uses the default system text encoding
 	#    returns string that is encoded in the default system text encoding
+	#    Tests: test_IO.py :: test_file_ascii_readwrite, test_file_read_missing_file,
 	#------------------------------------------------------------------------------
 	def read(self):
 		try:
@@ -217,6 +219,7 @@ class FileReader(IO):
 	# [ read_bin method ] (binary byte string)
 	#   Universal binary data file reader
 	#   returns file contents in binary mode as binary byte strings
+	#   Tests: test_IO.py :: test_file_bin_readwrite, test_file_read_bin_missing_file
 	#------------------------------------------------------------------------------
 	def read_bin(self):
 		try:
@@ -232,7 +235,7 @@ class FileReader(IO):
 	# [ read_as method ] (string with developer specified text encoding)
 	#   Text file reader with developer specified text encoding
 	#   returns file contents in developer specified text encoding
-	#   Tests: test_IO.py :: test_file_utf8_readas_writeas
+	#   Tests: test_IO.py :: test_file_utf8_readas_writeas, test_file_readas_missing_file
 	#------------------------------------------------------------------------------
 	def read_as(self, dev_spec_encoding):
 		try:
@@ -247,11 +250,11 @@ class FileReader(IO):
 				sys.stderr.write("Naked Framework Error: Unable to read the file with the developer specified text encoding with the read_as method (Naked.toolshed.file.py).")
 			raise e
 
-	## TODO: tests for readlines method
 	#------------------------------------------------------------------------------
 	# [ readlines method ] (list of strings)
 	#   Read text from file line by line, uses default system text encoding
 	#   returns list of file lines as strings
+	#   Tests: test_IO.py :: test_file_readlines, test_file_readlines_missing_file
 	#------------------------------------------------------------------------------
 	def readlines(self):
 		try:
@@ -268,7 +271,8 @@ class FileReader(IO):
 	#   reads data from a gzip compressed file
 	#	returns the decompressed binary data from the file
 	#	Note: if decompressing unicode file, set encoding="utf-8"
-	#   Tests: test_IO.py :: test_file_gzip_ascii_readwrite, test_file_gzip_utf8_readwrite
+	#   Tests: test_IO.py :: test_file_gzip_ascii_readwrite, test_file_gzip_utf8_readwrite,
+	#              test_file_read_gzip_missing_file
 	#------------------------------------------------------------------------------
 	def read_gzip(self, encoding="system_default"):
 		try:
@@ -289,6 +293,8 @@ class FileReader(IO):
 	#   read data from a file with explicit UTF-8 encoding
 	#   uses filepath from class constructor
 	#   returns a string containing the file data
+	#   Tests: test_IO.py :: test_file_utf8_readwrite, test_file_utf8_readwrite_append,
+	#			test_file_read_utf8_missing_file
 	#------------------------------------------------------------------------------
 	def read_utf8(self):
 		try:
@@ -312,35 +318,52 @@ class FileReader(IO):
 	# FILE TEXT READER & MODIFIER METHODS
 	#------------------------------------------------------------------------------
 
-	## TODO: tests
 	#------------------------------------------------------------------------------
 	# [ read_apply_function ] (string)
 	#   read a text file and modify with a developer specified function that takes single parameter for the text in the file
 	#   the developer's function should return the modified string
-	#	returns a string that contains the modified file text
+	#	returns a string that contains the modified file text (for ascii strings)
+	#   returns a binary string that contains modified file text (for utf-8 encoded strings) - must .decode('utf-8') string on receiving side
+	#   Tests: test_IO.py :: test_file_read_apply_function, test_file_read_apply_function_unicode
 	#------------------------------------------------------------------------------
 	def read_apply_function(self, function):
 		try:
 			with open(self.filepath, 'rt') as read_data:
-				modified_data = function(read_data)
+				raw_data = read_data.read()
+				modified_data = function(raw_data)
+			return modified_data
+		except UnicodeEncodeError:
+			import codecs
+			with codecs.open(self.filepath, encoding='utf-8', mode='r') as uni_reader:
+				raw_data = uni_reader.read()
+				modified_data = function(raw_data)
 			return modified_data
 		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to read and modify file text with the read_with_function() method (Naked.toolshed.file.py).")
 			raise e
 
-	## TODO: tests
 	#------------------------------------------------------------------------------
 	# [ readlines_apply_function ] (list of strings)
 	#   read a text file by line, apply a developer specified function that takes single parameter for the line string to each line
 	#   the developer's function should return the modified string
 	#   returns a list containing each modified line string
+	#   returns a list of binary strings for utf-8 encoded file data
+	#   Tests: test_IO.py :: test_file_readlines_apply_function, test_file_readlines_apply_function_unicode
 	#------------------------------------------------------------------------------
 	def readlines_apply_function(self, function):
 		try:
 			with open(self.filepath, 'rt') as read_data:
 				modified_text_list = []
 				for line in read_data:
+					modified_line = function(line)
+					modified_text_list.append(modified_line)
+				return modified_text_list
+		except UnicodeEncodeError:
+			import codecs
+			with codecs.open(self.filepath, encoding='utf-8', mode='r') as uni_reader:
+				modified_text_list = []
+				for line in uni_reader:
 					modified_line = function(line)
 					modified_text_list.append(modified_line)
 				return modified_text_list
