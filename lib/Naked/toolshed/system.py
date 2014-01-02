@@ -401,6 +401,30 @@ def stdout(text):
 		raise e
 
 #------------------------------------------------------------------------------
+# [ stdout_xnl function ]
+#   print to std output stream without a newline
+#------------------------------------------------------------------------------
+def stdout_xnl(text):
+	try:
+		sys.stdout.write(text)
+	except Exception as e:
+		if DEBUG_FLAG:
+			sys.stderr.write("Naked Framework Error: unable to print to the standard output stream with the stdout_xnl() function (Naked.toolshed.system).")
+		raise e
+
+#------------------------------------------------------------------------------
+# [ stdout_iter function ]
+#   print items in an iterable to the standard output stream without newlines with each print
+#------------------------------------------------------------------------------
+def stdout_iter(iter):
+	try:
+		for x in iter:
+			stdout_xnl(x)
+	except Exception as e:
+		if DEBUG_FLAG:
+			sys.stderr.write("Naked Framework Error: unable to print to the standard output stream with the stdout_iter() function (Naked.toolshed.system).")
+		raise e
+#------------------------------------------------------------------------------
 # [ stderr function ]
 #   print to std error stream
 #   optionally (i.e. if exit = nonzero integer) permits exit from application with developer defined exit code
@@ -454,6 +478,10 @@ if __name__ == '__main__':
 	# # Standard Output Tests
 	# #------------------------------------------------------------------------------
 	# stdout("This is a test")
+	# for x in range(10):
+	# 	stdout_xnl(str(x) + " ")
+	# list_ten = ['10% ', '20% ', '30% ', '40% ', '50% ', '60% ', '70% ', '80% ', '90% ', '100%']
+	# stdout_iter(list_ten)
 	# #------------------------------------------------------------------------------
 	# # Standard Error Tests
 	# #------------------------------------------------------------------------------
