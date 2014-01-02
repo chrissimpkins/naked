@@ -228,6 +228,7 @@ def is_dir(filepath):
 #------------------------------------------------------------------------------
 # [ filesize function ] (string)
 #   return file size in bytes
+#   Tests: test_SYSTEM.py :: test_sys_meta_file_size
 #------------------------------------------------------------------------------
 def file_size(filepath):
 	try:
@@ -240,6 +241,7 @@ def file_size(filepath):
 #------------------------------------------------------------------------------
 # [ mod_time function ] (string)
 #   return the last file modification date/time
+#   Tests: test_SYSTEM.py :: test_sys_meta_file_mod
 #------------------------------------------------------------------------------
 def file_mod_time(filepath):
 	try:
@@ -259,6 +261,7 @@ def file_mod_time(filepath):
 #------------------------------------------------------------------------------
 # [ list_all_files function ] (list)
 #   returns a list of all files in developer specified directory
+#   Tests: test_SYSTEM.py :: test_sys_list_all_files, test_sys_list_all_files_emptydir
 #------------------------------------------------------------------------------
 def list_all_files(dir):
 	try:
@@ -274,6 +277,7 @@ def list_all_files(dir):
 #   returns a list of files filtered by developer defined file extension in developer defined directory
 #   	Usage example:
 #   		filenames = list_filter_files("py", "tests")
+#	Tests: test_SYSTEM.py :: test_sys_list_filter_files, test_sys_list_filter_files_nomatch
 #------------------------------------------------------------------------------
 def list_filter_files(extension_filter, dir):
 	try:
@@ -292,6 +296,7 @@ def list_filter_files(extension_filter, dir):
 #   Note: does not require argument, the decorator assigns the cwd
 #   	Usage example:
 #			file_list = list_all_files_cwd()
+#   Tests: test_SYSTEM.py :: test_sys_list_all_files_cwd
 #------------------------------------------------------------------------------
 @currentdir_firstargument
 def list_all_files_cwd(dir=""):
@@ -308,6 +313,7 @@ def list_all_files_cwd(dir=""):
 #	Note: do not specify the second argument, decorator assigns it
 #   	Usage example:
 #			file_list = list_filter_files_cwd(".py")
+#   Tests: test_SYSTEM.py :: test_sys_filter_files_cwd, test_sys_filter_files_cwd_nomatch
 #------------------------------------------------------------------------------
 @currentdir_lastargument
 def list_filter_files_cwd(extension_filter, current_dir=""):
@@ -321,11 +327,12 @@ def list_filter_files_cwd(extension_filter, current_dir=""):
 
 #------------------------------------------------------------------------------
 # [ list_match_files function ] (list)
-#   returns a list of all files that match the developer specified match pattern
+#   returns a list of all files that match the developer specified wildcard match pattern
 #	can optionally specify return of full path to the files (rather than relative path from cwd) by setting full_path to True
 #   	Usage examples:
 #			file_list = list_match_files("*.py")
 #			file_list_fullpath = list_match_files("*.py", True)
+#   Tests: test_SYSTEM.py :: test_sys_match_files, test_sys_match_files_fullpath
 #------------------------------------------------------------------------------
 def list_match_files(match_pattern, full_path = False):
 	try:
@@ -400,7 +407,7 @@ def stdout(text):
 #------------------------------------------------------------------------------
 def stderr(text, exit=0):
 	try:
-		sys.stderr.write(text)
+		sys.stderr.write(text + "\n")
 		if exit:
 			raise SystemExit(exit)
 	except Exception as e:
@@ -418,42 +425,37 @@ def stderr(text, exit=0):
 # [ exit_with_status function ]
 #   application exit with developer specified exit status code (default = 1)
 #   use an exit status integer argument
-#   optionally pass a cleanup function as an argument, runs before exit
+#   Tests: test_SYSTEM.py :: test_sys_exit_with_code
 #------------------------------------------------------------------------------
-def exit_with_status(exit=1, func=None, *args, **kwargs):
-	try:
-		raise SystemExit(exit)
-	except SystemExit as sysexit:
-		if func:
-			func(*args, **kwargs)
-		raise sysexit
-
+def exit_with_status(exit=1):
+	raise SystemExit(exit)
 
 #------------------------------------------------------------------------------
 # [ exit_fail function ]
 #   application exit with status code 1
-#   optionally pass a cleanup function as an argument, runs before exit
+#   Tests: test_SYSTEM.py :: test_sys_exit_failure
 #------------------------------------------------------------------------------
 def exit_fail(func=None, *args, **kwargs):
-	try:
-		sys.exit(1)
-	except SystemExit as sysexit:
-		if func:
-			func(*args, **kwargs)
-		raise sysexit
+	sys.exit(1)
 
 #------------------------------------------------------------------------------
 # [ exit_success function]
 #   application exit with status code 0
-#   optionally pass a cleanup function as an argument, runs before exit
+#   Tests: test_SYSTEM.py :: test_sys_exit_success
 #------------------------------------------------------------------------------
 def exit_success(func=None, *args, **kwargs):
-	try:
-		raise sys.exit(0)
-	except SystemExit as sysexit:
-		if func:
-			func(*args, **kwargs)
-		raise sysexit
+	raise sys.exit(0)
+
+
 
 if __name__ == '__main__':
 	pass
+	# #------------------------------------------------------------------------------
+	# # Standard Output Tests
+	# #------------------------------------------------------------------------------
+	# stdout("This is a test")
+	# #------------------------------------------------------------------------------
+	# # Standard Error Tests
+	# #------------------------------------------------------------------------------
+	# stderr("This is a test")
+	# stderr("This is a test", 1) #exit with status code 1
