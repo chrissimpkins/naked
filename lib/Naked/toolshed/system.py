@@ -468,7 +468,7 @@ def exit_fail(func=None, *args, **kwargs):
 #   Tests: test_SYSTEM.py :: test_sys_exit_success
 #------------------------------------------------------------------------------
 def exit_success(func=None, *args, **kwargs):
-	raise sys.exit(0)
+	sys.exit(0)
 
 
 
