@@ -18,8 +18,10 @@ class NakedIOReadWriteTest(unittest.TestCase):
 		self.latin_string = "grégory"
 		self.binary_string = b"This is a binary string"
 		self.multiline_string = "This is line 1\nThis is line 2"
+		self.multiline_unicode_string = u"This is line1ব য\nThis is line 2ব য"
 		self.multiline_list = ["This is line 1\n", "This is line 2"]
 		self.mod_multi_list = ["AThis is line 1\n", "AThis is line 2"]
+		self.uni_multi_list = [u"This is line1ব য\n", u"This is line 2ব য"]
 		self.mod_uni_multi_list = [u"AHey! It's Bengali ব য,\n", u"Aand here is some more ২"]
 		self.ascii_path = make_path("testfiles", "ascii.txt")
 		self.binary_path = make_path("testfiles", "binary.bin")
@@ -106,14 +108,39 @@ class NakedIOReadWriteTest(unittest.TestCase):
 		bin_data = FileReader(self.binary_path).read_bin()
 		self.assertEqual(bin_data, self.binary_string)
 
+	def test_file_bin_read_unicode_as_bin(self):
+		"""Test read of unicode as binary with decode"""
+		FileWriter(self.unicode_path).write_utf8(self.unicode_string)
+		bin_data = FileReader(self.unicode_path).read_bin() #read unicode file as binary
+		uni_text = bin_data.decode("utf-8") #decode to utf-8
+		self.assertEqual(uni_text, self.unicode_string)
+
 	#------------------------------------------------------------------------------
 	# LINE READS
 	#------------------------------------------------------------------------------
 	def test_file_readlines(self):
-		"""Test line reads with readlines"""
+		"""Test line reads with ascii text"""
 		FileWriter(self.multiline_path).write(self.multiline_string)
 		line_list = FileReader(self.multiline_path).readlines()
 		self.assertEqual(line_list, self.multiline_list)
+
+	def test_file_readlines_unicode(self):
+		"""Test line reads with unicode text"""
+		FileWriter(self.unicode_path).write_utf8(self.multiline_unicode_string)
+		line_list = FileReader(self.unicode_path).readlines_utf8()
+		self.assertEqual(line_list, self.uni_multi_list)
+
+	def test_file_readlines_as_ascii(self):
+		"""Test line reads with readlines_as from ascii file"""
+		FileWriter(self.ascii_path).write(self.multiline_string)
+		line_list = FileReader(self.ascii_path).readlines_as("ascii")
+		self.assertEqual(line_list, self.multiline_list)
+
+	def test_file_readlines_as_utf8(self):
+		"""Test line reads with readlines_as from utf8 file"""
+		FileWriter(self.unicode_path).write_utf8(self.multiline_unicode_string)
+		line_list = FileReader(self.unicode_path).readlines_as("utf-8")
+		self.assertEqual(line_list, self.uni_multi_list)
 
 	#------------------------------------------------------------------------------
 	# FILE COMPRESSION tests
@@ -221,4 +248,9 @@ class NakedIOReadWriteTest(unittest.TestCase):
 		"""Test readlines raises IOError when file is missing"""
 		with (self.assertRaises(IOError)):
 			FileReader(self.bogus_path).readlines()
+
+	def test_file_readlines_utf8_missing_file(self):
+		"""Test readlines_utf8 raises IOError when file is missing"""
+		with (self.assertRaises(IOError)):
+			FileReader(self.bogus_path).readlines_utf8()
 
