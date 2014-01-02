@@ -47,8 +47,10 @@ class FileWriter(IO):
 			if not file_exists(self.filepath):
 				raise IOError("The file specified for the text append does not exist (Naked.toolshed.file.py:append_utf8).")
 			import codecs
+			import unicodedata
+			norm_text = unicodedata.normalize('NFKD', text) # NKFD normalization of the unicode data before write
 			with codecs.open(self.filepath, 'a', encoding="utf_8") as appender:
-				appender.write(text)
+				appender.write(norm_text)
 		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to append text to the file with the append_utf8 method (Naked.toolshed.file.py).")
@@ -70,8 +72,10 @@ class FileWriter(IO):
 			with gzip.open(self.filepath, 'wb', compresslevel=compression_level) as gzip_writer:
 				gzip_writer.write(text)
 		except UnicodeEncodeError as ue:
+			import unicodedata
+			norm_text = unicodedata.normalize('NFKD', text) # NKFD normalization of the unicode data before write
 			import codecs
-			binary_data = codecs.encode(text, "utf_8")
+			binary_data = codecs.encode(norm_text, "utf_8")
 			with gzip.open(self.filepath, 'wb', compresslevel=compression_level) as gzip_writer:
 				gzip_writer.write(binary_data)
 		except Exception as e:
@@ -181,7 +185,9 @@ class FileWriter(IO):
 				sys.stderr.write("Naked Framework Error: Unable to open file for write with the write_utf8() method (Naked.toolshed.file.py).")
 			raise e
 		try:
-			f.write(text)
+			import unicodedata
+			norm_text = unicodedata.normalize('NFKD', text) # NKFD normalization of the unicode data before write
+			f.write(norm_text)
 		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to write UTF-8 encoded text to file with the write_utf8() method (Naked.toolshed.file.py).")
@@ -267,6 +273,48 @@ class FileReader(IO):
 			raise e
 
 	#------------------------------------------------------------------------------
+	# [ readlines_as method ] (list of developer specified encoded strings)
+	#   Read lines from file with developer specified text encoding
+	#   Returns a list of developer specified encoded lines from the file
+	#   Tests: test_IO.py ::
+	#------------------------------------------------------------------------------
+	def readlines_as(self, dev_spec_encoding):
+		try:
+			if dev_spec_encoding == "":
+				raise RuntimeError("The text file encoding was not specified as an argument to the readlines_as method (Naked.toolshed.file.py:readlines_as).")
+			import codecs
+			with codecs.open(self.filepath, encoding=dev_spec_encoding, mode='r') as reader:
+				data_list = []
+				for line in reader:
+					data_list.append(line)
+				return data_list
+		except Exception as e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: unable to read lines in the specified encoding with the readlines_as method (Naked.toolshed.file.py).")
+			raise e
+
+	#------------------------------------------------------------------------------
+	# [ readlines_utf8 method ] (list of utf-8 encoded strings)
+	#   Read text from unicode file by line
+	#   Returns list of file unicode text lines as unicode strings
+	#   Tests: test_IO.py :: test_file_readlines_unicode, test_file_readlines_utf8_missing_file
+	#------------------------------------------------------------------------------
+	def readlines_utf8(self):
+		try:
+			import codecs
+			with codecs.open(self.filepath, encoding='utf-8', mode='r') as uni_reader:
+				modified_text_list = []
+				for line in uni_reader:
+					import unicodedata
+					norm_line = unicodedata.normalize('NFKD', line) # NKFD normalization of the unicode data before use
+					modified_text_list.append(norm_line)
+				return modified_text_list
+		except Exception as e:
+			if DEBUG_FLAG:
+				sys.stderr.write("Naked Framework Error: unable to read lines in the unicode file with the readlines_utf8 method (Naked.toolshed.file.py)")
+			raise e
+
+	#------------------------------------------------------------------------------
 	# [ read_gzip ] (byte string)
 	#   reads data from a gzip compressed file
 	#	returns the decompressed binary data from the file
@@ -282,7 +330,11 @@ class FileReader(IO):
 				if encoding in ["utf-8", "utf8", "utf_8", "UTF-8", "UTF8", "UTF_8"]:
 					import codecs
 					file_data = codecs.decode(file_data, "utf-8")
-				return file_data
+					import unicodedata
+					norm_data = unicodedata.normalize('NFKD', file_data) # NKFD normalization of the unicode data before passing back to the caller
+					return norm_data
+				else:
+					return file_data
 		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to read from the gzip compressed file with the read_gzip() method (Naked.toolshed.file.py).")
@@ -306,7 +358,9 @@ class FileReader(IO):
 			raise ioe
 		try:
 			textstring = f.read()
-			return textstring
+			import unicodedata
+			norm_text = unicodedata.normalize('NFKD', textstring) # NKFD normalization of the unicode data before returns
+			return norm_text
 		except Exception as e:
 			if DEBUG_FLAG:
 				sys.stderr.write("Naked Framework Error: Unable to read the file with UTF-8 encoding using the read_utf8() method (Naked.toolshed.file.py).")
@@ -336,7 +390,9 @@ class FileReader(IO):
 			import codecs
 			with codecs.open(self.filepath, encoding='utf-8', mode='r') as uni_reader:
 				raw_data = uni_reader.read()
-				modified_data = function(raw_data)
+				import unicodedata
+				norm_data = unicodedata.normalize('NFKD', raw_data) # NKFD normalization of the unicode data before write
+				modified_data = function(norm_data)
 			return modified_data
 		except Exception as e:
 			if DEBUG_FLAG:
@@ -345,10 +401,10 @@ class FileReader(IO):
 
 	#------------------------------------------------------------------------------
 	# [ readlines_apply_function ] (list of strings)
-	#   read a text file by line, apply a developer specified function that takes single parameter for the line string to each line
-	#   the developer's function should return the modified string
-	#   returns a list containing each modified line string
-	#   returns a list of binary strings for utf-8 encoded file data
+	#   read a text file by line, apply a developer specified function to each line
+	#   the developer's function should include single parameter (the line string) & return the modified string
+	#   returns a list containing each modified line string from the original file
+	#   returns a list of utf-8 encoded strings for unicode encoded file data
 	#   Tests: test_IO.py :: test_file_readlines_apply_function, test_file_readlines_apply_function_unicode
 	#------------------------------------------------------------------------------
 	def readlines_apply_function(self, function):
@@ -364,7 +420,9 @@ class FileReader(IO):
 			with codecs.open(self.filepath, encoding='utf-8', mode='r') as uni_reader:
 				modified_text_list = []
 				for line in uni_reader:
-					modified_line = function(line)
+					import unicodedata
+					norm_line = unicodedata.normalize('NFKD', line) # NKFD normalization of the unicode data before use
+					modified_line = function(norm_line)
 					modified_text_list.append(modified_line)
 				return modified_text_list
 		except Exception as e:
