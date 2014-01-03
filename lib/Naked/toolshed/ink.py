@@ -2,6 +2,7 @@
 
 #------------------------------------------------------------------------------
 # The Ink Templating System
+#  A lightweight, flexible text templating system
 # Copyright 2014 Christopher Simpkins
 # MIT License
 #------------------------------------------------------------------------------
@@ -86,6 +87,7 @@ class Renderer:
 
 
 if __name__ == '__main__':
-	t = Template("A {{thing}} {{name}} has a {{attribute}} example {{attribute}}")
-	r = Renderer(t, {"thing":"<tag>Attribute</tag>", "name":"Naked", "attribute":"cool"}, True)
-	print(r.render())
+	pass
+	# t = Template("A {{thing}} {{name}} has a {{attribute}} example {{attribute}}")
+	# r = Renderer(t, {"thing":"dog", "name":"Naked", "attribute":"cool"})
+	# r.render()
