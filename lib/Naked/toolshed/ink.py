@@ -24,7 +24,7 @@ class Template(str):
 		obj = str.__new__(cls, template_text)
 		obj.odel = open_delimiter
 		obj.cdel = close_delimiter
-		obj.varlist = obj._make_var_list(template_text) #contains all parsed variables from the template in a list
+		obj.varlist = obj._make_var_list(template_text) #contains all unique parsed variables from the template in a list
 		return obj
 
 	#------------------------------------------------------------------------------
@@ -39,7 +39,8 @@ class Template(str):
 		match_pat = open_match_pat + r'(.*?)' + close_match_pat # capture group contains the variable name used between the opening and closing delimiters
 		re_pat = re.compile(match_pat)
 		var_list = re_pat.findall(template_text) #generate a list that contains the capture group from the matches (i.e. the variables in the template)
-		return var_list
+		unique_var_list = list(set(var_list)) # remove duplicate entries by converting to set and back to list
+		return unique_var_list
 
 	#------------------------------------------------------------------------------
 	# [ _escape_regex_special_chars method ] (string)
@@ -88,6 +89,3 @@ class Renderer:
 
 if __name__ == '__main__':
 	pass
-	# t = Template("A {{thing}} {{name}} has a {{attribute}} example {{attribute}}")
-	# r = Renderer(t, {"thing":"dog", "name":"Naked", "attribute":"cool"})
-	# r.render()
