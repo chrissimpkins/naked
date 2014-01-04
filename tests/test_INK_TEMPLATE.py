@@ -45,31 +45,37 @@ class NakedInkTemplateTest(unittest.TestCase):
 		"""Test new Ink template variable list property assignment"""
 		template_string = FileReader(self.template_path).read_utf8()
 		template = Template(template_string)
-		self.assertEqual(set(template.varlist), set([u'appname', u'description', u'url', u'license', u'author', u'email'])) # convert to sets to ignore order
+		self.assertEqual(template.varlist, set([u'appname', u'description', u'url', u'license', u'author', u'email'])) # convert to sets to ignore order
 
 	def test_ink_make_template_varlist_default_delim_wrong_delim(self):
 		"""Test new Ink template variable list property assignment when default delimiter is incorrect"""
 		template_string = FileReader(self.template_path2).read_utf8() # uses the [[ & ]] delimiters
 		template = Template(template_string)
-		self.assertEqual(template.varlist, [])
+		self.assertEqual(template.varlist, set([]))
 
 	def test_ink_make_template_varlist_new_delimiters(self):
 		"""Test new Ink template variable list property assignment with new delimiters"""
 		template_string = FileReader(self.template_path2).read_utf8()
 		template = Template(template_string, "[[", "]]")
-		self.assertEqual(set(template.varlist), set([u'appname', u'description', u'url', u'license', u'author', u'email']))
+		self.assertEqual(template.varlist, set([u'appname', u'description', u'url', u'license', u'author', u'email']))
 
 	def test_ink_make_template_varlist_new_delimiter_wrong_delim(self):
 		"""Test new Ink template variable list property assignment when new delimiter is wrong"""
 		template_string = FileReader(self.template_path).read_utf8()
 		template = Template(template_string, "[[", "]]")
-		self.assertEqual(template.varlist, [])
+		self.assertEqual(template.varlist, set([]))
 
 	def test_ink_template_type_string(self):
 		"""Test that Ink template is of type string"""
 		template_string = FileReader(self.template_path).read_utf8()
 		template = Template(template_string)
 		self.assertIsInstance(template, str)
+
+	def test_ink_template_varlist_type_set(self):
+		"""Test that the Ink template variable list is of type set"""
+		template_string = FileReader(self.template_path).read_utf8()
+		template = Template(template_string)
+		self.assertIsInstance(template.varlist, set)
 
 	def test_ink_template_string_method(self):
 		"""Test that a slice string method works on the Ink template"""
@@ -146,7 +152,6 @@ class NakedInkTemplateTest(unittest.TestCase):
 		self.assertNotEqual(rendered_doc, standard_string)
 
     ## TODO: add tests for html entities
-
 
 if __name__ == '__main__':
 	pass
