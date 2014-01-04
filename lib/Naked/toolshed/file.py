@@ -49,7 +49,7 @@ class FileWriter(IO):
 			import codecs
 			import unicodedata
 			norm_text = unicodedata.normalize('NFKD', text) # NKFD normalization of the unicode data before write
-			with codecs.open(self.filepath, 'a', encoding="utf_8") as appender:
+			with codecs.open(self.filepath, mode='a', encoding="utf_8") as appender:
 				appender.write(norm_text)
 		except Exception as e:
 			if DEBUG_FLAG:
