@@ -32,15 +32,12 @@ class Template(str):
 	#   Private method that parses the template string for all variables that match the delimiter pattern
 	#   Returns a list of the variable names as strings
 	#------------------------------------------------------------------------------
-
 	def _make_var_list(self, template_text):
 		open_match_pat = self._escape_regex_special_chars(self.odel)
 		close_match_pat = self._escape_regex_special_chars(self.cdel)
 		match_pat = open_match_pat + r'(.*?)' + close_match_pat # capture group contains the variable name used between the opening and closing delimiters
-		re_pat = re.compile(match_pat)
-		var_list = re_pat.findall(template_text) #generate a list that contains the capture group from the matches (i.e. the variables in the template)
-		unique_var_list = list(set(var_list)) # remove duplicate entries by converting to set and back to list
-		return unique_var_list
+		var_list = re.findall(match_pat, template_text) #generate a list that contains the capture group from the matches (i.e. the variables in the template)
+		return set(var_list) # remove duplicate entries by converting to set (and lookup speed improvement from hashing)
 
 	#------------------------------------------------------------------------------
 	# [ _escape_regex_special_chars method ] (string)
@@ -89,3 +86,6 @@ class Renderer:
 
 if __name__ == '__main__':
 	pass
+	# template = Template("This is a {{test}} of the {{document}} {{type}}")
+	# renderer = Renderer(template, {'test': 'test', 'document':'testing document', 'type':'of mine'})
+	# print(renderer.render())
