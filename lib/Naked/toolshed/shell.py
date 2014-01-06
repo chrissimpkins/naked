@@ -2,7 +2,71 @@
 
 import os
 import sys
+import subprocess
 from Naked.settings import debug as DEBUG_FLAG
+
+#------------------------------------------------------------------------------
+# [ run function ] (byte string or False)
+#   run a shell command
+#   print the standard output to the standard output stream by default
+#   set suppress_output to True to suppress stream to standard output.  String is still returned to calling function
+#   set suppress_exit_status_call to True to suppress raising sys.exit on failures with shell subprocess exit status code (if available) or 1 if not available
+#   returns the standard output byte string from the subprocess executable on success
+#   returns False if the subprocess exits with a non-zero exit code
+#------------------------------------------------------------------------------
+def run(command, suppress_output=False, suppress_exit_status_call=False):
+	try:
+		response = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
+		if not suppress_output:
+			print(response)
+		return response
+	except subprocess.CalledProcessError as cpe:
+		if not suppress_output:
+			sys.stderr.write(cpe.output)
+
+		if not suppress_status_call:
+			if cpe.returncode:
+				sys.exit(cpe.returncode)
+			else:
+				sys.exit(1)
+		return False # return False on non-zero exit status codes (i.e. failures in the subprocess executable)
+	except Exception as e:
+		if DEBUG_FLAG:
+			sys.stderr.write("Naked Framework Error: unable to run the shell command with the run() function (Naked.toolshed.shell.py).")
+		raise e
+
+#------------------------------------------------------------------------------
+# [ run_py function ] (byte string or False)
+#  execute a python script in a shell subprocess
+#  print the standard output to the standard output stream by default
+#  set suppress_output to True to suppress stream to standard output.  String is still returned to calling function
+#  set suppress_exit_status_call to True to suppress raising sys.exit on failures with shell subprocess exit status code (if available) or 1 if not available
+#  returns the standard output byte string from the subprocess executable on success
+#  returns False if the subprocess exits with a non-zero exit code
+#------------------------------------------------------------------------------
+def run_py(command, suppress_output=False, suppress_exit_status_call=False):
+	try:
+		py_command = 'python -c "' + command + '"'
+		response = subprocess.check_output(py_command, stderr=subprocess.STDOUT, shell=True)
+		if not suppress_output:
+			print(response)
+		return response
+	except subprocess.CalledProcessError as cpe:
+		if not suppress_output:
+			sys.stderr.write(cpe.output)
+
+		if not suppress_status_call:
+			if cpe.returncode:
+				sys.exit(cpe.returncode)
+			else:
+				sys.exit(1)
+		return False # return False on non-zero exit status codes (i.e. failures in the subprocess executable)
+	except Exception as e:
+		if DEBUG_FLAG:
+			sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_py() function (Naked.toolshed.shell.py).")
+		raise e
+
+## TODO: other scripting languages
 
 #------------------------------------------------------------------------------
 # [ Environment Class ]
