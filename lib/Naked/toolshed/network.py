@@ -14,7 +14,7 @@ class HTTP():
 		self.url = url
 		self.request_timeout = request_timeout
 		#------------------------------------------------------------------------------
-		# HTTP response properties (assignment occurs with the HTTP verb methods)
+		# HTTP response properties (assignment occurs with the HTTP request methods)
 		#------------------------------------------------------------------------------
 		self.res = None # assigned with the requests external library response object after a HTTP method call
 
@@ -53,20 +53,34 @@ class HTTP():
 	# [ get_bin_write_file method ] (boolean)
 	#   open HTTP data stream with GET request, make file with the returned binary data
 	#   file path is passed to the method by the developer
+	#   set suppress_output to True if you want to suppress the d/l status information that is printed to the standard output stream
 	#   return True on successful pull and write to disk
 	#------------------------------------------------------------------------------
-	def get_bin_write_file(self, filepath=""):
+	def get_bin_write_file(self, filepath="", suppress_output = False, overwrite_existing = False):
 		try:
 			import os # used for os.fsync() method in the write
+			# Confirm that the file does not exist and prevent overwrite if it does (unless developer indicates otherwise)
+			if not overwrite_existing:
+				from Naked.toolshed.system import file_exists
+				if file_exists(filepath):
+					if not suppress_output:
+						print("Download aborted.  A local file with the requested filename exists on the path.")
+					return False
 			if (filepath == "" and len(self.url) > 1):
 				filepath = self.url.split('/')[-1] # use the filename from URL and working directory as default if not specified
+			if not suppress_output:
+				sys.stdout.write("Downloading file from " + self.url + "...")
+				sys.stdout.flush()
 			response = requests.get(self.url, timeout=self.request_timeout, stream=True)
 			self.res = response
 			with open(filepath, 'wb') as f: # write as binary data
-				for chunk in response.iter_content(chunk_size=1024):
+				for chunk in response.iter_content(chunk_size=2048):
 					f.write(chunk)
 					f.flush()
 					os.fsync(f.fileno()) # flush all internal buffers to disk
+			if not suppress_output:
+				print(" ")
+				print("Dowload complete.")
 			return True # return True if successful write
 		except Exception as e:
 			if DEBUG_FLAG:
