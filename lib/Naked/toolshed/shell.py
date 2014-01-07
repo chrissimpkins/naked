@@ -66,8 +66,73 @@ def run_py(command, suppress_output=False, suppress_exit_status_call=False):
 			sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_py() function (Naked.toolshed.shell.py).")
 		raise e
 
-## TODO: other scripting languages
+#------------------------------------------------------------------------------
+# [ run_rb function ] (byte string or False)
+#  execute a ruby script file in a shell subprocess
+#  print the standard output to the standard output stream by default
+#  set suppress_output to True to suppress stream to standard output.  String is still returned to calling function
+#  set suppress_exit_status_call to True to suppress raising sys.exit on failures with shell subprocess exit status code (if available) or 1 if not available
+#  returns the standard output byte string from the subprocess executable on success
+#  returns False if the subprocess exits with a non-zero exit code
+#------------------------------------------------------------------------------
+def run_rb(file_path, args="", suppress_output=False, suppress_exit_status_call=False):
+	try:
+		if len(args) > 0:
+			rb_command = 'ruby ' + filepath + " " + args
+		else:
+			rb_command = 'ruby ' + filepath
+		response = subprocess.check_output(rb_command, stderr=subprocess.STDOUT, shell=True)
+		if not suppress_output:
+			print(response)
+		return response
+	except subprocess.CalledProcessError as cpe:
+		if not suppress_output:
+			sys.stderr.write(cpe.output)
 
+		if not suppress_status_call:
+			if cpe.returncode:
+				sys.exit(cpe.returncode)
+			else:
+				sys.exit(1)
+		return False # return False on non-zero exit status codes (i.e. failures in the subprocess executable)
+	except Exception as e:
+		if DEBUG_FLAG:
+			sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_rb() function (Naked.toolshed.shell.py).")
+		raise e
+
+#------------------------------------------------------------------------------
+# [ run_js function ] (byte string or False)
+#  execute a node.js script file in a shell subprocess
+#  print the standard output to the standard output stream by default
+#  set suppress_output to True to suppress stream to standard output.  String is still returned to calling function
+#  set suppress_exit_status_call to True to suppress raising sys.exit on failures with shell subprocess exit status code (if available) or 1 if not available
+#  returns the standard output byte string from the subprocess executable on success
+#  returns False if the subprocess exits with a non-zero exit code
+#------------------------------------------------------------------------------
+def run_js(file_path, args="", suppress_output=False, suppress_exit_status_call=False):
+	try:
+		if len(args) > 0:
+			rb_command = 'node ' + filepath + " " + args
+		else:
+			rb_command = 'node ' + filepath
+		response = subprocess.check_output(rb_command, stderr=subprocess.STDOUT, shell=True)
+		if not suppress_output:
+			print(response)
+		return response
+	except subprocess.CalledProcessError as cpe:
+		if not suppress_output:
+			sys.stderr.write(cpe.output)
+
+		if not suppress_status_call:
+			if cpe.returncode:
+				sys.exit(cpe.returncode)
+			else:
+				sys.exit(1)
+		return False # return False on non-zero exit status codes (i.e. failures in the subprocess executable)
+	except Exception as e:
+		if DEBUG_FLAG:
+			sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_js() function (Naked.toolshed.shell.py).")
+		raise e
 #------------------------------------------------------------------------------
 # [ Environment Class ]
 # 	shell environment variables class
