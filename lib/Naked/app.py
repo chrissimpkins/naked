@@ -38,6 +38,13 @@ def main():
             print(name)
         #if c.option("-t"): c.truth = True
         #print(c.truth)
+    elif c.cmd == "dl":
+        from Naked.toolshed.network import HTTP
+        http = HTTP("https://github.com/chrissimpkins/six-four/tarball/master")
+        http.get_bin_write_file("test.tgz")
+    elif c.cmd == "loc":
+        from Naked.toolshed.system import cwd
+        print(cwd())
     elif c.cmd == "bump":
         if c.cmd2 == "patch":
             pass
