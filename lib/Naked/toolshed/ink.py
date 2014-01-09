@@ -72,20 +72,25 @@ class Renderer:
 	#   returns the rendered template as a string
 	#------------------------------------------------------------------------------
 	def render(self):
+		local_dict = self.key_dict
 		local_template = self.template
-		for key in self.key_dict:
-			if key in self.template.varlist:
-				value = self.key_dict[key]
-				replace_string = self.odel + key + self.cdel
-				if self.html_entities:
-					from xml.sax.saxutils import escape #from Python std lib
+		local_varlist = self.template.varlist
+		local_odel = self.odel
+		local_cdel = self.cdel
+		local_htmlent = self.html_entities
+		if local_htmlent:
+			from xml.sax.saxutils import escape #from Python std lib
+		for key in local_dict:
+			if key in local_varlist:
+				value = local_dict[key]
+				replace_string = local_odel + key + local_cdel
+				if local_htmlent:
 					value = escape(value)
 				local_template = local_template.replace(replace_string, value)
 		return local_template
 
-
 if __name__ == '__main__':
 	pass
-	# template = Template("This is a {{test}} of the {{document}} {{type}}")
-	# renderer = Renderer(template, {'test': 'test', 'document':'testing document', 'type':'of mine'})
+	# template = Template("This is a of the {{test}} of the {{document}} {{type}} and more of the {{test}} {{document}} {{type}}")
+	# renderer = Renderer(template, {'test': 'a test', 'document':'testing document', 'type':'of mine'})
 	# print(renderer.render())
