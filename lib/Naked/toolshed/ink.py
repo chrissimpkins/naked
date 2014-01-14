@@ -72,6 +72,7 @@ class Renderer:
     #   returns the rendered template as a string
     #------------------------------------------------------------------------------
     def render(self):
+        # make local variables for the loop below (faster)
         local_dict = self.key_dict
         local_template = self.template
         local_varlist = self.template.varlist
@@ -93,5 +94,5 @@ class Renderer:
 if __name__ == '__main__':
     pass
     # template = Template("This is a of the {{test}} of the {{document}} {{type}} and more of the {{test}} {{document}} {{type}}")
-    # renderer = Renderer(template, {'test': 'a test', 'document':'testing document', 'type':'of mine'})
+    # renderer = Renderer(template, {'test': 'a test', 'document':'testing document', 'type':'of mine', 'bogus': 'bogus test'})
     # print(renderer.render())
