@@ -15,13 +15,32 @@ class NakedObject:
         from sys import version_info
         self.py_version = (version_info[0], version_info[1], version_info[2])  # add python version as metadata to the object
 
+    #------------------------------------------------------------------------------
+    # [ _addAttributes method ] (no return value)
+    #  sets the attributes on a NakedObject or inherited type with the `attributes` dictionary
+    #------------------------------------------------------------------------------
     def _addAttributes(self, attributes):
         for key in attributes:
             setattr(self, key, attributes[key])
 
+    #------------------------------------------------------------------------------
+    # [ _getAttributeDict method ] (dictionary)
+    #  returns a dictionary of the NakedObject instance attributes
+    #------------------------------------------------------------------------------
+    def _getAttributeDict(self):
+        return self.__dict__
+
+    #------------------------------------------------------------------------------
+    # [ getAttribute method ] (attribute dependent type)
+    #  returns the respective attribute for the `attribute` name on the NakedObject instance
+    #------------------------------------------------------------------------------
     def getAttribute(self, attribute):
         return getattr(self, attribute)
 
+    #------------------------------------------------------------------------------
+    # [ setAttribute method ] (no return value)
+    #  sets a NakedObject attribute `value` for the `attribute` name
+    #------------------------------------------------------------------------------
     def setAttribute(self, attribute, value):
         setattr(self, attribute, value)
 
@@ -123,7 +142,7 @@ class XList(list, NakedObject):
 
 
     #------------------------------------------------------------------------------
-    # Numpy Array Methods
+    # Conversion Methods
     #------------------------------------------------------------------------------
     # [ ndarray method ] (Numpy ndarray object)
     #  returns a Numby ndarray object by conversion from the XList object
@@ -138,6 +157,14 @@ class XList(list, NakedObject):
                 sys.stderr.write("Naked Framework Error: unable to return base filename from filename() function (Naked.toolshed.system).")
             raise ie
 
+    def xset(self):
+        attr_dict = self._getAttributeDict()
+        return XSet(set(self), attr_dict)
+
+    def xfset(self):
+        attr_dict = self._getAttributeDict()
+        return XFSet(set(self), attr_dict)
+
     #------------------------------------------------------------------------------
     # XList Iterables
     #------------------------------------------------------------------------------
@@ -147,6 +174,53 @@ class XList(list, NakedObject):
     def chain_iter(self, *lists):
         from itertools import chain
         return chain(*lists)
+
+#------------------------------------------------------------------------------
+# [ XSet class ]
+#  An inherited extension to the mutable set object that permits attribute assignment
+#  Inherits from set and from NakedObject (see methods in NakedObject at top of this module
+#------------------------------------------------------------------------------
+class XSet(set, NakedObject):
+    def __init__(self, set_obj, attributes={}):
+        set.__init__(self, set_obj)
+        NakedObject.__init__(self, attributes)
+
+    def xlist(self):
+        attr_dict = self._getAttributeDict()
+        return XList(list(self), attr_dict)
+
+    def xfset(self):
+        attr_dict = self._getAttributeDict()
+        return XFSet(self, attr_dict)
+
+#------------------------------------------------------------------------------
+# [ XFSet class ]
+#  An inherited extension to the immutable frozenset object that permits attribute assignment
+#  Immutable so there is no setter method, attributes must be set in the constructor
+#------------------------------------------------------------------------------
+class XFSet(frozenset):
+    def __new__(cls, the_set, attributes={}):
+        set_obj = frozenset.__new__(cls, the_set)
+        if len(attributes) > 0:
+            for key in attributes:
+                setattr(set_obj, key, attributes[key])
+        from sys import version_info
+        set_obj.py_version = (version_info[0], version_info[1], version_info[2]) #add python interpreter version to the object
+        return set_obj
+
+    def _getAttributeDict(self):
+        return self.__dict__
+
+    def getAttribute(self, attribute):
+        return getattr(self, attribute)
+
+    def xlist(self):
+        attr_dict = self._getAttributeDict()
+        return XList(list(self), attr_dict)
+
+    def xset(self):
+        attr_dict = self._getAttributeDict()
+        return XSet(self, attr_dict)
 
 #------------------------------------------------------------------------------
 # [ XString class ]
@@ -160,7 +234,7 @@ class XString(str):
             for key in attributes:
                 setattr(str_obj, key, attributes[key])
         from sys import version_info
-        self.py_version = (version_info[0], version_info[1], version_info[2]) #add python version as metadata to the object
+        str_obj.py_version = (version_info[0], version_info[1], version_info[2]) #add python version as metadata to the object
         return str_obj
 
     def getAttribute(self, attribute):
@@ -168,9 +242,14 @@ class XString(str):
 
 
 if __name__ == '__main__':
-    # ns = XList(['a', 'b', 'c'], {"version":"1.0.1", "test":"code"})
-    # print(ns << ['d', 'e', 'f'])
-    # print(ns.surround("*", "!"))
+    # nl = XList(['a', 'b', 'c'], {"version":"1.0.1", "test":"code"})
+    # nl << ['d', 'e', 'f']
+    # the_list = list(range(5000))
+    # nl = XList(the_list)
+    # nl.is_in('4999')
+
+    # xs = XFSet({'test', 'true', 'false'}, {'bonus': 'candy', 'test': 'another'})
+    # print(xs.xlist())
 
     # xd = XDict({'test': 'testing', 'another': 'yep'}, {'a': '1', 'b': '2'})
     # ad = {'this': 'yes', 'is':'more'}
