@@ -37,10 +37,16 @@ def main():
     #   Test for primary commands and handle them
     #------------------------------------------------------------------------------------------
     if c.cmd == "test":
-        from Naked.toolshed.system import fullpath, filename, list_match_files
-        filenames = list_match_files(c.arg1, True)
-        for name in filenames:
-            print(name)
+        def printy(arg):
+            result = str(arg)
+            return result
+
+        from Naked.toolshed.types import XList
+        #xd = XDict({'one': 1, 'two': 2, 'three': 3}, {'test': 'result'})
+        xd = XList([1, 2, 3], {'test': 'result'})
+        xd = xd.map_to_items(printy)
+        print(xd)
+        print(xd.test)
         #if c.option("-t"): c.truth = True
         #print(c.truth)
     elif c.cmd == "dl":
