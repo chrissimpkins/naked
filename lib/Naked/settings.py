@@ -29,9 +29,10 @@ usage = """<primary command> [secondary command] [option(s)] [argument(s)]
 #------------------------------------------------------------------------------
 help = """
 ---------------------------------------------------
-Naked | A Python command line application framework
-Copyright 2014 Christopher Simpkins
-MIT license
+ Naked
+ A Python command line application framework
+ Copyright 2014 Christopher Simpkins
+ MIT license
 ---------------------------------------------------
 
 USAGE
