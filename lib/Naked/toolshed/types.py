@@ -11,17 +11,8 @@ class NakedObject:
     # initialize with an attributes dictionary {attribute_name, attribute_value}
     def __init__(self, attributes={}):
         if len(attributes) > 0:
-            self._addAttributes(attributes)
-        from sys import version_info
-        self.py_version = (version_info[0], version_info[1], version_info[2])  # add python version as metadata to the object
-
-    #------------------------------------------------------------------------------
-    # [ _addAttributes method ] (no return value)
-    #  sets the attributes on a NakedObject or inherited type with the `attributes` dictionary
-    #------------------------------------------------------------------------------
-    def _addAttributes(self, attributes):
-        for key in attributes:
-            setattr(self, key, attributes[key])
+            for key in attributes:
+                setattr(self, key, attributes[key])
 
     #------------------------------------------------------------------------------
     # [ _getAttributeDict method ] (dictionary)
@@ -81,9 +72,8 @@ class XDict(dict, NakedObject):
     def __lshift__(self, another_dict):
         self.update(another_dict)
 
-
     #------------------------------------------------------------------------------
-    # Value Methods
+    # XDict Value Methods
     #------------------------------------------------------------------------------
     # return XTuple of minimum value
     def min_val(self):
@@ -99,12 +89,19 @@ class XDict(dict, NakedObject):
     def sum_vals(self):
         return sum(self.values())
 
+    from Naked.toolshed.benchmarking import timer_trials_benchmark
+    @timer_trials_benchmark
+    def value_count(self, value_name):
+        from collections import Counter
+        c = Counter(self.values())
+        return c[value_name]
+
     # map a function to every value in the dictionary
     def map_to_vals(self, the_func):
         return XDict( zip(self, map(the_func, self.values())), self._getAttributeDict())
 
     #------------------------------------------------------------------------------
-    # Comparison Methods
+    # XDict Key Methods
     #------------------------------------------------------------------------------
     def intersection(self, another_dict):
         return self.keys() & another_dict.keys()
@@ -112,14 +109,14 @@ class XDict(dict, NakedObject):
     def difference(self, another_dict):
         return self.keys() - another_dict.keys()
 
-
     #------------------------------------------------------------------------------
-    # [ iter method ] (tuple of each key and value in dictionary)
+    # [ xitems method ] (tuple of each key and value in dictionary)
     #   Generator method that returns tuples of key, value in dictionary
     #   uses appropriate method from Python 2 and 3
     #------------------------------------------------------------------------------
-    def iter(self):
-        if self.py_version[0] > 2:
+    def xitems(self):
+        from Naked.toolshed.python import py_major_version
+        if py_major_version() > 2:
             return self.items()
         else:
             return self.iteritems()
@@ -312,8 +309,6 @@ class XFSet(frozenset):
         if len(attributes) > 0:
             for key in attributes:
                 setattr(set_obj, key, attributes[key])
-        from sys import version_info
-        set_obj.py_version = (version_info[0], version_info[1], version_info[2]) #add python interpreter version to the object
         return set_obj
 
     def _getAttributeDict(self):
@@ -330,6 +325,7 @@ class XFSet(frozenset):
         attr_dict = self._getAttributeDict()
         return XSet(self, attr_dict)
 
+# TODO: test for unicode and use it instead of str in Py2
 #------------------------------------------------------------------------------
 # [ XString class ]
 #   An inherited extension to the immutable string object that permits attributes
@@ -341,8 +337,6 @@ class XString(str):
         if len(attributes) > 0:
             for key in attributes:
                 setattr(str_obj, key, attributes[key])
-        from sys import version_info
-        str_obj.py_version = (version_info[0], version_info[1], version_info[2]) #add python version as metadata to the object
         return str_obj
 
     def getAttribute(self, attribute):
@@ -351,6 +345,50 @@ class XString(str):
     # fastest substring search truth test
     def contains(self, substring):
         return substring in self
+
+    # split the string on one or more delimiters, return list
+    # if single char, then uses str.split(), if multiple chars then uses re.split
+    def xsplit(self, split_delimiter):
+        length = len(split_delimiter)
+        if length > 2:
+            import re
+            split_delimiter = "".join([ '[', split_delimiter, ']' ])
+            return re.split(split_delimiter, self)
+        elif length > 1:
+            delim2 = split_delimiter[1]
+            first_list = self.split(split_delimiter[0])
+            result_list = []
+            for item in first_list:
+                for subitem in item.split(delim2):
+                    result_list.append(subitem)
+            return result_list
+        else:
+            return self.split(split_delimiter)
+
+    def xsplit_set(self, split_delimiter):
+        return set(self.xsplit(split_delimiter))
+
+    # str begins with substring - faster than str.beginswith()
+    def begins(self, begin_string):
+        return begin_string in self[0:len(begin_string)]
+
+    # str ends with substring - faster than str.endswith()
+    def ends(self, end_string):
+        return end_string in self[-len(end_string):]
+
+    # case sensitive wildcard match on the XString (boolean returned)
+    def wildcard_match(self, wildcard):
+        from fnmatch import fnmatchcase
+        return fnmatchcase(self, wildcard)
+
+    # convert string to unicode
+    def unicode(self):
+        if not isinstance(self, unicode):
+            import unicodedata
+            u_string = unicode(self)
+            return unicodedata.normalize('NFKC', u_string)
+        else:
+            return self
 
 #------------------------------------------------------------------------------
 # [ XTuple class ]
@@ -362,15 +400,13 @@ class XTuple(tuple):
         if len(attributes) > 0:
             for key in attributes:
                 setattr(tup_obj, key, attributes[key])
-        from sys import version_info
-        tup_obj.py_version = (version_info[0], version_info[1], version_info[2])
         return tup_obj
 
 
 
 
 if __name__ == '__main__':
-    pass
+    # pass
     # nl = XList(['a', 'b', 'c'], {"version":"1.0.1", "test":"code"})
     # nl << ['d', 'e', 'f']
     # the_list = list(range(5000))
@@ -394,10 +430,11 @@ if __name__ == '__main__':
     # xs += {'bogus', 'yep'}
     # print(xs)
 
-    # xd = XDict({'test': 'testing', 'another': 'yep'}, {'a': '1', 'b': '2'})
-    # ad = {'test': 'yes', 'is':'more'}
-    # xd << ad
-    # print(xd)
+    xd = XDict({'test': 'yep', 'another': 'yep'}, {'a': '1', 'b': '2'})
+    ad = {'test2': 'yes', 'is':'more'}
+    xd << ad
+    print(xd.value_count('yep'))
 
-    # xstr = XString("This is a really long string that contains a few cool things.")
-    # xstr.contains('few')
+    # xstr = XString("This is a, really long string, that contains a: few cool things.tx")
+    # print(xstr.unicode())
+
