@@ -87,15 +87,13 @@ class XDict(dict, NakedObject):
     #------------------------------------------------------------------------------
     # XDict Value Methods
     #------------------------------------------------------------------------------
-    # return XTuple of minimum value, key
+    # return tuple of minimum value, key
     def min_val(self):
-        result = min(zip(self.values(), self.keys()))
-        return XTuple( result, {'val': result[0], 'key': result[1]} )
+        return min(zip(self.values(), self.keys()))
 
-    # return XTuple of maximum value, key
+    # return tuple of maximum value, key
     def max_val(self):
-        result = max(zip(self.values(), self.keys()))
-        return XTuple( result, {'val': result[0], 'key': result[1]} )
+        return max(zip(self.values(), self.keys()))
 
     # sum values
     def sum_vals(self):
@@ -529,7 +527,7 @@ class XTuple(tuple):
 
 
 if __name__ == '__main__':
-    # pass
+    pass
     # nl = XList(['a', 'b', 'c'], {"version":"1.0.1", "test":"code"})
     # nl = nl + ['d', 'e', 'f'] + ['g', 'h', 'i']
     # print(nl)
@@ -553,11 +551,11 @@ if __name__ == '__main__':
     # xs += {'bogus', 'yep'}
     # print(xs)
 
-    # xd = XDict({'test': 0, 'another': 0}, {'a': '1', 'b': '2'})
-    # ad = {'test2': 0, 'is': 0}
-    # ld = {'last': 0}
+    # xd = XDict({'test2': 0, 'another': 1}, {'a': '1', 'b': '2'})
+    # ad = {'test': 0, 'is': 2}
+    # ld = {'last': 3}
     # xd = xd + ad + ld
-    # print(xd)
+    # print(xd.min_val())
     # print(xd.conditional_map_to_vals(matcher, resulter))
 
     # nl = XList([ 'test.txt', 'bogus.txt', 'test.py', 'another.rb', 'est.doc', 'est.py' ])
