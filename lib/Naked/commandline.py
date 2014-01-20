@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# encoding: utf-8
 
 import sys
 from Naked.settings import debug as DEBUG_FLAG
@@ -37,7 +38,7 @@ class Command:
                 return True
             else:
                 return False
-        except Exception, e:
+        except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Validation of application error in the app_validates() method (Naked.commandline.py).")
             raise e
@@ -52,7 +53,7 @@ class Command:
         try:
             recipient_position = self.argobj._getArgPosition(arg_recipient)
             return self.argobj._getArgNext(recipient_position)
-        except Exception, e:
+        except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Error parsing argument with arg() method (Naked.commandline.py).")
             raise e
@@ -70,7 +71,7 @@ class Command:
                 return True
             else:
                 return False # if command is missing, return false
-        except Exception, e:
+        except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Error parsing command with command() method (Naked.commandline.py).")
             raise e
@@ -82,7 +83,7 @@ class Command:
     def command_arg(self):
         try:
             return self.arg1
-        except Exception, e:
+        except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Error parsing command argument with command_arg() method (Naked.commandline.py).")
             raise e
@@ -102,7 +103,7 @@ class Command:
                     return True
             else:
                 return False # if command is missing return false
-        except Exception, e:
+        except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Error parsing command and argument with command_with_argument() method (Naked.commandline.py).")
             raise e
@@ -121,7 +122,7 @@ class Command:
                     return True # if a primary command present, return True
             else:
                 return False # if user only entered the application name, return False
-        except Exception, e:
+        except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Command suite validation error with the command_suite_validation() method (Naked.commandline.py).")
             raise e
@@ -138,7 +139,7 @@ class Command:
                 else:
                     pass
             return False
-        except Exception, e:
+        except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Error parsing flags with the flag() method (Naked.commandline.py).")
             raise e
@@ -157,7 +158,7 @@ class Command:
                 else:
                     pass
             return "" # return an empty string if unable to parse the argument
-        except Exception, e:
+        except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Error parsing flags with the flag_arg() method (Naked.commandline.py).")
             raise e
@@ -179,7 +180,7 @@ class Command:
                     return True
             else:
                 return False
-        except Exception, e:
+        except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Error parsing option with option() method (Naked.commandline.py).")
             raise e
@@ -191,7 +192,7 @@ class Command:
     def option_arg(self, option_string):
         try:
             return self.argobj._getArgNext(self.argobj._getArgPosition(option_string))
-        except Exception, e:
+        except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Error returning argument to option with option_arg() method (Naked.commandline.py).")
             raise e
@@ -214,7 +215,7 @@ class Command:
                     return True
             else:
                 return False # option is not present
-        except Exception, e:
+        except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Error parsing option and argument with option_with_arg() method (Naked.commandline.py).")
             raise e

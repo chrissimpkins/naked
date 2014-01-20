@@ -1,10 +1,11 @@
 #!/usr/bin/env python
+# encoding: utf-8
 
 #------------------------------------------------------------------------------
 # The Ink Templating System
 #  A lightweight, flexible text templating system
-# Copyright 2014 Christopher Simpkins
-# MIT License
+#  Copyright 2014 Christopher Simpkins
+#  MIT License
 #------------------------------------------------------------------------------
 import re
 
@@ -71,8 +72,6 @@ class Renderer:
     #   renders the variable replacements in the Ink template
     #   returns the rendered template as a string
     #------------------------------------------------------------------------------
-    from Naked.toolshed.benchmarking import timer_trials_benchmark
-    @timer_trials_benchmark
     def render(self):
         # make local variables for the loop below (faster)
         local_dict = self.key_dict
@@ -94,7 +93,7 @@ class Renderer:
 
 
 if __name__ == '__main__':
-    # pass
-    template = Template("This is a of the {{test}} of the {{document}} {{type}} and more of the {{test}} {{document}} {{type}}")
-    renderer = Renderer(template, {'test': 'a test', 'document':'testing document', 'type':'of mine', 'bogus': 'bogus test'})
-    print(renderer.render())
+    pass
+    # template = Template("This is a of the {{test}} of the {{document}} {{type}} and more of the {{test}} {{document}} {{type}}")
+    # renderer = Renderer(template, {'test': 'a test', 'document':'testing document', 'type':'of mine', 'bogus': 'bogus test'})
+    # print(renderer.render())

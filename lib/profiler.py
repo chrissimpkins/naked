@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# encoding: utf-8
 
 import cProfile, pstats, StringIO
 
@@ -10,8 +11,8 @@ def profile():
     #------------------------------------------------------------------------------
     # Enter setup code below
     #------------------------------------------------------------------------------
-        # Optional: include setup code below (e.g. imports, instantiation, variable assignments, etc)
-
+        # Optional: include setup code below
+    from Naked.toolshed.ink import Template, Renderer
 
     #------------------------------------------------------------------------------
     # Start profiler
@@ -22,7 +23,10 @@ def profile():
     # Enter code to be profiled below
     #------------------------------------------------------------------------------
         # include profiled code here
-
+    for x in range(50000):
+        template = Template("This is a of the {{test}} of the {{document}} {{type}} and more of the {{test}} {{document}} {{type}}")
+        renderer = Renderer(template, {'test': 'a test', 'document':'testing document', 'type':'of mine', 'bogus': 'bogus test'})
+        renderer.render()
 
 
     #------------------------------------------------------------------------------
