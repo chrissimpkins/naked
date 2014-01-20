@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# encoding: utf-8
 
 # VARS: app_name, developer
 setup_py_string = """
@@ -26,7 +28,7 @@ setup(
     },
     packages=find_packages("lib"),
     package_dir={'': 'lib'},
-    install_requires=['Naked', 'requests'],
+    install_requires=['Naked'],
     keywords='',
     include_package_data=True,
     classifiers=[
