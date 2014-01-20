@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# encoding: utf-8
 
 #------------------------------------------------------------------------------
 # Naked | A Python command line application framework
@@ -7,11 +8,15 @@
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------------
-# c.cmd = primary command
-# c.cmd2 = secondary command
-# c.option(option_string, bool argument_required) = test for option
-# c.option_with_arg(option_string) = test for option and positional argument
+# c.cmd = Primary command (<executable> <primary command>)
+# c.cmd2 = Secondary command (<executable> <primary command> <secondary command>)
+#
+# c.option(option_string, [bool argument_required]) = test for option with optional test for positional arg to the option
+# c.option_with_arg(option_string) = test for option and mandatory positional argument to option test
+# c.flag(flag_string) = test for presence of a "--option=argument" style flag
+#
 # c.arg(arg_string) = returns the next positional argument to the arg_string argument
+# c.flag(flag_string) = returns the flag assignment for a "--option=argument" style flag
 #------------------------------------------------------------------------------------
 
 # Application start
@@ -37,16 +42,8 @@ def main():
     #   Test for primary commands and handle them
     #------------------------------------------------------------------------------------------
     if c.cmd == "test":
-        def printy(arg):
-            result = str(arg)
-            return result
-
-        from Naked.toolshed.types import XList
-        #xd = XDict({'one': 1, 'two': 2, 'three': 3}, {'test': 'result'})
-        xd = XList([1, 2, 3], {'test': 'result'})
-        xd = xd.map_to_items(printy)
-        print(xd)
-        print(xd.test)
+        import Naked.templates.licenses as licenses
+        print(licenses.mit_license)
         #if c.option("-t"): c.truth = True
         #print(c.truth)
     elif c.cmd == "dl":
