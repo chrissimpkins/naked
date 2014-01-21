@@ -31,7 +31,7 @@ def main():
     import Naked.commandline
 
     #------------------------------------------------------------------------------------------
-    # [ Create command line object ]
+    # [ Instantiate command line object ]
     #   used for all subsequent conditional logic in the CLI application
     #------------------------------------------------------------------------------------------
     c = Naked.commandline.Command(sys.argv[0], sys.argv[1:])
