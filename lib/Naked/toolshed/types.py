@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-##TODO : try/catch around the getter methods in case they are missing
+##TODO : make it optional to maintain state in the returned object to reduce overhead
 from Naked.settings import debug as DEBUG_FLAG
 
+## TODO : StateObject : include relevant metadata useful to developer
 #------------------------------------------------------------------------------
-# [ NakedObject class ]
+# [[ NakedObject class ]]
 #   A generic Python object
-#   Assigns object attributes by key in the dictionary argument
+#   Assigns object attributes by key name in the dictionary argument to the constructor
+#   The methods are inherited by other mutable Naked object extension types
 #------------------------------------------------------------------------------
 class NakedObject:
     # initialize with an attributes dictionary {attribute_name, attribute_value}
@@ -28,7 +30,10 @@ class NakedObject:
     #  returns the respective attribute for the `attribute` name on the NakedObject instance
     #------------------------------------------------------------------------------
     def getAttribute(self, attribute):
-        return getattr(self, attribute)
+        if hasattr(self, attribute):
+            return getattr(self, attribute)
+        else:
+            return None
 
     #------------------------------------------------------------------------------
     # [ setAttribute method ] (no return value)
@@ -45,7 +50,7 @@ class NakedObject:
         return hasattr(self, attribute)
 
 #------------------------------------------------------------------------------
-# [ XDict class ]
+# [[ XDict class ]]
 #   An inherited extension to the dictionary object that permits attachment of attributes
 #------------------------------------------------------------------------------
 class XDict(dict, NakedObject):
@@ -58,17 +63,16 @@ class XDict(dict, NakedObject):
     #------------------------------------------------------------------------------
 
     #------------------------------------------------------------------------------
-    # + overload extends XDict with one or more other dictionaries
+    # + overload
     #   overwrites existing keys with key:value pairs from new dictionaries if they are the same keys
     #   returns the updated XDict object
     #------------------------------------------------------------------------------
-    def __add__(self, *other_dicts):
-        for the_dict in other_dicts:
-            self.update(the_dict)
+    def __add__(self, other_dict):
+        self.update(other_dict)
         return self
 
     #------------------------------------------------------------------------------
-    #  +- overload extends XDict with another dictionary
+    #  +- overload
     #  overwrites existing keys with another_dict (right sided argument) keys if they are the same keys
     #  returns the updated XDict object
     #------------------------------------------------------------------------------
@@ -87,28 +91,71 @@ class XDict(dict, NakedObject):
     #------------------------------------------------------------------------------
     # XDict Value Methods
     #------------------------------------------------------------------------------
-    # return tuple of minimum value, key
-    def min_val(self):
-        return min(zip(self.values(), self.keys()))
+    #------------------------------------------------------------------------------
+    # [ conditional_map_to_vals method ] (XDict)
+    #  returns the original XDict with values that meet True condition in `conditional_function`
+    #  modified as per the `mapped_function` with single value argument call
+    #------------------------------------------------------------------------------
+    def conditional_map_to_vals(self, conditional_function, mapped_function):
+        for key, value in self.xitems():
+            if conditional_function(key):
+                self[key] = mapped_function(value)
+        return self
 
-    # return tuple of maximum value, key
+    #------------------------------------------------------------------------------
+    # [ map_to_vals method ] (XDict)
+    #  returns the original XDict with all values modified as per the `mapped_function`
+    #------------------------------------------------------------------------------
+    def map_to_vals(self, mapped_function):
+        # return XDict( zip(self, map(mapped_function, self.values())), self._getAttributeDict() ) - slower in Py2
+        for key, value in self.xitems():
+            self[key] = mapped_function(value)
+        return self
+
+    #------------------------------------------------------------------------------
+    # [ val_xlist method ] (XList)
+    #  return an XList of the values in the XDict
+    #------------------------------------------------------------------------------
+    def val_xlist(self):
+        return XList(self.values(), self._getAttributeDict())
+
+    #------------------------------------------------------------------------------
+    # [ max_val method ] (tuple of maximum value and associated key)
+    #------------------------------------------------------------------------------
     def max_val(self):
         return max(zip(self.values(), self.keys()))
 
-    # sum values
+    #------------------------------------------------------------------------------
+    # [ min_val method ] (tuple of minimum value and associated key)
+    #------------------------------------------------------------------------------
+    def min_val(self):
+        return min(zip(self.values(), self.keys()))
+
+    #------------------------------------------------------------------------------
+    # [ sum_vals method ] (numeric return type dependent upon original value type)
+    #  returns sum of all values in the dictionary
+    #------------------------------------------------------------------------------
     def sum_vals(self):
         return sum(self.values())
 
-    # case sensitive value counts
-    def value_count(self, value_name):
+    #------------------------------------------------------------------------------
+    # [ val_count method ] (integer)
+    #  returns an integer value for the total count of `value_name` in the dictionary values
+    #  Case sensitive test for strings
+    #------------------------------------------------------------------------------
+    def val_count(self, value_name):
         count = 0
         for test_string in self.values():
             if value_name == test_string:
                 count += 1
         return count
 
-    # case insensitive string value counts
-    def value_count_ci(self, value_name):
+    #------------------------------------------------------------------------------
+    # [ value_count_ci method ] (integer)
+    #  returns an integer value for the total count of case insensitive `value_name`
+    #  strings/char in the dictionary values.  This is a string only search method
+    #------------------------------------------------------------------------------
+    def val_count_ci(self, value_name):
         value_name = value_name.lower()
         lower_case_vals = [ x.lower() for x in self.values() ]
         count = 0
@@ -117,43 +164,44 @@ class XDict(dict, NakedObject):
                 count += 1
         return count
 
-    # map a function to every value in the dictionary
-    def map_to_vals(self, the_func):
-        return XDict( zip(self, map(the_func, self.values())), self._getAttributeDict() )
-
-    # map a function to dicitionary values conditional upon result of a function on keys
-    def conditional_map_to_vals(self, conditional_function, result_function):
-        for key, value in self.xitems():
-            if conditional_function(key):
-                self[key] = result_function(self[key])
-        return self
 
     #------------------------------------------------------------------------------
     # XDict Key Methods
     #------------------------------------------------------------------------------
-    def intersection(self, another_dict):
-        return self.keys() & another_dict.keys()
-
+    #------------------------------------------------------------------------------
+    # [ difference method ] (difference set of keys)
+    #  definition: keys that are included in self, but not in `another_dict`
+    #------------------------------------------------------------------------------
     def difference(self, another_dict):
-        return self.keys() - another_dict.keys()
+        return set(self.keys()) - set(another_dict.keys())
 
-    # union of one or more dictionaries, key: value overwrite for duplicate keys
-    def union(self, *other_dicts):
-        for new_dict in other_dicts:
-            self.update(new_dict)
-        return self
+    #------------------------------------------------------------------------------
+    # [ intersection method ] (intersection set of keys)
+    #   definition: keys that are included in both self and `another_dict`
+    #------------------------------------------------------------------------------
+    def intersection(self, another_dict):
+        return set(self.keys()) & set(another_dict.keys())
 
-    # map a function to every key in the dictionary
-    def map_to_keys(self, the_func):
-        return XDict( zip(map(the_func, self.keys()), self.values()), self._getAttributeDict())
+    #------------------------------------------------------------------------------
+    # [ key_xlist method ] (XList)
+    #  returns an XList of the keys in the XDict
+    #------------------------------------------------------------------------------
+    def key_xlist(self):
+        return XList(self.keys(), self._getAttributeDict())
 
-    #return random {key: value}
+    #------------------------------------------------------------------------------
+    # [ random method ] (dictionary)
+    #  return new Python dictionary with single, random key:value pair
+    #------------------------------------------------------------------------------
     def random(self):
         import random
         random_key = random.choice(self.keys())
         return {random_key: self[random_key]}
 
-    # return a random sample of `number_of_items` {key:value} pairs as a new dict
+    #------------------------------------------------------------------------------
+    # [ random_sample method ] (dictionary)
+    #  return new Python dictionary with `number_of_items` random key:value pairs
+    #------------------------------------------------------------------------------
     def random_sample(self, number_of_items):
         import random
         random_key_list = random.sample(self, number_of_items)
@@ -163,9 +211,9 @@ class XDict(dict, NakedObject):
         return new_dict
 
     #------------------------------------------------------------------------------
-    # [ xitems method ] (tuple of each key and value in dictionary)
-    #   Generator method that returns tuples of key, value in dictionary
-    #   uses appropriate method from Python 2 and 3
+    # [ xitems method ] (tuple)
+    #   Generator method that returns tuples of every key, value in dictionary
+    #   uses appropriate method from Python 2 and 3 interpreters
     #------------------------------------------------------------------------------
     def xitems(self):
         from Naked.toolshed.python import py_major_version
@@ -175,7 +223,7 @@ class XDict(dict, NakedObject):
             return self.iteritems()
 
 #------------------------------------------------------------------------------
-# [ XList class ]
+# [[ XList class ]]
 #  An inherited extension to the list object that permits attachment of attributes
 #------------------------------------------------------------------------------
 class XList(list, NakedObject):
@@ -184,26 +232,38 @@ class XList(list, NakedObject):
         NakedObject.__init__(self, attributes)
 
     #------------------------------------------------------------------------------
-    # Operator Overloads/Defs
+    # XList Operator Overloads
     #------------------------------------------------------------------------------
 
-    # + operator overload extends the XList with one or more lists
+    #------------------------------------------------------------------------------
+    # + operator overload
+    #   extends XList with one or more other lists (`*other_lists`)
+    #------------------------------------------------------------------------------
     def __add__(self, *other_lists):
         for the_list in other_lists:
             self.extend(the_list)
         return self
 
-    #   += operator overload to extend the XList with the argument list
+    #------------------------------------------------------------------------------
+    # += overload
+    #  extends XList with one other list (`another_list`)
+    #------------------------------------------------------------------------------
     def __iadd__(self, another_list):
         self.extend(another_list)
         return self
 
-    #   >> operator is overloaded to extend the argument list with the XList
+    #------------------------------------------------------------------------------
+    # >> overload
+    #  extends the argument list with the self list (left extends right side)
+    #------------------------------------------------------------------------------
     def __rshift__(self, another_list):
         another_list.extend(self)
         return another_list
 
-    #   << operator is overloaded to extend the XList with the argument list
+    #------------------------------------------------------------------------------
+    # << overload
+    #  extends self list with the argument list (right extends left side)
+    #------------------------------------------------------------------------------
     def __lshift__(self, another_list):
         self.extend(another_list)
         return self
@@ -224,13 +284,6 @@ class XList(list, NakedObject):
         return separator.join(self)
 
     #------------------------------------------------------------------------------
-    # [ prefix method ] (list of strings)
-    #  Prepend a string to each list item string
-    #------------------------------------------------------------------------------
-    def prefix(self, before):
-        return [ "".join([before, x]) for x in self ]
-
-    #------------------------------------------------------------------------------
     # [ postfix method ] (list of strings)
     #  Append a string to each list item string
     #------------------------------------------------------------------------------
@@ -238,62 +291,134 @@ class XList(list, NakedObject):
         return [ "".join([x, after]) for x in self ]
 
     #------------------------------------------------------------------------------
+    # [ prefix method ] (list of strings)
+    #  Prepend a string to each list item string
+    #------------------------------------------------------------------------------
+    def prefix(self, before):
+        return [ "".join([before, x]) for x in self ]
+
+    #------------------------------------------------------------------------------
     # [ surround method ] (list of strings)
-    #  Surround each list item with a before and after string argument passed to the method
+    #  Surround each list item string with a before and after string argument passed to the method
     #------------------------------------------------------------------------------
     def surround(self, before, after):
         return [ "".join([before, x, after]) for x in self ]
 
-    # Numeric methods
+    #------------------------------------------------------------------------------
+    # XList Numeric Methods
+    #------------------------------------------------------------------------------
+    # [ max method ] (list dependent type, single value)
+    #  return maximum value from the list items
+    #------------------------------------------------------------------------------
     def max(self):
         return max(self)
 
+    #------------------------------------------------------------------------------
+    # [ min method ] (list dependent type, single value)
+    #  return minimum value from the list items
+    #------------------------------------------------------------------------------
     def min(self):
         return min(self)
 
+    #------------------------------------------------------------------------------
+    # [ sum method ] (list dependent type, single value)
+    #  return the sum of all list items
+    #------------------------------------------------------------------------------
     def sum(self):
         return sum(self)
 
-    # remove duplicate items in an XList
+    #------------------------------------------------------------------------------
+    # XList Data Management Methods
+    #------------------------------------------------------------------------------
+    #------------------------------------------------------------------------------
+    # [ count_duplicates method ] (integer)
+    #   returns an integer count of number of duplicate values
+    #------------------------------------------------------------------------------
+    def count_duplicates(self):
+        length = len(self)
+        length_wo_dupes = len(set(self))
+        return length - length_wo_dupes
+
+    #------------------------------------------------------------------------------
+    # [ remove_duplicates ] (XList)
+    #  returns a new XList with duplicates removed
+    #------------------------------------------------------------------------------
     def remove_duplicates(self):
         return XList( set(self), self._getAttributeDict() )
 
-    # map a function to every item in the XList
-    def map_to_items(self, the_func):
-        return XList( map(the_func, self), self._getAttributeDict() )
-
-    # map a function to items that return True on `conditional_function`
-    def conditional_map_to_items(self, conditional_function, result_function):
+    #------------------------------------------------------------------------------
+    # XList Function Mapping Methods
+    #------------------------------------------------------------------------------
+    #------------------------------------------------------------------------------
+    # [ map_to_items method ] (XList)
+    #  returns original XList with modification of each item based upon `mapped_function`
+    #------------------------------------------------------------------------------
+    def map_to_items(self, mapped_function):
+        # return XList( map(mapped_function, self), self._getAttributeDict() ) - slower
         for index, item in enumerate(self):
-            if conditional_function(item):
-                self[index] = result_function(item)
+            self[index] = mapped_function(item)
         return self
 
-    # count of an item of `test_string`
-    def count_item(self, test_string):
+    #------------------------------------------------------------------------------
+    # [ conditional_map_to_items method ] (XList)
+    #  returns original XList with modification of items that meet True condition in
+    #  `conditional_function` with change performed as defined in `mapped_function`
+    #------------------------------------------------------------------------------
+    def conditional_map_to_items(self, conditional_function, mapped_function):
+        for index, item in enumerate(self):
+            if conditional_function(item):
+                self[index] = mapped_function(item)
+        return self
+
+    #------------------------------------------------------------------------------
+    # XList Stats/Distribution Methods
+    #------------------------------------------------------------------------------
+    #------------------------------------------------------------------------------
+    # [ count_item method ] (integer)
+    #  returns an integer count of the number of items in the list that == `test_obj`
+    #------------------------------------------------------------------------------
+    def count_item(self, test_obj):
         count = 0
         for item_value in self:
-            if test_string == item_value:
+            if test_obj == item_value:
                 count += 1
         return count
 
-    # return a random item from list
+    ## TODO : add a case-insensitive count_item method for strings
+
+    #------------------------------------------------------------------------------
+    # [ random method ] (list)
+    #  returns a single item list with a random element from the original XList
+    #------------------------------------------------------------------------------
     def random(self):
         import random
         return random.choice(self)
 
-    # return random sample of `number_of_items` items from list
+    #------------------------------------------------------------------------------
+    # [ random_sample method ] (list)
+    #  returns a list with one or more random items from the original XList
+    #  number of items determined by the `number_of_items` argument
+    #------------------------------------------------------------------------------
     def random_sample(self, number_of_items):
         import random
         return random.sample(self, number_of_items)
 
-    # randomly shuffle the items in the list
+    #------------------------------------------------------------------------------
+    # [ shuffle method ] (XList)
+    #   randomly shuffle the contents of the list
+    #------------------------------------------------------------------------------
     def shuffle(self):
         import random
         random.shuffle(self)
         return self
 
-    # single wildcard match
+    #------------------------------------------------------------------------------
+    # XList Match Methods
+    #------------------------------------------------------------------------------
+    #------------------------------------------------------------------------------
+    # [ wildcard_match method ] (list)
+    #  returns a list of items that match the `wildcard` argument
+    #------------------------------------------------------------------------------
     def wildcard_match(self, wildcard):
         if self.hasAttribute('nkd_fnmatchcase'):
             fnmatchcase = self.nkd_fnmatchcase
@@ -302,7 +427,10 @@ class XList(list, NakedObject):
             self.nkd_fnmatchcase = fnmatchcase
         return [ x for x in self if fnmatchcase(x, wildcard) ]
 
-    # multiple wildcard match, separate wildcards with | symbol in the argument
+    #------------------------------------------------------------------------------
+    # [ multi_wildcard_match method ] (list)
+    #  returns a list of items that match one or more | separated wildcards passed as string
+    #------------------------------------------------------------------------------
     def multi_wildcard_match(self, wildcards):
         if self.hasAttribute('nkd_fnmatchcase'):
             fnmatchcase = self.nkd_fnmatchcase
@@ -318,7 +446,7 @@ class XList(list, NakedObject):
         return return_list
 
     #------------------------------------------------------------------------------
-    # Conversion Methods
+    # XList Conversion Methods
     #------------------------------------------------------------------------------
     # [ ndarray method ] (Numpy ndarray object)
     #  returns a Numby ndarray object by conversion from the XList object
@@ -333,13 +461,29 @@ class XList(list, NakedObject):
                 sys.stderr.write("Naked Framework Error: unable to return base filename from filename() function (Naked.toolshed.system).")
             raise ie
 
+    #------------------------------------------------------------------------------
+    # [ xset method ] (XSet)
+    #  return an XSet with unique XList item values and XList attributes
+    #------------------------------------------------------------------------------
     def xset(self):
         attr_dict = self._getAttributeDict()
         return XSet(set(self), attr_dict)
 
+    #------------------------------------------------------------------------------
+    # [ xfset method ] (XFSet)
+    #  return an XFSet with unique XList item values and XList attributes
+    #------------------------------------------------------------------------------
     def xfset(self):
         attr_dict = self._getAttributeDict()
         return XFSet(set(self), attr_dict)
+
+    #------------------------------------------------------------------------------
+    # [ xtuple method ] (XTuple)
+    #  returns an XTuple with XList item values and XList attributes
+    #------------------------------------------------------------------------------
+    def xtuple(self):
+        attr_dict = self._getAttributeDict()
+        return XTuple(tuple(self), attr_dict)
 
     #------------------------------------------------------------------------------
     # XList Iterables
@@ -353,10 +497,10 @@ class XList(list, NakedObject):
 
 
 #------------------------------------------------------------------------------
-# [ XPriorityQueue class ]
+# [[ XPriorityQueue class ]]
 #
 #------------------------------------------------------------------------------
-import heapq
+from heapq import heappush, heappop
 class XPriorityQueue(NakedObject):
     def __init__(self, initial_iterable=[], attributes={}):
         NakedObject.__init__(self, attributes)
@@ -365,22 +509,22 @@ class XPriorityQueue(NakedObject):
 
     # O(log n) complexity
     def push(self, the_object, priority):
-        heapq.heappush(self._queue, (-priority, self._index, the_object))
+        heappush(self._queue, (-priority, self._index, the_object))
         self._index += 1
 
     # O(log n) complexity
     def pop(self):
-        return heapq.heappop(self._queue)[-1]
+        return heappop(self._queue)[-1]
 
     # push new object and return the highest priority object
     def push_and_pop(self, the_object, priority):
-        heapq.heappush(self._queue, (-priority, self._index, the_object))
+        heappush(self._queue, (-priority, self._index, the_object))
         self._index += 1
-        return heapq.heappop(self._queue)[-1]
+        return heappop(self._queue)[-1]
 
 
 #------------------------------------------------------------------------------
-# [ XQueue class ]
+# [[ XQueue class ]]
 #
 #------------------------------------------------------------------------------
 from collections import deque
@@ -391,7 +535,7 @@ class XQueue(deque, NakedObject):
 
 
 #------------------------------------------------------------------------------
-# [ XSet class ]
+# [[ XSet class ]]
 #  An inherited extension to the mutable set object that permits attribute assignment
 #  Inherits from set and from NakedObject (see methods in NakedObject at top of this module
 #------------------------------------------------------------------------------
@@ -419,7 +563,7 @@ class XSet(set, NakedObject):
         return XFSet(self, attr_dict)
 
 #------------------------------------------------------------------------------
-# [ XFSet class ]
+# [[ XFSet class ]]
 #  An inherited extension to the immutable frozenset object that permits attribute assignment
 #  Immutable so there is no setter method, attributes must be set in the constructor
 #------------------------------------------------------------------------------
@@ -435,7 +579,10 @@ class XFSet(frozenset):
         return self.__dict__
 
     def getAttribute(self, attribute):
-        return getattr(self, attribute)
+        if hasattr(self, attribute):
+            return getattr(self, attribute)
+        else:
+            return None
 
     def xlist(self):
         attr_dict = self._getAttributeDict()
@@ -445,13 +592,12 @@ class XFSet(frozenset):
         attr_dict = self._getAttributeDict()
         return XSet(self, attr_dict)
 
-# TODO: test for unicode and use it instead of str in Py2
 #------------------------------------------------------------------------------
-# [ XString class ]
-#   An inherited extension to the immutable string object that permits attributes
+# [[ XString class ]]
+#   An inherited extension to the immutable string object that permits attribute assignment
 #   Immutable so there is no setter method, attributes must be set in the constructor
-#   Python 2: byte string by default, can cast to normalized UTF-8 with unicode() method
-#   Python 3: unicode Py3 string by default, can normalize with unicode() method
+#   Python 2: byte string by default, can cast to normalized UTF-8 with XString().unicode() method
+#   Python 3: unicode string by default, can normalize with XString().unicode() method
 #------------------------------------------------------------------------------
 class XString(str):
     def __new__(cls, string_text, attributes={}):
@@ -462,14 +608,24 @@ class XString(str):
         return str_obj
 
     def getAttribute(self, attribute):
-        return getattr(self, attribute)
+        if hasattr(self, attribute):
+            return getattr(self, attribute)
+        else:
+            return None
+
+    ## TODO: see where + vs. join breakpoint becomes important
+    def concat(self, *strings):
+        str_list = []
+        for x in strings:
+            str_list.append(x)
+        return "".join(str_list)
 
     # fastest substring search truth test
     def contains(self, substring):
         return substring in self
 
     # split the string on one or more delimiters, return list
-    # if single char, then uses str.split(), if multiple chars then uses re.split
+    # if up to two chars, then uses str.split(), if more chars then use re.split
     def xsplit(self, split_delimiter):
         length = len(split_delimiter)
         if length > 2:
@@ -514,7 +670,7 @@ class XString(str):
             return normalize('NFKD', self)
 
 #------------------------------------------------------------------------------
-# [ XTuple class ]
+# [[ XTuple class ]]
 #
 #------------------------------------------------------------------------------
 class XTuple(tuple):
@@ -528,9 +684,12 @@ class XTuple(tuple):
 
 if __name__ == '__main__':
     pass
-    # nl = XList(['a', 'b', 'c'], {"version":"1.0.1", "test":"code"})
-    # nl = nl + ['d', 'e', 'f'] + ['g', 'h', 'i']
-    # print(nl)
+    # no = nobj({"version":"1.0.1", "test":"code"})
+    # print(no)
+    # print(no.version)
+    # print(no.test)
+    # nl = XList([1, 2, 3, 1, 2, 5], {"version":"1.0.1", "test":"code"})
+    # print(nl.count_duplicates())
     # the_list = list(range(5000))
     # nl = XList(the_list)
     # nq = XPriorityQueue()
@@ -551,10 +710,15 @@ if __name__ == '__main__':
     # xs += {'bogus', 'yep'}
     # print(xs)
 
-    # xd = XDict({'test2': 0, 'another': 1}, {'a': '1', 'b': '2'})
+    # xd = XDict({'test2': 0, 'is': 1}, {'a': '1', 'b': '2'})
     # ad = {'test': 0, 'is': 2}
-    # ld = {'last': 3}
+    # ld = xd.intersection(ad)
+    # print(ld)
     # xd = xd + ad + ld
+    # print(xd.map_to_vals(pr))
+    # print(xd.a)
+    # print(xd)
+    # print(xd.a)
     # print(xd.min_val())
     # print(xd.conditional_map_to_vals(matcher, resulter))
 
