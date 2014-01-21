@@ -21,7 +21,8 @@ debug = True
 #------------------------------------------------------------------------------
 # Usage String
 #------------------------------------------------------------------------------
-usage = """<primary command> [secondary command] [option(s)] [argument(s)]
+usage = """
+Usage: naked <primary command> [secondary command] [option(s)] [argument(s)]
 --- Use 'naked help' for detailed help ---
 """
 
@@ -36,7 +37,13 @@ help = """
  MIT license
 ---------------------------------------------------
 
+ABOUT
+
+The Naked framework includes the "naked" executable and a Python extension library that can be used for application development.  The naked executable creates a complete directory structure for a command suite application with appropriate file stubs.  The library provides parsing of user entered commands into a Python object as well as type, method, & function extensions to the Python standard library.
+
 USAGE
+
+The naked executable syntax is:
 
   naked <primary command> [secondary command] [option(s)] [argument(s)]
 
