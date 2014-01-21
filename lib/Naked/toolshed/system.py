@@ -162,6 +162,31 @@ def cwd(dir=""):
 
 #------------------------------------------------------------------------------
 #
+# DIRECTORY WRITES
+#
+#------------------------------------------------------------------------------
+
+## TODO: add tests
+#------------------------------------------------------------------------------
+# [ make_dirs function ] (--none--)
+#  make a new directory path (recursive if multiple levels of depth) if it
+#  DOES NOT already exist
+#------------------------------------------------------------------------------
+def make_dirs(dirpath):
+    try:
+        import os
+        import errno
+        os.makedirs(dirpath)
+    except OSError as ose:
+        if ose.errno != errno.EEXIST: # directory already exists
+            if DEBUG_FLAG:
+                sys.stderr.write("Naked Framework Error: the directory path passed as an argument to the make_dirs() function already exists (Naked.toolshed.system).")
+            raise ose
+    except Exception as e:
+        raise e
+
+#------------------------------------------------------------------------------
+#
 # FILE & DIRECTORY TESTING
 #
 #------------------------------------------------------------------------------
