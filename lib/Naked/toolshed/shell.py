@@ -25,7 +25,7 @@ def run(command, suppress_output=False, suppress_exit_status_call=False):
         if not suppress_output:
             sys.stderr.write(cpe.output)
 
-        if not suppress_status_call:
+        if not suppress_exit_status_call:
             if cpe.returncode:
                 sys.exit(cpe.returncode)
             else:
@@ -56,7 +56,7 @@ def run_py(command, suppress_output=False, suppress_exit_status_call=False):
         if not suppress_output:
             sys.stderr.write(cpe.output)
 
-        if not suppress_status_call:
+        if not suppress_exit_status_call:
             if cpe.returncode:
                 sys.exit(cpe.returncode)
             else:
@@ -90,7 +90,7 @@ def run_rb(file_path, args="", suppress_output=False, suppress_exit_status_call=
         if not suppress_output:
             sys.stderr.write(cpe.output)
 
-        if not suppress_status_call:
+        if not suppress_exit_status_call:
             if cpe.returncode:
                 sys.exit(cpe.returncode)
             else:
@@ -124,7 +124,7 @@ def run_js(file_path, args="", suppress_output=False, suppress_exit_status_call=
         if not suppress_output:
             sys.stderr.write(cpe.output)
 
-        if not suppress_status_call:
+        if not suppress_exit_status_call:
             if cpe.returncode:
                 sys.exit(cpe.returncode)
             else:
