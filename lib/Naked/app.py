@@ -22,15 +22,16 @@
 # Application start
 def main():
     import sys
-    import Naked.commandline
+    from Naked.commandline import Command
+    from Naked.toolshed.state import StateObject
 
     #------------------------------------------------------------------------------------------
     # [ Instantiate command line object ]
     #   used for all subsequent conditional logic in the CLI application
     #------------------------------------------------------------------------------------------
-    c = Naked.commandline.Command(sys.argv[0], sys.argv[1:])
+    c = Command(sys.argv[0], sys.argv[1:])
 
-    ## TODO: instantiate a state object
+    state = StateObject()
     #------------------------------------------------------------------------------------------
     # [ Command Suite Validation ] - early validation of appropriate command syntax
     # Test that user entered a primary command, print usage if not
@@ -49,8 +50,8 @@ def main():
         abs_dirpath = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "toolshed", "c")
         compile_c_code(abs_dirpath) # function calls exit status code
     elif c.cmd == "test":
-        # import Naked.templates.licenses as licenses
-        # print(licenses.mit_license)
+        import Naked.templates.licenses as licenses
+        print()
         #if c.option("-t"): c.truth = True
         #print(c.truth)
     elif c.cmd == "dl":
