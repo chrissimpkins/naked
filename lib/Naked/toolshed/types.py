@@ -4,7 +4,6 @@
 ##TODO : make it optional to maintain state in the returned object to reduce overhead
 from Naked.settings import debug as DEBUG_FLAG
 
-## TODO : StateObject : include relevant metadata useful to developer
 #------------------------------------------------------------------------------
 # [[ NakedObject class ]]
 #   A generic Python object
