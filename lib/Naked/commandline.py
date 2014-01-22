@@ -233,7 +233,7 @@ class Command:
     # Help Command/Option Handler
     #------------------------------------------------------------------------------
     def help(self):
-        if ( (self.option("--help")) or (self.cmd == "help") ):
+        if ( (self.option("--help")) or (self.cmd == "help") or (self.option("-h")) ):
             return True
         else:
             return False
@@ -251,7 +251,7 @@ class Command:
     # Version Command/Option Handler
     #------------------------------------------------------------------------------
     def version(self):
-        if ( (self.option("--version")) or (self.cmd == "version") ):
+        if ( (self.option("--version")) or (self.cmd == "version") or (self.option("-v"))):
             return True
         else:
             return False
