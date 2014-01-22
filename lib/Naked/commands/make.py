@@ -7,12 +7,25 @@ import Naked.toolshed.ink as ink
 import datetime
 import sys
 
+## TODO: Check for a local settings file (appname.yaml)
+## TODO: make directories and files
+#------------------------------------------------------------------------------
+# [ MakeController class ]
+#   Top level logic for the make command
+#------------------------------------------------------------------------------
 class MakeController:
 	def __init__(self, app_name):
-		i = InfoCompiler(app_name)
+		self.app_name = app_name
+
+	def run(self):
+		i = InfoCompiler(self.app_name)
 		data_container = i.getUserInfo()
 		print(data_container.__dict__)
 
+#------------------------------------------------------------------------------
+# [ InfoCompiler class ]
+#  obtain information from user in order to build a new project
+#------------------------------------------------------------------------------
 class InfoCompiler:
 	def __init__(self, app_name):
 		self.data = DataContainer()
@@ -21,7 +34,7 @@ class InfoCompiler:
 
 	def getUserInfo(self):
 		if not self.displayed_info_flag:
-			print("We need some information to generate your project.")
+			print("We need some information to create your project.")
 			self.displayed_info_flag = 1
 		if python.is_py2():
 			self.data.developer = raw_input("Enter the licensing developer or organization (q=quit): ")
@@ -65,6 +78,10 @@ class InfoCompiler:
 		else:
 			return False
 
+#------------------------------------------------------------------------------
+# [ getHeaderTemplate function ] (string)
+#  returns the Ink header template for user confirmation
+#------------------------------------------------------------------------------
 def getHeaderTemplate():
 	templ_str = """
 ----------------------------------------------------------
@@ -75,15 +92,26 @@ def getHeaderTemplate():
 	"""
 	return templ_str
 
-
+#------------------------------------------------------------------------------
+# [ DataContainer class ]
+#   state maintenance object that holds project information
+#------------------------------------------------------------------------------
 class DataContainer:
 	def __init__(self):
 		self.cwd = system.cwd()
 		self.year = str(datetime.datetime.now().year)
 
+#------------------------------------------------------------------------------
+# [ DirectoryBuilder class ]
+#   generation of directory structure for a new project
+#------------------------------------------------------------------------------
 class DirectoryBuilder:
 	pass
 
+#------------------------------------------------------------------------------
+# [ FileBuilder class ]
+#  generate the files for a new project
+#------------------------------------------------------------------------------
 class FileBuilder:
 	pass
 
