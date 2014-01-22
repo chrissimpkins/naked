@@ -16,7 +16,7 @@
 # c.flag(flag_string) = test for presence of a "--option=argument" style flag
 #
 # c.arg(arg_string) = returns the next positional argument to the arg_string argument
-# c.flag(flag_string) = returns the flag assignment for a "--option=argument" style flag
+# c.flag_arg(flag_string) = returns the flag assignment for a "--option=argument" style flag
 #------------------------------------------------------------------------------------
 
 # Application start
@@ -30,11 +30,13 @@ def main():
     #   used for all subsequent conditional logic in the CLI application
     #------------------------------------------------------------------------------------------
     c = Command(sys.argv[0], sys.argv[1:])
-
+    #------------------------------------------------------------------------------
+    # [ Instantiate state object ]
+    #------------------------------------------------------------------------------
     state = StateObject()
     #------------------------------------------------------------------------------------------
     # [ Command Suite Validation ] - early validation of appropriate command syntax
-    # Test that user entered a primary command, print usage if not
+    #  Test that user entered a primary command, print usage if not
     #------------------------------------------------------------------------------------------
     if not c.command_suite_validates():
         from Naked.commands.usage import Usage
@@ -49,6 +51,10 @@ def main():
         import os, inspect
         abs_dirpath = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "toolshed", "c")
         compile_c_code(abs_dirpath) # function calls exit status code
+    elif c.cmd == "make":
+        from Naked.commands.make import MakeController
+        if c.cmd2:
+            m = MakeController(c.cmd2)
     elif c.cmd == "test":
         import Naked.templates.licenses as licenses
         print()
