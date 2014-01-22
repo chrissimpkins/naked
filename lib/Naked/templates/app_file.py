@@ -22,19 +22,24 @@ app_file_string = """
 # c.flag(flag_string) = test for presence of a "option=argument" style flag
 #
 # c.arg(arg_string) = returns the next positional argument to the arg_string argument
-# c.flag(flag_string) = returns the flag assignment for a "--option=argument" style flag
+# c.flag_arg(flag_string) = returns the flag assignment for a "--option=argument" style flag
 #------------------------------------------------------------------------------------
 
 # Application start
 def main():
     import sys
-    import Naked.commandline
+    from Naked.commandline import Command
+    from Naked.toolshed.state import StateObject
 
     #------------------------------------------------------------------------------------------
     # [ Instantiate command line object ]
     #   used for all subsequent conditional logic in the CLI application
     #------------------------------------------------------------------------------------------
-    c = Naked.commandline.Command(sys.argv[0], sys.argv[1:])
+    c = Command(sys.argv[0], sys.argv[1:])
+    #------------------------------------------------------------------------------
+    # [ Instantiate state object ]
+    #------------------------------------------------------------------------------
+    state = StateObject()
     #------------------------------------------------------------------------------------------
     # [ Command Suite Validation ] - early validation of appropriate command syntax
     # Test that user entered a primary command, print usage if not
@@ -47,7 +52,7 @@ def main():
     # [ PRIMARY COMMAND LOGIC ]
     #   Enter your command line parsing logic below
     #------------------------------------------------------------------------------------------
-    # Example Usage -------------------------------
+    # Example usage ------------------------------->>>
     if c.cmd == 'hello':
     	if c.cmd2 = 'world':
     		if c.option('--print'):
@@ -56,6 +61,11 @@ def main():
     	if c.option_with_arg('--with'):
     		friend_of_spam = c.arg('--with')      # user enters <executable> spam --with eggs
     		print('spam and ' + friend_of_spam)   # prints 'spam and eggs'
+    elif c.cmd == 'naked':
+        if c.flag("--language"):
+            lang = c.flag_arg("--language")       # user enters <executable> naked --language=python
+            print("Naked & " + lang)              # prints 'Naked & python'
+    # End example --------------------------------->>>
 
 
     #------------------------------------------------------------------------------------------
