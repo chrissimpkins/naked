@@ -49,15 +49,17 @@ The naked executable syntax is:
 
 The <primary command> is mandatory and includes one of the commands in the following section.  The [bracketed] syntax structure is optional and dependent upon the primary command that you use.  Use the command 'naked <primary command> help' for more information about a specific primary command.
 
-PRIMARY COMMANDS [secondary commands]
+PRIMARY COMMANDS  [secondary commands]
 
-  bump 		[major, minor, patch]
-  help 		- none -
-  locate	[uniset, settings]
-  make 		[project, uniset]
-  push 		- none -
-  usage 	- none -
-  version 	- none -
+  build                 - none -
+  bump            [major, minor, patch]
+  help                  - none -
+  locate          [uniset, settings]
+  make            [project, uniset]
+  push                  - none -
+  unbump          [major, minor, patch]
+  usage                 - none -
+  version               - none -
 
 OPTIONS
 
