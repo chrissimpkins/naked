@@ -55,6 +55,7 @@ def main():
         from Naked.commands.make import MakeController
         if c.cmd2:
             m = MakeController(c.cmd2)
+            m.run()
     elif c.cmd == "test":
         import Naked.templates.licenses as licenses
         print()
