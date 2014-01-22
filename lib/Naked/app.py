@@ -25,10 +25,12 @@ def main():
     import Naked.commandline
 
     #------------------------------------------------------------------------------------------
-    # [ Create command line object ]
+    # [ Instantiate command line object ]
     #   used for all subsequent conditional logic in the CLI application
     #------------------------------------------------------------------------------------------
     c = Naked.commandline.Command(sys.argv[0], sys.argv[1:])
+
+    ## TODO: instantiate a state object
     #------------------------------------------------------------------------------------------
     # [ Command Suite Validation ] - early validation of appropriate command syntax
     # Test that user entered a primary command, print usage if not
@@ -41,9 +43,14 @@ def main():
     # [ PRIMARY COMMAND LOGIC ]
     #   Test for primary commands and handle them
     #------------------------------------------------------------------------------------------
-    if c.cmd == "test":
-        import Naked.templates.licenses as licenses
-        print(licenses.mit_license)
+    if c.cmd == "build":
+        from Naked.commands.build import compile_c_code
+        import os, inspect
+        abs_dirpath = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "toolshed", "c")
+        compile_c_code(abs_dirpath) # function calls exit status code
+    elif c.cmd == "test":
+        # import Naked.templates.licenses as licenses
+        # print(licenses.mit_license)
         #if c.option("-t"): c.truth = True
         #print(c.truth)
     elif c.cmd == "dl":
