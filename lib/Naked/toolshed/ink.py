@@ -91,9 +91,11 @@ class Renderer:
                 local_template = local_template.replace(replace_string, value)
         return local_template
 
+    ##TODO : multiple file render method?
+
 
 if __name__ == '__main__':
     pass
     # template = Template("This is a of the {{test}} of the {{document}} {{type}} and more of the {{test}} {{document}} {{type}}")
-    # renderer = Renderer(template, {'test': 'a test', 'document':'testing document', 'type':'of mine', 'bogus': 'bogus test'})
+    # renderer = Renderer(template, {'test': 'ব য', 'document':'testing document', 'type':'of mine', 'bogus': 'bogus test'})
     # print(renderer.render())
