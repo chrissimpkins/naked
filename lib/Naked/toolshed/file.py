@@ -184,7 +184,7 @@ class FileWriter(IO):
         except IOError as ioe:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to open file for write with the write_utf8() method (Naked.toolshed.file.py).")
-            raise e
+            raise ioe
         try:
             import unicodedata
             norm_text = unicodedata.normalize('NFKD', text) # NKFD normalization of the unicode data before write
