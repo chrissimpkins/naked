@@ -24,6 +24,7 @@ def main():
     import sys
     from Naked.commandline import Command
     from Naked.toolshed.state import StateObject
+    from Naked.toolshed.system import stderr
 
     #------------------------------------------------------------------------------------------
     # [ Instantiate command line object ]
@@ -53,9 +54,11 @@ def main():
         compile_c_code(abs_dirpath) # function calls exit status code
     elif c.cmd == "make":
         from Naked.commands.make import MakeController
-        if c.cmd2:
-            m = MakeController(c.cmd2)
-            m.run()
+        if c.arg1:
+            m = MakeController(c.arg1)
+        else:
+            m = MakeController(None)
+        m.run()
     elif c.cmd == "test":
         import Naked.templates.licenses as licenses
         print()
