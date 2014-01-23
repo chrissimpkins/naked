@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-# VARS: app_name, developer
+# VARS: app_name, developer, license
 setup_py_string = """
 import os
 from setuptools import setup, find_packages
@@ -17,7 +17,7 @@ setup(
     description='',
     long_description=(file_read('README.rst')),
     url='',
-    license='',
+    license='{{license}}',
     author='{{developer}}',
     author_email='',
     platforms=['any'],
