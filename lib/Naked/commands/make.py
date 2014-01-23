@@ -15,242 +15,319 @@ import sys
 #   Top level logic for the make command
 #------------------------------------------------------------------------------
 class MakeController:
-	def __init__(self, app_name):
-		self.app_name = app_name
+    def __init__(self, app_name):
+        self.app_name = app_name
 
-	def run(self):
-		if self.app_name == None:
-			i = InfoCompiler(None)
-			data_container = i.getSetupFileInfo()
-		else:
-			i = InfoCompiler(self.app_name)
-			data_container = i.getUserInfo()
+    def run(self):
+        if self.app_name == None:
+            i = InfoCompiler(None)
+            data_container = i.getSetupFileInfo()
+        else:
+            i = InfoCompiler(self.app_name)
+            data_container = i.getUserInfo()
 
-		db = DirectoryBuilder(data_container)
-		db.build()
-		# fb = FileBuilder(data_container)
-		# fb.build()
+        db = DirectoryBuilder(data_container)
+        db.build()
+        fb = FileBuilder(data_container)
+        fb.build()
 
 #------------------------------------------------------------------------------
 # [ InfoCompiler class ]
 #  obtain information from user in order to build a new project
 #------------------------------------------------------------------------------
 class InfoCompiler:
-	def __init__(self, app_name):
-		self.data = DataContainer()
-		self.data.app_name = app_name
-		self.displayed_info_flag = 0
+    def __init__(self, app_name):
+        self.data = DataContainer()
+        self.data.app_name = app_name
+        self.displayed_info_flag = 0
 
-	def getUserInfo(self):
-		if not self.displayed_info_flag:
-			print("We need some information to create your project.")
-			self.displayed_info_flag = 1
-		# If no project name, then query for it because this is mandatory
-		if self.data.app_name == None:
-			if python.is_py2:
-				response = raw_input("Please enter your application name (q=quit): ")
-			else:
-				response = input("Please enter your application name (q=quit): ")
-			if len(response) > 0:
-				if response == "q":
-					print("Aborted project build.")
-					sys.exit(0) # user requested quit
-				else:
-					if len(response.split()) > 1: # if more than one word
-						print("The application name must be a single word.  Please try again.")
-						self.getUserInfo()
-					else:
-						self.data.app_name = response
-			else:
-				print("The Naked project will not build without an application name.  Please try again.")
-				return self.getUserInfo()
-		# if project name already set, then obtain the other optional information
-		if python.is_py2():
-			self.data.developer = raw_input("Enter the licensing developer or organization (q=quit): ")
-			if self.data.developer == "q":
-				print("Aborted the project build.")
-				sys.exit(0)
-			self.data.license = raw_input("Enter the license type (or leave blank, q=quit): ")
-			if self.data.license == "q":
-				print("Aborted the project build.")
-				sys.exit(0)
-		else:
-			self.data.developer = input("Enter the licensing developer or organization: ")
-			if self.data.developer == "q":
-				print("Aborted the project build.")
-				sys.exit(0)
-			self.data.license = input("Enter the license type (or leave blank): ")
-			if self.data.license == "q":
-				print("Aborted the project build.")
-				sys.exit(0)
-		if self.confirmData():
-			return self.data
-		else:
-			print("Let's try again...")
-			return self.getUserInfo() # try again
+    def getUserInfo(self):
+        if not self.displayed_info_flag:
+            print("We need some information to create your project.")
+            self.displayed_info_flag = 1
+        # If no project name, then query for it because this is mandatory
+        if self.data.app_name == None:
+            if python.is_py2:
+                response = raw_input("Please enter your application name (q=quit): ")
+            else:
+                response = input("Please enter your application name (q=quit): ")
+            if len(response) > 0:
+                if response == "q":
+                    print("Aborted project build.")
+                    sys.exit(0) # user requested quit
+                else:
+                    if len(response.split()) > 1: # if more than one word
+                        print("The application name must be a single word.  Please try again.")
+                        self.getUserInfo()
+                    else:
+                        self.data.app_name = response
+            else:
+                print("The Naked project will not build without an application name.  Please try again.")
+                return self.getUserInfo()
+        # if project name already set, then obtain the other optional information
+        if python.is_py2():
+            self.data.developer = raw_input("Enter the licensing developer or organization (q=quit): ")
+            if self.data.developer == "q":
+                print("Aborted the project build.")
+                sys.exit(0)
+            self.data.license = raw_input("Enter the license type (or leave blank, q=quit): ")
+            if self.data.license == "q":
+                print("Aborted the project build.")
+                sys.exit(0)
+        else:
+            self.data.developer = input("Enter the licensing developer or organization: ")
+            if self.data.developer == "q":
+                print("Aborted the project build.")
+                sys.exit(0)
+            self.data.license = input("Enter the license type (or leave blank): ")
+            if self.data.license == "q":
+                print("Aborted the project build.")
+                sys.exit(0)
+        if self.confirmData():
+            return self.data
+        else:
+            print("Let's try again...")
+            return self.getUserInfo() # try again
 
-	def getSetupFileInfo(self):
-		files = system.list_all_files_cwd()
-		if len(files) > 0:
-			setupfile_exists = False
-			for a_file in files:
-				if 'naked.yaml' == a_file.lower(): # accepts any permutation of upper/lower case 'naked.yaml'
-					print("Detected a Naked project YAML setup file (" + a_file + ").")
-					setupfile_exists = True
-					fr = nfile.FileReader(a_file)
-					the_yaml = fr.read_utf8()
-					self.parseYaml(the_yaml)
-			if setupfile_exists:
-				if self.confirmData():
-					return self.data
-				else:
-					print("Aborted the project build.")
-					if python.is_py2():
-						response = raw_input("Would you like to modify this information? (y/n) ")
-					else:
-						response = input("Would you like to modify this information? (y/n) ")
-					if response in ['y', 'Y', 'Yes', 'YES', 'yes']:
-						self.displayed_info_flag = 1
-						self.data.app_name = None
-						return self.getUserInfo() # return the result from the getUserInfo command to the calling method
-					else:
-						sys.exit(0)
-			else:
-				return self.getUserInfo() # there are files but no setup file, use the manual entry method
-		else:
-			return self.getUserInfo() # there are no files in the directory, use the manual entry method
-
-
-	def parseYaml(self, yaml_string):
-		import yaml
-		the_yaml = yaml.load(yaml_string)
-		# Parse project name
-		if 'application' in the_yaml:
-			self.data.app_name = the_yaml['application']
-		else:
-			print("Unable to find the application name ('application' field) in naked.yaml")
-			if python.is_py2:
-				response = raw_input("Please enter your application name: ")
-			else:
-				response = input("Please enter your application name: ")
-			if len(response) > 0:
-				self.data.app_name = response # assign the application name at CL if was not entered in file
-			else:
-				print("The Naked project will not build without an application name.  Please try again.")
-				self.displayed_info_flag = 1
-				self.getUserInfo()
-		# Parse developer
-		if 'developer' in the_yaml:
-			self.data.developer = the_yaml['developer'] # set developer
-		else:
-			self.data.developer = ""
-		# Parse license type
-		if 'license' in the_yaml:
-			self.data.license = the_yaml['license'] # set license
-		else:
-			self.data.license = ""
+    def getSetupFileInfo(self):
+        files = system.list_all_files_cwd()
+        if len(files) > 0:
+            setupfile_exists = False
+            for a_file in files:
+                if 'naked.yaml' == a_file.lower(): # accepts any permutation of upper/lower case 'naked.yaml'
+                    print("Detected a Naked project YAML setup file (" + a_file + ").")
+                    setupfile_exists = True
+                    fr = nfile.FileReader(a_file)
+                    the_yaml = fr.read_utf8()
+                    self.parseYaml(the_yaml)
+            if setupfile_exists:
+                if self.confirmData():
+                    return self.data
+                else:
+                    print("Aborted the project build.")
+                    if python.is_py2():
+                        response = raw_input("Would you like to modify this information? (y/n) ")
+                    else:
+                        response = input("Would you like to modify this information? (y/n) ")
+                    if response in ['y', 'Y', 'Yes', 'YES', 'yes']:
+                        self.displayed_info_flag = 1
+                        self.data.app_name = None
+                        return self.getUserInfo() # return the result from the getUserInfo command to the calling method
+                    else:
+                        sys.exit(0)
+            else:
+                return self.getUserInfo() # there are files but no setup file, use the manual entry method
+        else:
+            return self.getUserInfo() # there are no files in the directory, use the manual entry method
 
 
-	def confirmData(self):
-		templ_str = getHeaderTemplate()
-		template = ink.Template(templ_str)
-		renderer = ink.Renderer(template, {'app_name': self.data.app_name, 'developer': self.data.developer, 'license': self.data.license, 'year': self.data.year})
-		display_header = renderer.render()
-		print("\nPlease confirm the information below:")
-		print(display_header)
+    def parseYaml(self, yaml_string):
+        import yaml
+        the_yaml = yaml.load(yaml_string)
+        # Parse project name
+        if 'application' in the_yaml:
+            self.data.app_name = the_yaml['application']
+        else:
+            print("Unable to find the application name ('application' field) in naked.yaml")
+            if python.is_py2:
+                response = raw_input("Please enter your application name: ")
+            else:
+                response = input("Please enter your application name: ")
+            if len(response) > 0:
+                self.data.app_name = response # assign the application name at CL if was not entered in file
+            else:
+                print("The Naked project will not build without an application name.  Please try again.")
+                self.displayed_info_flag = 1
+                self.getUserInfo()
+        # Parse developer
+        if 'developer' in the_yaml:
+            self.data.developer = the_yaml['developer'] # set developer
+        else:
+            self.data.developer = ""
+        # Parse license type
+        if 'license' in the_yaml:
+            self.data.license = the_yaml['license'] # set license
+        else:
+            self.data.license = ""
 
-		if python.is_py2():
-			response = raw_input("Is this correct? (y/n) ")
-		else:
-			response = input("Is this correct? (y/n) ")
 
-		if response in ['y', 'Y', 'yes', 'YES']:
-			return True
-		else:
-			self.data.app_name = None
-			return False
+    def confirmData(self):
+        templ_str = getHeaderTemplate()
+        template = ink.Template(templ_str)
+        renderer = ink.Renderer(template, {'app_name': self.data.app_name, 'developer': self.data.developer, 'license': self.data.license, 'year': self.data.year})
+        display_header = renderer.render()
+        print("\nPlease confirm the information below:")
+        print(display_header)
+
+        if python.is_py2():
+            response = raw_input("Is this correct? (y/n) ")
+        else:
+            response = input("Is this correct? (y/n) ")
+
+        if response in ['y', 'Y', 'yes', 'YES']:
+            return True
+        else:
+            self.data.app_name = None
+            return False
 
 #------------------------------------------------------------------------------
 # [ getHeaderTemplate function ] (string)
 #  returns the Ink header template for user confirmation
 #------------------------------------------------------------------------------
 def getHeaderTemplate():
-	templ_str = """
+    templ_str = """
 ----------------------------------------------------------
  {{app_name}}
  Copyright {{year}} {{developer}}
  {{license}}
 ----------------------------------------------------------
-	"""
-	return templ_str
+    """
+    return templ_str
 
 #------------------------------------------------------------------------------
 # [ DataContainer class ]
 #   state maintenance object that holds project information
 #------------------------------------------------------------------------------
 class DataContainer:
-	def __init__(self):
-		self.cwd = system.cwd()
-		self.year = str(datetime.datetime.now().year)
+    def __init__(self):
+        self.cwd = system.cwd()
+        self.year = str(datetime.datetime.now().year)
 
 #------------------------------------------------------------------------------
 # [ DirectoryBuilder class ]
 #   generation of directory structure for a new project
 #------------------------------------------------------------------------------
 class DirectoryBuilder:
-	def __init__(self, data_container):
-		self.data_container = data_container
+    def __init__(self, data_container):
+        self.data_container = data_container
 
-	def build(self):
-		from Naked.toolshed.system import make_dirs, make_path
+    def build(self):
+        from Naked.toolshed.system import make_dirs, make_path
 
-		top_level_dir = self.data_container.app_name
-		second_level_dirs = ['docs', 'lib', 'tests']
-		lib_subdir = make_path(self.data_container.app_name, 'commands')
+        top_level_dir = self.data_container.app_name
+        second_level_dirs = ['docs', 'lib', 'tests']
+        lib_subdir = make_path(self.data_container.app_name, 'commands')
 
-		for xdir in second_level_dirs:
-			make_dirs(make_path(top_level_dir, xdir))
+        for xdir in second_level_dirs:
+            make_dirs(make_path(top_level_dir, xdir))
 
-		make_dirs(make_path(top_level_dir, 'lib', lib_subdir))
-
-
-
+        make_dirs(make_path(top_level_dir, 'lib', lib_subdir))
 
 #------------------------------------------------------------------------------
 # [ FileBuilder class ]
 #  generate the files for a new project
 #------------------------------------------------------------------------------
 class FileBuilder:
-	def __init__(self, data_container):
-		self.data_container = data_container
+    def __init__(self, data_container):
+        self.data_container = data_container
+        self.file_dictionary = {}
 
-	def build():
-		pass
+    def build(self):
+        self._make_file_paths()
+        self._render_file_strings()
+        self._make_file_dictionary()
 
-	def make_file_paths():
-		from Naked.toolshed.system import make_path
+    def write(self):
+        pass
+        ## TODO: files are included in self.file_dictionary as key = filepath, value = filestring pairs
+        ##   - write to files
 
-		self.top_manifestin = make_path(self.data_container.app_name, 'MANIFEST.in')
-		self.top_readmemd = make_path(self.data_container.app_name, 'README.md')
-		self.top_setupcfg = make_path(self.data_container.app_name, 'setup.cfg')
-		self.top_setuppy = make_path(self.data_container.app_name, 'setup.py')
-		self.docs_license = make_path(self.data_container.app_name, 'docs', 'LICENSE')
-		self.docs_readmerst = make_path(self.data_container.app_name, 'docs', 'README.rst')
-		self.lib_initpy = make_path(self.data_container.app_name, 'lib', '__init__.py')
-		self.lib_profilerpy = make_path(self.data_container.app_name, 'lib', 'profiler.py')
-		self.lib_proj_initpy = make_path(self.data_container.app_name, 'lib', self.data_container.app_name, '__init__.py')
-		self.lib_proj_apppy = make_path(self.data_container.app_name, 'lib', self.data_container.app_name, 'app.py')
-		self.lib_proj_settingspy = make_path(self.data_container.app_name, 'lib', self.data_container.app_name, 'settings.py')
+    def _make_file_paths(self):
+        from Naked.toolshed.system import make_path
 
-	def get_template(self, template):
-		pass
+        self.top_manifestin = make_path(self.data_container.app_name, 'MANIFEST.in')
+        self.top_readmemd = make_path(self.data_container.app_name, 'README.md')
+        self.top_setupcfg = make_path(self.data_container.app_name, 'setup.cfg')
+        self.top_setuppy = make_path(self.data_container.app_name, 'setup.py')
+        self.docs_license = make_path(self.data_container.app_name, 'docs', 'LICENSE')
+        self.docs_readmerst = make_path(self.data_container.app_name, 'docs', 'README.rst')
+        self.lib_initpy = make_path(self.data_container.app_name, 'lib', '__init__.py')
+        self.com_initpy = make_path(self.data_container.app_name, 'lib', 'commands', '__init__.py')
+        self.tests_initpy = make_path(self.data_container.app_name, 'tests', '__init__.py')
+        self.lib_profilerpy = make_path(self.data_container.app_name, 'lib', 'profiler.py')
+        self.lib_proj_initpy = make_path(self.data_container.app_name, 'lib', self.data_container.app_name, '__init__.py')
+        self.lib_proj_apppy = make_path(self.data_container.app_name, 'lib', self.data_container.app_name, 'app.py')
+        self.lib_proj_settingspy = make_path(self.data_container.app_name, 'lib', self.data_container.app_name, 'settings.py')
 
-	def make_template(self, template_string):
-		pass
+    def _render_file_strings(self):
+        from Naked.templates.manifest_in_file import manifest_file_string
+        from Naked.templates.readme_md_file import readme_md_string
+        from Naked.templates.setup_cfg_file import setup_cfg_string
+        from Naked.templates.setup_py_file import setup_py_string
+        from Naked.templates.profiler_file import profiler_file_string
+        from Naked.templates.app_file import app_file_string
+        from Naked.templates.settings_file import settings_file_string
 
-	def render_template(self, template):
-		pass
+        data_dict = self.data_container.__dict__
+
+        self.top_manifestin_rendered = manifest_file_string # no replacements necessary
+        self.top_readmemd_rendered = self._render_template(self._create_template(readme_md_string), data_dict) #requires app_name replacement
+        self.top_setupcfg_rendered = setup_cfg_string # no replacement necessary
+        self.top_setuppy_rendered = self._render_template(self._create_template(setup_py_string), data_dict) # requires app_name, developer replacements
+        self.docs_readmerst_rendered = "" # blank document stub write
+        self.lib_profilerpy_rendered = profiler_file_string # no replacement necessary
+        self.initpy_rendered = "" # blank __init__.py files
+        self.lib_proj_apppy_rendered = self._render_template(self._create_template(app_file_string), data_dict) # requires app_name, developer, license_name, year replacements
+        self.lib_proj_settingspy_rendered = self._render_template(self._create_template(settings_file_string), data_dict) # requires app_name replacement
+
+        if len(self.data_container.license) > 0:
+            license = self.parse_licenses(self.data_container.license) # find the appropriate license template if the license was provided by user
+            if len(license) > 0: # could be empty string if fails to match a license template provided by Naked
+                self.docs_license_rendered = self._render_template(self._create_template(license), data_dict)
+        else:
+            self.docs_license_rendered = ""
+
+    def _make_file_dictionary(self):
+        file_dictionary = {}
+        ## File path : file string key/value pairs
+        file_dictionary[self.top_manifestin] = self.top_manifestin_rendered
+        file_dictionary[self.top_readmemd] = self.top_readmemd_rendered
+        file_dictionary[self.top_setupcfg] = self.top_setupcfg_rendered
+        file_dictionary[self.top_setuppy] = self.top_setuppy_rendered
+        file_dictionary[self.docs_license] = self.docs_license_rendered
+        file_dictionary[self.docs_readmerst] = self.docs_readmerst_rendered
+        file_dictionary[self.lib_initpy] = self.initpy_rendered
+        file_dictionary[self.com_initpy] = self.initpy_rendered
+        file_dictionary[self.tests_initpy] = self.initpy_rendered
+        file_dictionary[self.lib_profilerpy] = self.lib_profilerpy_rendered
+        file_dictionary[self.lib_proj_initpy] = self.initpy_rendered
+        file_dictionary[self.lib_proj_apppy] = self.lib_proj_apppy_rendered
+        file_dictionary[self.lib_proj_settingspy] = self.lib_proj_settingspy_rendered
+
+        self.file_dictionary = file_dictionary
+
+    def _create_template(self, template_string):
+        return ink.Template(template_string)
+
+    def _render_template(self, template, key_dict):
+        r = ink.Renderer(template, key_dict)
+        return r.render()
+
+    def parse_licenses(self, license_string):
+        if len(license_string) > 0:
+            license = license_string.lower() # case insensitive matching, make lower case version
+
+            if license.startswith('apache'):
+                from Naked.templates.licenses import apache_license
+                return apache_license
+            elif license.startswith('bsd'):
+                from Naked.templates.licenses import bsd_license
+                return bsd_license
+            elif license.startswith('gpl'):
+                from Naked.templates.licenses import gpl3_license
+                return gpl3_license
+            elif license.startswith('lgpl'):
+                from Naked.templates.licenses import lgpl_license
+                return lgpl_license
+            elif license.startswith('mit'):
+                from Naked.templates.licenses import mit_license
+                return mit_license
+            elif license.startswith('mozilla'):
+                from Naked.templates.licenses import mozilla_license
+                return mozilla_license
+        else:
+            return ""
 
 
 if __name__ == '__main__':
-	pass
+    pass
