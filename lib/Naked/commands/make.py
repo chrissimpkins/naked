@@ -5,6 +5,8 @@ import Naked.toolshed.system as system
 import Naked.toolshed.python as python
 import Naked.toolshed.file as nfile
 import Naked.toolshed.ink as ink
+from Naked.toolshed.types import XDict, XString
+from Naked.toolshed.system import make_dirs, make_path
 import datetime
 import sys
 
@@ -29,7 +31,22 @@ class MakeController:
         db = DirectoryBuilder(data_container)
         db.build()
         fb = FileBuilder(data_container)
-        fb.build()
+        if fb.build_and_write(): # file write was successful
+            main_script_path = make_path(data_container.app_name, 'lib', data_container.app_name, 'app.py')
+            settings_path = make_path(data_container.app_name, 'lib', data_container.app_name, 'settings.py')
+            command_dir = make_path(data_container.app_name, 'lib', data_container.app_name, 'commands')
+            setuppy_path = make_path(data_container.app_name, 'setup.py')
+            print(" ")
+            print(data_container.app_name + " was successfully built.")
+            print(" ")
+            print("-----")
+            print("Main application script:  " + main_script_path)
+            print("Settings file:  " + settings_path)
+            print("Commands directory:  " + command_dir)
+            print("setup.py file:  " + setuppy_path)
+            print("-----")
+            print(" ")
+            print("Use 'python setup.py develop' from the top level of your project and you can begin testing your application with the executable, " + data_container.app_name)
 
 #------------------------------------------------------------------------------
 # [ InfoCompiler class ]
@@ -202,8 +219,6 @@ class DirectoryBuilder:
         self.data_container = data_container
 
     def build(self):
-        from Naked.toolshed.system import make_dirs, make_path
-
         top_level_dir = self.data_container.app_name
         second_level_dirs = ['docs', 'lib', 'tests']
         lib_subdir = make_path(self.data_container.app_name, 'commands')
@@ -222,15 +237,23 @@ class FileBuilder:
         self.data_container = data_container
         self.file_dictionary = {}
 
-    def build(self):
-        self._make_file_paths()
-        self._render_file_strings()
-        self._make_file_dictionary()
+    def build_and_write(self):
+        self._make_file_paths()      # create the file paths for all generated files
+        self._render_file_strings()  # create the rendered template strings
+        self._make_file_dictionary() # make the file path : file string dictionary
+        self.write_files()           # write out to files
+        return True                  # if made it this far without exception, return True to calling method to confirm file writes
 
-    def write(self):
-        pass
-        ## TODO: files are included in self.file_dictionary as key = filepath, value = filestring pairs
-        ##   - write to files
+    # files are included in self.file_dictionary as key = filepath, value = filestring pairs
+    #  write the files to disk
+    def write_files(self):
+        the_file_xdict = XDict(self.file_dictionary)
+        for filepath, file_string in the_file_xdict.xitems():
+            fw = nfile.FileWriter(filepath)
+            try:
+                fw.write_utf8(file_string)
+            except TypeError as te: # catch unicode write errors
+                fw.write(file_string)
 
     def _make_file_paths(self):
         from Naked.toolshed.system import make_path
@@ -242,7 +265,7 @@ class FileBuilder:
         self.docs_license = make_path(self.data_container.app_name, 'docs', 'LICENSE')
         self.docs_readmerst = make_path(self.data_container.app_name, 'docs', 'README.rst')
         self.lib_initpy = make_path(self.data_container.app_name, 'lib', '__init__.py')
-        self.com_initpy = make_path(self.data_container.app_name, 'lib', 'commands', '__init__.py')
+        self.com_initpy = make_path(self.data_container.app_name, 'lib', self.data_container.app_name, 'commands', '__init__.py')
         self.tests_initpy = make_path(self.data_container.app_name, 'tests', '__init__.py')
         self.lib_profilerpy = make_path(self.data_container.app_name, 'lib', 'profiler.py')
         self.lib_proj_initpy = make_path(self.data_container.app_name, 'lib', self.data_container.app_name, '__init__.py')
@@ -279,20 +302,20 @@ class FileBuilder:
 
     def _make_file_dictionary(self):
         file_dictionary = {}
-        ## File path : file string key/value pairs
-        file_dictionary[self.top_manifestin] = self.top_manifestin_rendered
-        file_dictionary[self.top_readmemd] = self.top_readmemd_rendered
-        file_dictionary[self.top_setupcfg] = self.top_setupcfg_rendered
-        file_dictionary[self.top_setuppy] = self.top_setuppy_rendered
-        file_dictionary[self.docs_license] = self.docs_license_rendered
-        file_dictionary[self.docs_readmerst] = self.docs_readmerst_rendered
-        file_dictionary[self.lib_initpy] = self.initpy_rendered
-        file_dictionary[self.com_initpy] = self.initpy_rendered
-        file_dictionary[self.tests_initpy] = self.initpy_rendered
-        file_dictionary[self.lib_profilerpy] = self.lib_profilerpy_rendered
-        file_dictionary[self.lib_proj_initpy] = self.initpy_rendered
-        file_dictionary[self.lib_proj_apppy] = self.lib_proj_apppy_rendered
-        file_dictionary[self.lib_proj_settingspy] = self.lib_proj_settingspy_rendered
+        ## File path : file string key/value pairs > make as XString and encode as unicode for unicode file writes
+        file_dictionary[self.top_manifestin] = XString(self.top_manifestin_rendered).unicode()
+        file_dictionary[self.top_readmemd] = XString(self.top_readmemd_rendered).unicode()
+        file_dictionary[self.top_setupcfg] = XString(self.top_setupcfg_rendered).unicode()
+        file_dictionary[self.top_setuppy] = XString(self.top_setuppy_rendered).unicode()
+        file_dictionary[self.docs_license] = XString(self.docs_license_rendered).unicode()
+        file_dictionary[self.docs_readmerst] = XString(self.docs_readmerst_rendered).unicode()
+        file_dictionary[self.lib_initpy] = XString(self.initpy_rendered).unicode()
+        file_dictionary[self.com_initpy] = XString(self.initpy_rendered).unicode()
+        file_dictionary[self.tests_initpy] = XString(self.initpy_rendered).unicode()
+        file_dictionary[self.lib_profilerpy] = XString(self.lib_profilerpy_rendered).unicode()
+        file_dictionary[self.lib_proj_initpy] = XString(self.initpy_rendered).unicode()
+        file_dictionary[self.lib_proj_apppy] = XString(self.lib_proj_apppy_rendered).unicode()
+        file_dictionary[self.lib_proj_settingspy] = XString(self.lib_proj_settingspy_rendered).unicode()
 
         self.file_dictionary = file_dictionary
 
