@@ -1,3 +1,7 @@
 naked
 =====
-Naked is a Python command line application framework that is in development and is not in open testing (currently).  More details and full documentation once I complete my own testing...
+Naked is a Python command line application framework that is in development.  It features (1) a client application for automatic project generation with documentation, deployment, and testing project file stubs, and (2) a Python library with an easy to use command line string object parser and numerous Python type/method/function extensions (with the option to compile faster C versions).
+
+A development release coming in the next few weeks.  Documentation development and initial testing is in progress.
+
+Contributions to the code are highly encouraged... will release developer documentation soon.
