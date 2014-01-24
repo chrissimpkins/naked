@@ -48,10 +48,14 @@ def main():
     #   Test for primary commands and handle them
     #------------------------------------------------------------------------------------------
     if c.cmd == "build":
-        from Naked.commands.build import compile_c_code
-        import os, inspect
-        abs_dirpath = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "toolshed", "c")
-        compile_c_code(abs_dirpath) # function calls exit status code
+        if c.cmd2 == "help":
+            from Naked.commands.build import help as build_help
+            build_help()
+        else:
+            from Naked.commands.build import compile_c_code
+            import os, inspect
+            abs_dirpath = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "toolshed", "c")
+            compile_c_code(abs_dirpath) # function calls exit status code
     elif c.cmd == "make":
         from Naked.commands.make import MakeController
         if c.arg1:
@@ -60,8 +64,10 @@ def main():
             m = MakeController(None)
         m.run()
     elif c.cmd == "test":
-        import Naked.templates.licenses as licenses
-        print()
+        from Naked.toolshed.c import types
+        no = types.XList(['item', 'item', 'item', 2, 5, 7])
+        print(no.count_item('item'))
+
         #if c.option("-t"): c.truth = True
         #print(c.truth)
     elif c.cmd == "dl":
