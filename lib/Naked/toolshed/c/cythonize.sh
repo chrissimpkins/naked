@@ -7,9 +7,9 @@ cython ink.pyx
 cython network.pyx
 cython python.pyx
 cython shell.pyx
-cython state.pyx
+cython cstate.pyx
 cython system.pyx
 cython types.pyx
 
 
-echo "Cythonize is complete"
+echo "Cythonization is complete"
