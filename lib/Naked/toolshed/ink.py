@@ -19,13 +19,14 @@ import re
 #  Delimiters:
 #    default = {{variable}}
 #    assign new opening and closing delimiters as parameters when you make a new Template instance
+#    `escape_regex` boolean is a speedup, avoids Python escape of special regex chars if you do not need it
 #------------------------------------------------------------------------------
 class Template(str):
-    def __new__(cls, template_text, open_delimiter="{{", close_delimiter="}}"):
+    def __new__(cls, template_text, open_delimiter="{{", close_delimiter="}}", escape_regex=False):
         obj = str.__new__(cls, template_text)
         obj.odel = open_delimiter
         obj.cdel = close_delimiter
-        obj.varlist = obj._make_var_list(template_text) #contains all unique parsed variables from the template in a list
+        obj.varlist = obj._make_var_list(template_text, escape_regex) #contains all unique parsed variables from the template in a list
         return obj
 
     #------------------------------------------------------------------------------
@@ -33,10 +34,13 @@ class Template(str):
     #   Private method that parses the template string for all variables that match the delimiter pattern
     #   Returns a list of the variable names as strings
     #------------------------------------------------------------------------------
-    def _make_var_list(self, template_text):
-        open_match_pat = self._escape_regex_special_chars(self.odel)
-        close_match_pat = self._escape_regex_special_chars(self.cdel)
-        match_pat = open_match_pat + r'(.*?)' + close_match_pat # capture group contains the variable name used between the opening and closing delimiters
+    def _make_var_list(self, template_text, escape_regex=False):
+        if escape_regex:
+            open_match_pat = self._escape_regex_special_chars(self.odel)
+            close_match_pat = self._escape_regex_special_chars(self.cdel)
+            match_pat = open_match_pat + r'(.*?)' + close_match_pat # capture group contains the variable name used between the opening and closing delimiters
+        else:
+            match_pat = self.odel + r'(.*?)' + self.cdel
         var_list = re.findall(match_pat, template_text) #generate a list that contains the capture group from the matches (i.e. the variables in the template)
         return set(var_list) # remove duplicate entries by converting to set (and lookup speed improvement from hashing)
 
@@ -95,7 +99,7 @@ class Renderer:
 
 
 if __name__ == '__main__':
-    pass
-    # template = Template("This is a of the {{test}} of the {{document}} {{type}} and more of the {{test}} {{document}} {{type}}")
-    # renderer = Renderer(template, {'test': 'ব য', 'document':'testing document', 'type':'of mine', 'bogus': 'bogus test'})
-    # print(renderer.render())
+    # pass
+    template = Template("This is a of the {{test}} of the {{document}} {{type}} and more of the {{test}} {{document}} {{type}}")
+    renderer = Renderer(template, {'test': 'ব য', 'document':'testing document', 'type':'of mine', 'bogus': 'bogus test'})
+    print(renderer.render())
