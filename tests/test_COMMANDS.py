@@ -24,7 +24,7 @@ class NakedUsageCommandTest(unittest.TestCase):
 	def test_usage_command(self):
 		"""Test the usage command"""
 		# the usage string to test against
-		usage_standard = "Usage: " + Naked.settings.app_name + " " + Naked.settings.usage + "\n"
+		usage_standard =  Naked.settings.usage + "\n" #print adds an extra '\n'
 
 		#test the --usage option
 		output = subprocess.check_output(["naked", "--usage"])
