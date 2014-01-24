@@ -4,7 +4,7 @@
 
 #------------------------------------------------------------------------------
 # The Ink Templating System
-#  A lightweight, flexible text templating system
+#  A lightweight, fast, flexible text templating system
 #  Copyright 2014 Christopher Simpkins
 #  MIT License
 #------------------------------------------------------------------------------

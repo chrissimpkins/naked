@@ -3,7 +3,7 @@
 
 #------------------------------------------------------------------------------
 # The Ink Templating System
-#  A lightweight, flexible text templating system
+#  A lightweight, fast, flexible text templating system
 #  Copyright 2014 Christopher Simpkins
 #  MIT License
 #------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ class Renderer:
 
 
 if __name__ == '__main__':
-    # pass
-    template = Template("This is a of the {{test}} of the {{document}} {{type}} and more of the {{test}} {{document}} {{type}}")
-    renderer = Renderer(template, {'test': 'ব য', 'document':'testing document', 'type':'of mine', 'bogus': 'bogus test'})
-    print(renderer.render())
+    pass
+    # template = Template("This is a of the {{test}} of the {{document}} {{type}} and more of the {{test}} {{document}} {{type}}")
+    # renderer = Renderer(template, {'test': 'ব য', 'document':'testing document', 'type':'of mine', 'bogus': 'bogus test'})
+    # print(renderer.render())
