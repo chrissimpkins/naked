@@ -11,7 +11,7 @@ app_name = "naked"
 #------------------------------------------------------------------------------
 major_version = "0"
 minor_version = "1"
-patch_version = "11"
+patch_version = "12"
 
 #------------------------------------------------------------------------------
 # Debug Flag (switch to False for production release code)
@@ -54,8 +54,8 @@ PRIMARY COMMANDS  [secondary commands]
   build                 - none -
   bump            [major, minor, patch]
   help                  - none -
-  locate          [uniset, settings]
-  make            [project, uniset]
+  locate               [settings]
+  make                  - none -
   push                  - none -
   unbump          [major, minor, patch]
   usage                 - none -
