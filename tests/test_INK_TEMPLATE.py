@@ -31,7 +31,7 @@ class NakedInkTemplateTest(unittest.TestCase):
 	def test_ink_make_template_new_delimiters(self):
 		"""Test new Ink template delimiter properties assignment"""
 		template_string = FileReader(self.template_path).read_utf8()
-		template = Template(template_string, "[[", "]]")
+		template = Template(template_string, "[[", "]]", escape_regex=True)
 		self.assertEqual(template.odel, "[[")
 		self.assertEqual(template.cdel, "]]")
 
@@ -56,13 +56,13 @@ class NakedInkTemplateTest(unittest.TestCase):
 	def test_ink_make_template_varlist_new_delimiters(self):
 		"""Test new Ink template variable list property assignment with new delimiters"""
 		template_string = FileReader(self.template_path2).read_utf8()
-		template = Template(template_string, "[[", "]]")
+		template = Template(template_string, "[[", "]]", escape_regex=True) # have to escape special regex chars
 		self.assertEqual(template.varlist, set([u'appname', u'description', u'url', u'license', u'author', u'email']))
 
 	def test_ink_make_template_varlist_new_delimiter_wrong_delim(self):
 		"""Test new Ink template variable list property assignment when new delimiter is wrong"""
 		template_string = FileReader(self.template_path).read_utf8()
-		template = Template(template_string, "[[", "]]")
+		template = Template(template_string, "[[", "]]", escape_regex=True) # have to escape special regex chars
 		self.assertEqual(template.varlist, set([]))
 
 	def test_ink_template_type_string(self):
@@ -137,7 +137,7 @@ class NakedInkTemplateTest(unittest.TestCase):
 		"""Test Ink render with new delimiters"""
 		template_string = FileReader(self.template_path2).read_utf8()
 		standard_string = FileReader(self.standard_path).read_utf8()
-		template = Template(template_string, "[[", "]]")
+		template = Template(template_string, "[[", "]]", escape_regex=True) # have to escape special regex chars
 		renderer = Renderer(template, self.key_dictionary)
 		rendered_doc = renderer.render()
 		self.assertEqual(rendered_doc, standard_string)
