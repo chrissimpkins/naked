@@ -353,7 +353,7 @@ class FileReader(IO):
         try:
             import codecs
             f = codecs.open(self.filepath, encoding='utf_8', mode='r')
-        except IOError, ioe:
+        except IOError as ioe:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to open file for read with read_utf8() method (Naked.toolshed.file.py).")
             raise ioe
