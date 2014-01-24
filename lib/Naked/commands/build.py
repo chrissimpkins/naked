@@ -12,6 +12,20 @@ def compile_c_code(abs_dirpath):
 	chdir(abs_dirpath)
 	run("python setup.py build_ext --inplace")
 
+def help():
+	help_string = """
+Naked build command help
+------------------------
+The build command compiles the Naked C libraries.
+
+USAGE
+  naked build
+
+OPTIONS
+  none
+	"""
+	print(help_string)
+
 
 if __name__ == '__main__':
 	pass
