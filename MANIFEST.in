@@ -1,1 +1,6 @@
 recursive-include docs *
+include lib/Naked/toolshed/c/*.pyx
+include lib/Naked/toolshed/c/*.c
+include lib/Naked/toolshed/c/*.h
+include lib/Naked/toolshed/c/*.py
+include lib/Naked/toolshed/c/*.sh
