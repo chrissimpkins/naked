@@ -54,7 +54,7 @@ PRIMARY COMMANDS  [secondary commands]
   build                 - none -
   bump            [major, minor, patch]
   help                  - none -
-  locate               [settings]
+  locate            [main, settings]
   make                  - none -
   push                  - none -
   unbump          [major, minor, patch]
