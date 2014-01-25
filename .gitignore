@@ -49,3 +49,7 @@ systest.txt
 .idea/scopes/scope_settings.xml
 .idea/vcs.xml
 .idea/workspace.xml
+test.tar.gz
+test.txt
+tests/testfiles/testdir/post.gz
+tests/testfiles/testdir/post.txt
