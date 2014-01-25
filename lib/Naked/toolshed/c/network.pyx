@@ -26,9 +26,9 @@ class HTTP():
     #   returns data stream read from the URL (string)
     #   Default timeout = 10 s from class constructor
     #------------------------------------------------------------------------------
-    def get(self):
+    def get(self, follow_redirects=True):
         try:
-            response = requests.get(self.url, timeout=self.request_timeout)
+            response = requests.get(self.url, timeout=self.request_timeout, allow_redirects=follow_redirects)
             self.res = response # assign the response object from requests to a property on the instance of HTTP class
             return response.text
         except Exception as e:
@@ -94,7 +94,6 @@ class HTTP():
     #   open HTTP data stream with GET request, write file with utf-8 encoded text using returned text data
     #   file path is passed to the method by the developer (default is the base filename in the URL if not specified)
     #   return True on successful pull and write to disk
-    #   Tests: test_NETWORK.py :: test_http_get_text
     #------------------------------------------------------------------------------
     def get_txt_write_file(self, filepath=""):
         try:
@@ -140,9 +139,9 @@ class HTTP():
     #  HTTP POST request for text
     #  returns text from the URL as a string
     #------------------------------------------------------------------------------
-    def post(self):
+    def post(self, follow_redirects=True):
         try:
-            response = requests.post(self.url, timeout=self.request_timeout)
+            response = requests.post(self.url, timeout=self.request_timeout, allow_redirects=follow_redirects)
             self.res = response # assign the response object from requests to a property on the instance of HTTP class
             return response.text
         except Exception as e:
@@ -177,7 +176,7 @@ class HTTP():
             response = requests.post(self.url, timeout=self.request_timeout, stream=True)
             self.res = response
             with open(filepath, 'wb') as f: # write as binary data
-                for chunk in response.iter_content(chunk_size=1024):
+                for chunk in response.iter_content(chunk_size=2048):
                     f.write(chunk)
                     f.flush()
                     os.fsync(f.fileno()) # flush all internal buffers to disk
@@ -202,7 +201,8 @@ class HTTP():
             self.res = response
             import codecs
             with codecs.open(filepath, mode='w', encoding="utf-8") as f: # write as binary data
-                for chunk in response.iter_content(chunk_size=1024):
+                for chunk in response.iter_content(chunk_size=2048):
+                    chunk = chunk.decode('utf-8')
                     f.write(chunk)
                     f.flush()
                     os.fsync(f.fileno()) # flush all internal buffers to disk
@@ -227,19 +227,39 @@ class HTTP():
             raise e
 
     #------------------------------------------------------------------------------
-    # [ status_ok method ] (boolean)
-    #   return boolean whether HTTP response was in 200 status code range
-    #   Note: must run HTTP request (e.g. GET with the get() method) before using this method
+    # [ get_status_ok method ] (boolean)
+    #   return boolean whether HTTP response was in 200 status code range after GET
     #------------------------------------------------------------------------------
-    def status_ok(self):
+    def get_status_ok(self):
         try:
+            self.get() # run the get request
             if self.res and self.res.status_code:
                 return (self.res.status_code == requests.codes.ok)
             else:
                 return False
+        except requests.exceptions.ConnectionError as ce:
+            return False
         except Exception as e:
             if DEBUG_FLAG:
-                sys.stderr.write("Naked Framework Error: Unable to obtain the HTTP status with the status_ok() method (Naked.toolshed.network.py).")
+                sys.stderr.write("Naked Framework Error: Unable to obtain the HTTP status with the get_status_ok() method (Naked.toolshed.network.py).")
+            raise e
+
+    #------------------------------------------------------------------------------
+    # [ post_status_ok method ] (boolean)
+    #  return boolean whether HTTP response was in the 200 status code range after POST
+    #------------------------------------------------------------------------------
+    def post_status_ok(self):
+        try:
+            self.post() #run the post request
+            if self.res and self.res.status_code:
+                return (self.res.status_code == requests.codes.ok)
+            else:
+                return False
+        except requests.exceptions.ConnectionError as ce:
+            return False
+        except Exception as e:
+            if DEBUG_FLAG:
+                sys.stderr.write("Naked Framework Error: Unable to obtain the HTTP status with the post_status_ok() method (Naked.toolshed.network.py).")
             raise e
 
 if __name__ == '__main__':
