@@ -37,6 +37,11 @@ class NakedInkTemplateTest(unittest.TestCase):
 		self.assertEqual(template.odel, "[[")
 		self.assertEqual(template.cdel, "]]")
 
+	def test_ink_make_template_new_delimiters_without_escape(self):
+		"""test new Ink template delimiter properties assignment fails without proper regex escape"""
+		template_string = FileReader(self.template_path).read_utf8()
+		self.assertRaises(TypeError, Template(template_string, "[[", "]]"))
+
 	def test_ink_make_template_string(self):
 		"""Test new Ink template string assignment"""
 		template_string = FileReader(self.template_path).read_utf8()
