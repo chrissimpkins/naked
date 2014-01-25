@@ -94,6 +94,7 @@ class HTTP():
     #   open HTTP data stream with GET request, write file with utf-8 encoded text using returned text data
     #   file path is passed to the method by the developer (default is the base filename in the URL if not specified)
     #   return True on successful pull and write to disk
+    #   Tests: test_NETWORK.py :: test_http_get_text
     #------------------------------------------------------------------------------
     def get_txt_write_file(self, filepath=""):
         try:
@@ -104,7 +105,7 @@ class HTTP():
             self.res = response
             import codecs
             with codecs.open(filepath, mode='w', encoding="utf-8") as f: #write as text
-                for chunk in response.iter_content(chunk_size=1024):
+                for chunk in response.iter_content(chunk_size=2048):
                     chunk = chunk.decode('utf-8')
                     f.write(chunk)
                     f.flush()
