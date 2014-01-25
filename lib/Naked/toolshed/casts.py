@@ -101,8 +101,4 @@ def xstr(string_arg, attributes={}):
 		raise e
 
 if __name__ == '__main__':
-	test = xstr("A test", {'arg1': '2'})
-	print(test)
-	print(test[0])
-	print(test.arg1)
-	print(type(test))
+	pass
