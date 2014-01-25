@@ -20,6 +20,7 @@
 #------------------------------------------------------------------------------------
 
 ## TODO : help for each primary command
+## TODO: a yaml & json library module?
 # Application start
 def main():
     import sys
@@ -61,7 +62,7 @@ def main():
             abs_dirpath = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "toolshed", "c")
             compile_c_code(abs_dirpath) # function calls exit status code
     #------------------------------------------------------------------------------
-    # [ locate ] - locate Naked project files (2)= settings, setup
+    # [ locate ] - locate Naked project files (2)= main, settings, setup
     #------------------------------------------------------------------------------
     elif c.cmd == "locate":
         from Naked.commands.locate import Locator
@@ -94,6 +95,12 @@ def main():
             else:
                 t = ToxTester()
             t.run()
+    elif c.cmd == "dl":
+        from Naked.toolshed.network import HTTP
+        http = HTTP("http://www.google.com")
+        http.get()
+        response = http.response
+        print(response.status)
     elif c.cmd == "loc":
         from Naked.toolshed.system import cwd
         print(cwd())
