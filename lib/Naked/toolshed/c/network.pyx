@@ -105,6 +105,7 @@ class HTTP():
             import codecs
             with codecs.open(filepath, mode='w', encoding="utf-8") as f: #write as text
                 for chunk in response.iter_content(chunk_size=1024):
+                    chunk = chunk.decode('utf-8')
                     f.write(chunk)
                     f.flush()
                     os.fsync(f.fileno()) # flush all internal buffers to disk

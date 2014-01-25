@@ -24,7 +24,7 @@ class HTTP():
     #   HTTP GET request - returns text string
     #   returns data stream read from the URL (string)
     #   Default timeout = 10 s from class constructor
-    #   Test : test_http_get
+    #   Test : test_NETWORK.py :: test_http_get
     #------------------------------------------------------------------------------
     def get(self):
         try:
@@ -57,6 +57,7 @@ class HTTP():
     #   file path is passed to the method by the developer
     #   set suppress_output to True if you want to suppress the d/l status information that is printed to the standard output stream
     #   return True on successful pull and write to disk
+    #   Tests: test_NETWORK.py :: test_http_get_binary
     #------------------------------------------------------------------------------
     def get_bin_write_file(self, filepath="", suppress_output = False, overwrite_existing = False):
         try:
@@ -104,7 +105,8 @@ class HTTP():
             self.res = response
             import codecs
             with codecs.open(filepath, mode='w', encoding="utf-8") as f: #write as text
-                for chunk in response.iter_content(chunk_size=1024):
+                for chunk in response.iter_content(chunk_size=2048):
+                    chunk = chunk.decode('utf-8')
                     f.write(chunk)
                     f.flush()
                     os.fsync(f.fileno()) # flush all internal buffers to disk
