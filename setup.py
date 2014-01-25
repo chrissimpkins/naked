@@ -36,8 +36,6 @@ setup(
     author='Christopher Simpkins',
     author_email='chris@zerolabs.net',
     platforms=['any'],
-    #py_modules=['naked'],
-    #scripts=['naked'],
     entry_points = {
         'console_scripts': [
             'naked = Naked.app:main'
