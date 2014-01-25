@@ -54,7 +54,7 @@ PRIMARY COMMANDS   [Secondary Commands]
   build                 - none -
   bump            [ major, minor, patch ]
   help                  - none -
-  locate            [ main, settings ]
+  locate         [ main, settings, setup ]
   make                  - none -
   push                  - none -
   test                   [ tox ]
@@ -64,7 +64,7 @@ PRIMARY COMMANDS   [Secondary Commands]
 
 HELP
 
-To learn more about the primary commands, use the following syntax:
+To learn more about a primary command, use the following syntax:
 
   naked <primary command> help
 
