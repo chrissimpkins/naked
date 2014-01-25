@@ -11,8 +11,8 @@ def profile():
     #------------------------------------------------------------------------------
     # Enter setup code below
     #------------------------------------------------------------------------------
-        # Optional: include setup code below
-
+    # Optional: include setup code below
+    from Naked.toolshed.c.ink import Template, Renderer
     #------------------------------------------------------------------------------
     # Start profiler
     #------------------------------------------------------------------------------
@@ -23,7 +23,9 @@ def profile():
     #------------------------------------------------------------------------------
         # include profiled code here
     for x in range(50000):
-
+        template = Template("This is a of the {{test}} of the {{document}} {{type}} and more of the {{test}} {{document}} {{type}}")
+        renderer = Renderer(template, {'test': 'ব য', 'document':'testing document', 'type':'of mine', 'bogus': 'bogus test'})
+        renderer.render()
 
     #------------------------------------------------------------------------------
     # End profiler & print results to std out - do not modify below
