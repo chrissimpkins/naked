@@ -22,9 +22,10 @@ class Command:
         self.app = app_path   # path to application executable file
         self.argv = argv    # list of the command arguments argv[0] is first argument
         self.argc = len(argv)  # length of the argument list
-        self.arg0 = self.argobj._getArg(0) # define the first positional argument as a local variable
-        self.arg1 = self.argobj._getArg(1) # define the second positional argument as a local variable
-        self.arglp = self.argobj._getArg(len(argv) - 1) # define the last positional argument as a local variable
+        self.arg0 = self.argobj._getArg(0) # define the first positional argument
+        self.arg1 = self.argobj._getArg(1) # define the second positional argument
+        self.arg2 = self.argobj._getArg(2) # define the third postitional argument
+        self.arglp = self.argobj._getArg(len(argv) - 1) # define the last positional argument
         self.cmd = self.arg0  # define the primary command variable as the first positional argument (user dependent & optional, may be something else)
         self.cmd2 = self.arg1 # define the secondary command variable as the second positional argument (user dependent & optional, may be something else)
 
