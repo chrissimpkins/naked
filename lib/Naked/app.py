@@ -19,6 +19,8 @@
 # c.flag_arg(flag_string) = returns the flag assignment for a "--option=argument" style flag
 #------------------------------------------------------------------------------------
 
+## TODO : add docstrings to library
+## TODO : help for each primary command
 # Application start
 def main():
     import sys
@@ -47,6 +49,9 @@ def main():
     # [ PRIMARY COMMAND LOGIC ]
     #   Test for primary commands and handle them
     #------------------------------------------------------------------------------------------
+    #------------------------------------------------------------------------------
+    # [ build ] - build the C code in the Naked library (2)= help
+    #------------------------------------------------------------------------------
     if c.cmd == "build":
         if c.cmd2 == "help":
             from Naked.commands.build import help as build_help
@@ -56,6 +61,9 @@ def main():
             import os, inspect
             abs_dirpath = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "toolshed", "c")
             compile_c_code(abs_dirpath) # function calls exit status code
+    #------------------------------------------------------------------------------
+    # [ make ] - make a new Naked project (args)=project name
+    #------------------------------------------------------------------------------
     elif c.cmd == "make":
         from Naked.commands.make import MakeController
         if c.arg1:
@@ -63,13 +71,17 @@ def main():
         else:
             m = MakeController(None)
         m.run()
+    #------------------------------------------------------------------------------
+    # [ test ] - Run tox tests on the project (2)= tox  (args)=py_version
+    #------------------------------------------------------------------------------
     elif c.cmd == "test":
-        from Naked.toolshed.c import types
-        no = types.XList(['item', 'item', 'item', 2, 5, 7])
-        print(no.count_item('item'))
-
-        #if c.option("-t"): c.truth = True
-        #print(c.truth)
+        if c.cmd2 == "tox":
+            from Naked.commands.test import ToxTester
+            if c.arg2: #user specified a python version to run with one of the tox version defs
+                t = ToxTester(c.arg2) #instantiate with the python version
+            else:
+                t = ToxTester()
+            t.run()
     elif c.cmd == "dl":
         from Naked.toolshed.network import HTTP
         http = HTTP("https://github.com/chrissimpkins/six-four/tarball/master")
