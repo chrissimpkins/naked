@@ -24,6 +24,7 @@ class HTTP():
     #   HTTP GET request - returns text string
     #   returns data stream read from the URL (string)
     #   Default timeout = 10 s from class constructor
+    #   Test : test_http_get
     #------------------------------------------------------------------------------
     def get(self):
         try:
