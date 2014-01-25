@@ -4,6 +4,8 @@ import unittest
 import subprocess
 import Naked.commandline
 import Naked.settings
+from Naked.toolshed.state import StateObject
+state = StateObject()
 
 class NakedHelpCommandTest(unittest.TestCase):
 
@@ -13,10 +15,17 @@ class NakedHelpCommandTest(unittest.TestCase):
 		output_standard = Naked.settings.help + "\n"
 
 		# test the --help option
-		output = subprocess.check_output(["naked", "--help"])
+		if state.py2:
+			output = subprocess.check_output(["naked", "--help"])
+		else:
+			output = subprocess.check_output(["naked", "--help"], universal_newlines=True)
 		self.assertEqual(output, output_standard)
+
 		# test the 'help' primary command
-		output = subprocess.check_output(["naked", "help"])
+		if state.py2:
+			output = subprocess.check_output(["naked", "help"])
+		else:
+			output = subprocess.check_output(["naked", "help"], universal_newlines=True)
 		self.assertEqual(output, output_standard)
 
 class NakedUsageCommandTest(unittest.TestCase):
@@ -27,11 +36,17 @@ class NakedUsageCommandTest(unittest.TestCase):
 		usage_standard =  Naked.settings.usage + "\n" #print adds an extra '\n'
 
 		#test the --usage option
-		output = subprocess.check_output(["naked", "--usage"])
+		if state.py2:
+			output = subprocess.check_output(["naked", "--usage"])
+		else:
+			output = subprocess.check_output(["naked", "--usage"], universal_newlines=True)
 		self.assertEqual(output, usage_standard)
 
 		#test the 'usage' primary command
-		output = subprocess.check_output(["naked", "usage"])
+		if state.py2:
+			output = subprocess.check_output(["naked", "usage"])
+		else:
+			output = subprocess.check_output(["naked", "usage"], universal_newlines=True)
 		self.assertEqual(output, usage_standard)
 
 class NakedVersionCommandTest(unittest.TestCase):
@@ -42,8 +57,14 @@ class NakedVersionCommandTest(unittest.TestCase):
 		version_standard = Naked.settings.app_name + " " + Naked.settings.major_version + "." + Naked.settings.minor_version + "." + Naked.settings.patch_version + "\n"
 
 		#test the --version option
-		output = subprocess.check_output(["naked", "--version"])
+		if state.py2:
+			output = subprocess.check_output(["naked", "--version"])
+		else:
+			output = subprocess.check_output(["naked", "--version"], universal_newlines=True)
 		self.assertEqual(output, version_standard)
 		#test the 'version' primary command
-		output = subprocess.check_output(["naked", "version"])
+		if state.py2:
+			output = subprocess.check_output(["naked", "version"])
+		else:
+			output = subprocess.check_output(["naked", "version"], universal_newlines=True)
 		self.assertEqual(output, version_standard)

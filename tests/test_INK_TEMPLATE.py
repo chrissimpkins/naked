@@ -7,6 +7,8 @@ from Naked.toolshed.file import FileReader
 from Naked.toolshed.file import FileWriter
 from Naked.toolshed.system import make_path
 from Naked.toolshed.ink import Template, Renderer
+from Naked.toolshed.state import StateObject
+state = StateObject()
 
 class NakedInkTemplateTest(unittest.TestCase):
 	def setUp(self):
@@ -45,7 +47,11 @@ class NakedInkTemplateTest(unittest.TestCase):
 		"""Test new Ink template variable list property assignment"""
 		template_string = FileReader(self.template_path).read_utf8()
 		template = Template(template_string)
-		self.assertEqual(template.varlist, set([u'appname', u'description', u'url', u'license', u'author', u'email'])) # convert to sets to ignore order
+		if state.py2:
+			# pass - need to skip this for Py3.2 tests
+		    self.assertEqual(template.varlist, set([u'appname', u'description', u'url', u'license', u'author', u'email'])) # convert to sets to ignore order
+		else:
+			self.assertEqual(template.varlist, set(['appname', 'description', 'url', 'license', 'author', 'email']))
 
 	def test_ink_make_template_varlist_default_delim_wrong_delim(self):
 		"""Test new Ink template variable list property assignment when default delimiter is incorrect"""
@@ -57,7 +63,11 @@ class NakedInkTemplateTest(unittest.TestCase):
 		"""Test new Ink template variable list property assignment with new delimiters"""
 		template_string = FileReader(self.template_path2).read_utf8()
 		template = Template(template_string, "[[", "]]", escape_regex=True) # have to escape special regex chars
-		self.assertEqual(template.varlist, set([u'appname', u'description', u'url', u'license', u'author', u'email']))
+		if state.py2:
+			# pass - need to skip this for Py3.2 tests
+			self.assertEqual(template.varlist, set([u'appname', u'description', u'url', u'license', u'author', u'email']))
+		else:
+			self.assertEqual(template.varlist, set(['appname', 'description', 'url', 'license', 'author', 'email']))
 
 	def test_ink_make_template_varlist_new_delimiter_wrong_delim(self):
 		"""Test new Ink template variable list property assignment when new delimiter is wrong"""
