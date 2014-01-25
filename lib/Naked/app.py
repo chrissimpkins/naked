@@ -19,7 +19,6 @@
 # c.flag_arg(flag_string) = returns the flag assignment for a "--option=argument" style flag
 #------------------------------------------------------------------------------------
 
-## TODO : add docstrings to library
 ## TODO : help for each primary command
 # Application start
 def main():
@@ -62,6 +61,19 @@ def main():
             abs_dirpath = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "toolshed", "c")
             compile_c_code(abs_dirpath) # function calls exit status code
     #------------------------------------------------------------------------------
+    # [ locate ] - locate Naked project files (2)= settings, setup
+    #------------------------------------------------------------------------------
+    elif c.cmd == "locate":
+        from Naked.commands.locate import Locator
+        if c.cmd2 == "main":
+            l = Locator('main')
+        elif c.cmd2 == "settings":
+            l = Locator('settings')
+        elif c.cmd2 == "setup":
+            l = Locator('setup')
+        else:
+            l = Locator('') #handles error report to user
+    #------------------------------------------------------------------------------
     # [ make ] - make a new Naked project (args)=project name
     #------------------------------------------------------------------------------
     elif c.cmd == "make":
@@ -82,10 +94,6 @@ def main():
             else:
                 t = ToxTester()
             t.run()
-    elif c.cmd == "dl":
-        from Naked.toolshed.network import HTTP
-        http = HTTP("https://github.com/chrissimpkins/six-four/tarball/master")
-        http.get_bin_write_file("test.tgz")
     elif c.cmd == "loc":
         from Naked.toolshed.system import cwd
         print(cwd())
