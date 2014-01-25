@@ -49,25 +49,25 @@ The naked executable syntax is:
 
 The <primary command> is mandatory and includes one of the commands in the following section.  The [bracketed] syntax structure is optional and dependent upon the primary command that you use.  Use the command 'naked <primary command> help' for more information about a specific primary command.
 
-PRIMARY COMMANDS  [secondary commands]
+PRIMARY COMMANDS   [Secondary Commands]
 
   build                 - none -
-  bump            [major, minor, patch]
+  bump            [ major, minor, patch ]
   help                  - none -
-  locate            [main, settings]
+  locate            [ main, settings ]
   make                  - none -
   push                  - none -
-  unbump          [major, minor, patch]
+  test                   [ tox ]
+  unbump          [ major, minor, patch ]
   usage                 - none -
   version               - none -
 
-OPTIONS
+HELP
 
-Options are dependent upon the primary command that you use.  You can enter:
+To learn more about the primary commands, use the following syntax:
 
   naked <primary command> help
 
-for more information about available options for a specific command.
 
 SOURCE REPOSITORY
 
