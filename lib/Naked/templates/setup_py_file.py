@@ -34,7 +34,7 @@ def version_read():
 setup(
     name='{{app_name}}',
     version=version_read(),
-    description='A command line application framework',
+    description='',
     long_description=(docs_read('README.rst')),
     url='',
     license='{{license}}',
