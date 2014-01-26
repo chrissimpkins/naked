@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 import os
-from Naked.toolshed.system import cwd, file_exists, dir_exists, stderr
+from Naked.toolshed.system import cwd, file_exists, dir_exists, stderr, exit_success
 
 #------------------------------------------------------------------------------
 # [ ToxTester class ]
@@ -38,6 +38,34 @@ class ToxTester:
         else:
             cmd_string = "tox -e" + self.py_version
             os.system(cmd_string)
+
+def help():
+    help_string = """
+Naked test command help
+-----------------------
+The test command is a convenience feature that will run tox on your project from any directory level in your project.
+
+USAGE
+  naked test <secondary command> [argument]
+
+SECONDARY COMMAND
+  tox  -  run the tox application on your project
+
+ARGUMENTS
+  You can include an optional tox Python version argument to run your tests with a single version of Python (instead of the versions specified in the tox.ini file).
+
+EXAMPLE (multiple Python versions that are set in tox.ini file)
+  naked test tox
+
+EXAMPLE (single Python version)
+  naked test tox py27
+
+Use the command from any directory in your project and Naked will identify your tox.ini file and run tox.  You can pass any of the tox
+
+OPTIONS
+  none"""
+    print(help_string)
+    exit_success()
 
 if __name__ == '__main__':
     pass

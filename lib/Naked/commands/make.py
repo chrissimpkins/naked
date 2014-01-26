@@ -351,6 +351,31 @@ class FileBuilder:
         else:
             return ""
 
+def help():
+    from Naked.toolshed.system import exit_success
+    help_string = """
+Naked make command help
+-----------------------
+The make command builds a new Naked project.  The project can be built from either responses that you give on the command line, or from a naked.yaml project settings file.
+
+USAGE
+  naked make [argument]
+
+The command should be run in the top level of the path where you would like to create your project.  The argument to the make command is optional.  If used, this is the name of your new project.  It is not necessary to include the argument if you use a naked.yaml project settings file.
+
+The naked.yaml settings file has the following structure:
+
+  app_name:  <your project name>
+  developer: <developer name>
+  license:   <license type>
+
+Place this in the top level of an empty directory and use `naked make` in the same directory.  Naked will confirm your settings and then build the project directories and files from these settings.
+
+OPTIONS
+  none """
+    print(help_string)
+    exit_success()
+
 
 if __name__ == '__main__':
     pass

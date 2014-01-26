@@ -13,6 +13,7 @@ def compile_c_code(abs_dirpath):
 	run("python setup.py build_ext --inplace")
 
 def help():
+	from Naked.toolshed.system import exit_success
 	help_string = """
 Naked build command help
 ------------------------
@@ -25,6 +26,7 @@ OPTIONS
   none
 	"""
 	print(help_string)
+	exit_success()
 
 
 if __name__ == '__main__':

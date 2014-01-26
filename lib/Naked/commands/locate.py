@@ -25,5 +25,25 @@ class Locator:
         else:
             stderr("Unable to process your command.  Please enter 'main', 'settings' or 'setup' as the argument to the locate command.", 1)
 
+def help():
+    help_string = """
+Naked locate command help
+-------------------------
+
+The Naked locate command identifies the file path to commonly used files in your project directory.
+
+USAGE
+  naked locate <argument>
+
+ARGUMENTS
+  main     -  the main application script file, app.py
+  setup    -  the setup.py file
+  settings -  the project settings files, settings.py
+
+OPTIONS
+  none"""
+    print(help_string)
+    exit_success()
+
 if __name__ == '__main__':
     pass

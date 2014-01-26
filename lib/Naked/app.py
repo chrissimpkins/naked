@@ -66,7 +66,10 @@ def main():
     #------------------------------------------------------------------------------
     elif c.cmd == "locate":
         from Naked.commands.locate import Locator
-        if c.cmd2 == "main":
+        if c.arg2 == "help":
+            from Naked.commands.locate import help as locate_help
+            locate_help()
+        elif c.cmd2 == "main":
             l = Locator('main')
         elif c.cmd2 == "settings":
             l = Locator('settings')
@@ -79,6 +82,9 @@ def main():
     #------------------------------------------------------------------------------
     elif c.cmd == "make":
         from Naked.commands.make import MakeController
+        if c.cmd2 == "help":
+            from Naked.commands.make import help as make_help
+            make_help()
         if c.arg1:
             m = MakeController(c.arg1)
         else:
@@ -88,6 +94,9 @@ def main():
     # [ test ] - Run tox tests on the project (2)= tox  (args)=py_version
     #------------------------------------------------------------------------------
     elif c.cmd == "test":
+        if c.arg1 == "help":
+                from Naked.commands.test import help as tox_help
+                tox_help()
         if c.cmd2 == "tox":
             from Naked.commands.test import ToxTester
             if c.arg2: #user specified a python version to run with one of the tox version defs
