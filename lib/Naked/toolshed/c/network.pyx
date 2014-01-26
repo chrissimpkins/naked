@@ -279,10 +279,5 @@ if __name__ == '__main__':
     # http = HTTP()
     # http.url = "http://www.google.com"
     # print(http.get())
-    #------------------------------------------------------------------------------
-    # RESPONSE TEST
-    #------------------------------------------------------------------------------
-    # http = HTTP("http://www.aosjdpasdjf.com")
-    # http.get()
-    # print(http.status_ok())
+
 

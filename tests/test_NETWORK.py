@@ -202,6 +202,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."""
         http = HTTP('http://www.atrulybogussite.com')
         result = http.post_status_ok()
         self.assertEqual(False, result)
+
     #------------------------------------------------------------------------------
     # HEAD tests
     #------------------------------------------------------------------------------
