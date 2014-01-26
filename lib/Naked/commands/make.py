@@ -365,9 +365,9 @@ The command should be run in the top level of the path where you would like to c
 
 The naked.yaml settings file has the following structure:
 
-  app_name:  <your project name>
-  developer: <developer name>
-  license:   <license type>
+  application:  <your project name>
+  developer:    <developer name>
+  license:      <license type>
 
 Place this in the top level of an empty directory and use `naked make` in the same directory.  Naked will confirm your settings and then build the project directories and files from these settings.
 
