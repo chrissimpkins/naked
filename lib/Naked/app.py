@@ -19,13 +19,12 @@
 # c.flag_arg(flag_string) = returns the flag assignment for a "--option=argument" style flag
 #------------------------------------------------------------------------------------
 
-## TODO : help for each primary command
 ## TODO: a yaml & json library module?
 # Application start
 def main():
     import sys
     from Naked.commandline import Command
-    from Naked.toolshed.state import StateObject
+    #from Naked.toolshed.state import StateObject
     from Naked.toolshed.system import stderr
 
     #------------------------------------------------------------------------------------------
@@ -36,7 +35,7 @@ def main():
     #------------------------------------------------------------------------------
     # [ Instantiate state object ]
     #------------------------------------------------------------------------------
-    state = StateObject()
+    #state = StateObject()
     #------------------------------------------------------------------------------------------
     # [ Command Suite Validation ] - early validation of appropriate command syntax
     #  Test that user entered a primary command, print usage if not
@@ -91,7 +90,7 @@ def main():
             m = MakeController(None)
         m.run()
     #------------------------------------------------------------------------------
-    # [ test ] - Run tox tests on the project (2)= tox  (args)=py_version
+    # [ test ] - Run tox tests on the project (2)= tox  (args)=tox py_version arg
     #------------------------------------------------------------------------------
     elif c.cmd == "test":
         if c.cmd2 == "help":
