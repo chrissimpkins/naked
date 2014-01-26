@@ -66,7 +66,7 @@ def main():
     #------------------------------------------------------------------------------
     elif c.cmd == "locate":
         from Naked.commands.locate import Locator
-        if c.arg2 == "help":
+        if c.cmd2 == "help":
             from Naked.commands.locate import help as locate_help
             locate_help()
         elif c.cmd2 == "main":

@@ -11,7 +11,7 @@ app_name = "naked"
 #------------------------------------------------------------------------------
 major_version = "0"
 minor_version = "1"
-patch_version = "13"
+patch_version = "15"
 
 #------------------------------------------------------------------------------
 # Debug Flag (switch to False for production release code)
@@ -52,13 +52,10 @@ The <primary command> is mandatory and includes one of the commands in the follo
 PRIMARY COMMANDS   [Secondary Commands]
 
   build                 - none -
-  bump            [ major, minor, patch ]
   help                  - none -
   locate         [ main, settings, setup ]
   make                  - none -
-  push                  - none -
   test                   [ tox ]
-  unbump          [ major, minor, patch ]
   usage                 - none -
   version               - none -
 
