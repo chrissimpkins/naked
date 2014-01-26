@@ -94,47 +94,17 @@ def main():
     # [ test ] - Run tox tests on the project (2)= tox  (args)=py_version
     #------------------------------------------------------------------------------
     elif c.cmd == "test":
-        if c.arg1 == "help":
+        if c.cmd2 == "help":
                 from Naked.commands.test import help as tox_help
                 tox_help()
-        if c.cmd2 == "tox":
+        elif c.cmd2 == "tox":
             from Naked.commands.test import ToxTester
             if c.arg2: #user specified a python version to run with one of the tox version defs
                 t = ToxTester(c.arg2) #instantiate with the python version
             else:
                 t = ToxTester()
             t.run()
-    elif c.cmd == "dl":
-        from Naked.toolshed.network import HTTP
-        http = HTTP("http://www.google.com")
-        http.get()
-        response = http.response
-        print(response.status)
-    elif c.cmd == "loc":
-        from Naked.toolshed.system import cwd
-        print(cwd())
-        import os
-        print(os.path.expanduser(os.path.join("~", "naked", "universal_settings.yaml")))
-    elif c.cmd == "yaml":
-        import yaml
-        doc = """
-        developer: Christopher Simpkins
-        email: chris@zerolabs.net
-        default_license: MIT
-        base_repository: http://github.com/chrissimpkins
-        """
-        theyam = yaml.load(doc)
-        print(theyam['developer'])
-        print(theyam['email'])
-        print(theyam['default_license'])
-        print(theyam['base_repository'])
-    elif c.cmd == "bump":
-        if c.cmd2 == "patch":
-            pass
-        elif c.cmd2 == "minor":
-            pass
-        elif c.cmd2 == "major":
-            pass
+
     #------------------------------------------------------------------------------------------
     # [ NAKED FRAMEWORK COMMANDS ]
     # Naked framework provides default help, usage, and version commands for all applications
