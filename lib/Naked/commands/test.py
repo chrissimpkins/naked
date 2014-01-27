@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 import os
-from Naked.toolshed.system import cwd, file_exists, dir_exists, stderr, exit_success
+from Naked.toolshed.system import cwd, file_exists, stderr, exit_success
 
 #------------------------------------------------------------------------------
 # [ ToxTester class ]
