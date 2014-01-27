@@ -31,7 +31,7 @@ class MakeController:
         db = DirectoryBuilder(data_container)
         db.build()
         fb = FileBuilder(data_container)
-        if fb.build_and_write(): # file write was successful
+        if fb.build_and_write(): # file writes were successful
             main_script_path = make_path(data_container.app_name, 'lib', data_container.app_name, 'app.py')
             settings_path = make_path(data_container.app_name, 'lib', data_container.app_name, 'settings.py')
             command_dir = make_path(data_container.app_name, 'lib', data_container.app_name, 'commands')
@@ -303,19 +303,19 @@ class FileBuilder:
     def _make_file_dictionary(self):
         file_dictionary = {}
         ## File path : file string key/value pairs > make as XString and encode as unicode for unicode file writes
-        file_dictionary[self.top_manifestin] = XString(self.top_manifestin_rendered).unicode()
-        file_dictionary[self.top_readmemd] = XString(self.top_readmemd_rendered).unicode()
-        file_dictionary[self.top_setupcfg] = XString(self.top_setupcfg_rendered).unicode()
-        file_dictionary[self.top_setuppy] = XString(self.top_setuppy_rendered).unicode()
-        file_dictionary[self.docs_license] = XString(self.docs_license_rendered).unicode()
-        file_dictionary[self.docs_readmerst] = XString(self.docs_readmerst_rendered).unicode()
-        file_dictionary[self.lib_initpy] = XString(self.initpy_rendered).unicode()
-        file_dictionary[self.com_initpy] = XString(self.initpy_rendered).unicode()
-        file_dictionary[self.tests_initpy] = XString(self.initpy_rendered).unicode()
-        file_dictionary[self.lib_profilerpy] = XString(self.lib_profilerpy_rendered).unicode()
-        file_dictionary[self.lib_proj_initpy] = XString(self.initpy_rendered).unicode()
-        file_dictionary[self.lib_proj_apppy] = XString(self.lib_proj_apppy_rendered).unicode()
-        file_dictionary[self.lib_proj_settingspy] = XString(self.lib_proj_settingspy_rendered).unicode()
+        file_dictionary[self.top_manifestin] = XString(self.top_manifestin_rendered).unicode().strip()
+        file_dictionary[self.top_readmemd] = XString(self.top_readmemd_rendered).unicode().strip()
+        file_dictionary[self.top_setupcfg] = XString(self.top_setupcfg_rendered).unicode().strip()
+        file_dictionary[self.top_setuppy] = XString(self.top_setuppy_rendered).unicode().strip()
+        file_dictionary[self.docs_license] = XString(self.docs_license_rendered).unicode().strip()
+        file_dictionary[self.docs_readmerst] = XString(self.docs_readmerst_rendered).unicode().strip()
+        file_dictionary[self.lib_initpy] = XString(self.initpy_rendered).unicode().strip()
+        file_dictionary[self.com_initpy] = XString(self.initpy_rendered).unicode().strip()
+        file_dictionary[self.tests_initpy] = XString(self.initpy_rendered).unicode().strip()
+        file_dictionary[self.lib_profilerpy] = XString(self.lib_profilerpy_rendered).unicode().strip()
+        file_dictionary[self.lib_proj_initpy] = XString(self.initpy_rendered).unicode().strip()
+        file_dictionary[self.lib_proj_apppy] = XString(self.lib_proj_apppy_rendered).unicode().strip()
+        file_dictionary[self.lib_proj_settingspy] = XString(self.lib_proj_settingspy_rendered).unicode().strip()
 
         self.file_dictionary = file_dictionary
 
