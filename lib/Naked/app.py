@@ -62,6 +62,28 @@ def main():
             abs_dirpath = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "toolshed", "c")
             compile_c_code(abs_dirpath) # function calls exit status code
     #------------------------------------------------------------------------------
+    # [ dist ] - distribute source files to PyPI (2)=register, sdist, wheel, win, all, help
+    #------------------------------------------------------------------------------
+    elif c.cmd == "dist":
+        if c.argc > 1:
+            from Naked.commands.dist import Dist
+            d = Dist()
+            if c.cmd2 == "register": # python setup.py register
+                d.run('register')
+            elif c.cmd2 == "sdist":  # python setup.py sdist upload
+                d.run('sdist')
+            elif c.cmd2 == "wheel":  # python setup.py bdist_wheel upload
+                d.run('wheel')
+            elif c.cmd2 == "win":    # python setup.py bdist_wininst upload
+                d.run('win')
+            elif c.cmd2 == "all":    # python setup.py sdist bdist_wheel bdist_wininst upload
+                d.run('all')
+            elif c.cmd2 == "help":   # help for command
+                from Naked.commands.dist import help as dist_help
+                dist_help()
+        else:
+            stderr("Please enter a secondary command", 1)
+    #------------------------------------------------------------------------------
     # [ locate ] - locate Naked project files (2)= main, settings, setup
     #------------------------------------------------------------------------------
     elif c.cmd == "locate":
@@ -104,7 +126,6 @@ def main():
             else:
                 t = ToxTester()
             t.run()
-
     #------------------------------------------------------------------------------------------
     # [ NAKED FRAMEWORK COMMANDS ]
     # Naked framework provides default help, usage, and version commands for all applications
