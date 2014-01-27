@@ -52,6 +52,7 @@ The <primary command> is mandatory and includes one of the commands in the follo
 PRIMARY COMMANDS   [Secondary Commands]
 
   build                 - none -
+  dist           [ all, sdist, wheel, win ]
   help                  - none -
   locate         [ main, settings, setup ]
   make                  - none -
