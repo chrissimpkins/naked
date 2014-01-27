@@ -26,8 +26,8 @@ class Command:
         self.arg1 = self.argobj._getArg(1) # define the second positional argument
         self.arg2 = self.argobj._getArg(2) # define the third postitional argument
         self.arglp = self.argobj._getArg(len(argv) - 1) # define the last positional argument
-        self.arg_to_cmd = self.arg1 # argument to the primary command
-        self.arg_to_cmd2 = self.arg2 # argument to the secondary command
+        self.arg_to_cmd = self.arg0 # argument to the primary command
+        self.arg_to_cmd2 = self.arg1 # argument to the secondary command
         self.cmd = self.arg0  # define the primary command variable as the first positional argument (user dependent & optional, may be something else)
         self.cmd2 = self.arg1 # define the secondary command variable as the second positional argument (user dependent & optional, may be something else)
 
@@ -271,7 +271,9 @@ class Command:
         else:
             return False
 
+    #------------------------------------------------------------------------------
     # print the arguments with their corresponding argv list position to std out
+    #------------------------------------------------------------------------------
     def show_args(self):
         x = 0
         for arg in self.argv:
