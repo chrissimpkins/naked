@@ -49,7 +49,7 @@ class Dist:
         elif the_command in "all":
             run(self.all)
         else:
-            stderr("The requested command was not recognized.  Use 'naked dist help' to view the supported commands.", 1)
+            stderr("Unrecognized command.  Use 'naked dist help' to view the supported commands.", 1)
 
 
 def help():
