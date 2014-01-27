@@ -73,6 +73,8 @@ class NakedCommandParseTest(unittest.TestCase):
 		self.assertEqual(self.cmd_obj.cmd, "nakedtest")
 		self.assertEqual(self.cmd_obj.arg1, "testcmd2")
 		self.assertEqual(self.cmd_obj.arglp, "lparg") # test last positional argument
+		self.assertEqual(self.cmd_obj.arg_to_cmd, "nakedtest")
+		self.assertEqual(self.cmd_obj.arg_to_cmd2, "testcmd2")
 
 
 	#------------------------------------------------------------------------------
