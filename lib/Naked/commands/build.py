@@ -17,7 +17,7 @@ def help():
 	help_string = """
 Naked build command help
 ------------------------
-The build command compiles the Naked C libraries.
+The build command compiles the Naked C libraries.  This requires an installed C compiler.
 
 USAGE
   naked build
