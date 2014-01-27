@@ -23,7 +23,7 @@ class Locator:
             print("setup.py : " + setup_path)
             exit_success()
         else:
-            stderr("Unable to process your command.  Please enter 'main', 'settings' or 'setup' as the argument to the locate command.", 1)
+            stderr("Unable to process the command.  Use 'naked locate help' for more information.", 1)
 
 def help():
     help_string = """
