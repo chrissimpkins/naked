@@ -20,6 +20,7 @@
 #------------------------------------------------------------------------------------
 
 ## TODO: a yaml & json library module?
+## TODO: add argument to primary command and secondary command attributes to the CL object
 # Application start
 def main():
     import sys
