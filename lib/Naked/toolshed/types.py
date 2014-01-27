@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-##TODO : make it optional to maintain state in the returned object to reduce overhead
 from Naked.settings import debug as DEBUG_FLAG
 
 #------------------------------------------------------------------------------
