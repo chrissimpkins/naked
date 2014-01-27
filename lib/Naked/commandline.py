@@ -26,6 +26,8 @@ class Command:
         self.arg1 = self.argobj._getArg(1) # define the second positional argument
         self.arg2 = self.argobj._getArg(2) # define the third postitional argument
         self.arglp = self.argobj._getArg(len(argv) - 1) # define the last positional argument
+        self.arg_to_cmd = self.arg1 # argument to the primary command
+        self.arg_to_cmd2 = self.arg2 # argument to the secondary command
         self.cmd = self.arg0  # define the primary command variable as the first positional argument (user dependent & optional, may be something else)
         self.cmd2 = self.arg1 # define the secondary command variable as the second positional argument (user dependent & optional, may be something else)
 
@@ -84,6 +86,18 @@ class Command:
     def command_arg(self):
         try:
             return self.arg1
+        except Exception as e:
+            if DEBUG_FLAG:
+                sys.stderr.write("Naked Framework Error: Error parsing command argument with command_arg() method (Naked.commandline.py).")
+            raise e
+
+    #------------------------------------------------------------------------------
+    # [ command2_arg method ] (string)
+    #  Return the argument to the secondary command as a string
+    #------------------------------------------------------------------------------
+    def command2_arg(self):
+        try:
+            return self.arg2
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Error parsing command argument with command_arg() method (Naked.commandline.py).")
