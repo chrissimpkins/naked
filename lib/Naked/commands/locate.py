@@ -35,7 +35,7 @@ The Naked locate command identifies the file path to commonly used files in your
 USAGE
   naked locate <argument>
 
-ARGUMENTS
+SECONDARY COMMANDS
   main     -  the main application script file, app.py
   setup    -  the setup.py file
   settings -  the project settings files, settings.py
