@@ -11,7 +11,7 @@ app_name = "naked"
 #------------------------------------------------------------------------------
 major_version = "0"
 minor_version = "1"
-patch_version = "16"
+patch_version = "17"
 
 #------------------------------------------------------------------------------
 # Debug Flag (switch to False for production release code)
@@ -52,11 +52,12 @@ The <primary command> is mandatory and includes one of the commands in the follo
 PRIMARY COMMANDS   [Secondary Commands]
 
   build                 - none -
-  dist           [ all, sdist, wheel, win ]
+  dist            all, sdist, wheel, win
   help                  - none -
-  locate         [ main, settings, setup ]
+  locate          main, settings, setup
   make                  - none -
-  test                   [ tox ]
+  profile               - none -
+  test          nose, pytest, tox, unittest
   usage                 - none -
   version               - none -
 
