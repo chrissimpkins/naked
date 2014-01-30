@@ -116,9 +116,13 @@ def main():
     # [ profile ] - run the profiler.py file in the Naked project
     #------------------------------------------------------------------------------
     elif c.cmd == "profile":
-        from Naked.commands.profile import Profiler
-        p = Profiler()
-        p.run()
+        if c.cmd2 == "help":
+            from Naked.commands.profile import help as profile_help
+            profile_help()
+        else:
+            from Naked.commands.profile import Profiler
+            p = Profiler()
+            p.run()
     #------------------------------------------------------------------------------
     # [ test ] - Run unit tests on the project (2)= help,nose,pytest,tox,unittest (see help for args)
     #------------------------------------------------------------------------------
