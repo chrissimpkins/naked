@@ -6,6 +6,7 @@ import sys
 import subprocess
 from Naked.settings import debug as DEBUG_FLAG
 
+## TODO: add the try/except blocks in each of the system run commands (around stderr.write(cpe.output))
 #------------------------------------------------------------------------------
 # [ run function ] (byte string or False)
 #   run a shell command
@@ -22,9 +23,11 @@ def run(command, suppress_output=False, suppress_exit_status_call=False):
             print(response)
         return response
     except subprocess.CalledProcessError as cpe:
-        if not suppress_output:
-            sys.stderr.write(cpe.output)
-
+        if not suppress_output: # error in existing application (non-zero exit status)
+            try:
+                sys.stderr.write(cpe.output)
+            except TypeError as te: # deal with unusual errors from some system executables that return non string type through subprocess.check_output
+                sys.stderr.write(str(cpe.output))
         if not suppress_exit_status_call:
             if cpe.returncode:
                 sys.exit(cpe.returncode)
@@ -54,7 +57,10 @@ def run_py(command, suppress_output=False, suppress_exit_status_call=False):
         return response
     except subprocess.CalledProcessError as cpe:
         if not suppress_output:
-            sys.stderr.write(cpe.output)
+            try: #workaround for rare non-string type response from some system commands with subprocess.check_output
+                sys.stderr.write(cpe.output)
+            except TypeError as te:
+                sys.stderr.write(str(cpe.output))
 
         if not suppress_exit_status_call:
             if cpe.returncode:
@@ -88,8 +94,10 @@ def run_rb(file_path, args="", suppress_output=False, suppress_exit_status_call=
         return response
     except subprocess.CalledProcessError as cpe:
         if not suppress_output:
-            sys.stderr.write(cpe.output)
-
+            try: #workaround for rare non-string type response from some system commands with subprocess.check_output
+                sys.stderr.write(cpe.output)
+            except TypeError as te:
+                sys.stderr.write(str(cpe.output))
         if not suppress_exit_status_call:
             if cpe.returncode:
                 sys.exit(cpe.returncode)
@@ -122,7 +130,10 @@ def run_js(file_path, args="", suppress_output=False, suppress_exit_status_call=
         return response
     except subprocess.CalledProcessError as cpe:
         if not suppress_output:
-            sys.stderr.write(cpe.output)
+            try: #workaround for rare non-string type response from some system commands with subprocess.check_output
+                sys.stderr.write(cpe.output)
+            except TypeError as te:
+                sys.stderr.write(str(cpe.output))
 
         if not suppress_exit_status_call:
             if cpe.returncode:
