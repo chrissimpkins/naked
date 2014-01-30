@@ -16,7 +16,7 @@ def profile():
     #------------------------------------------------------------------------------
     # Enter setup code below
     #------------------------------------------------------------------------------
-        # Optional: include setup code below
+        # Optional: include setup code here
 
 
     #------------------------------------------------------------------------------
@@ -25,13 +25,13 @@ def profile():
     pr.enable()
 
     #------------------------------------------------------------------------------
-    # Enter code to be profiled below
+    # BEGIN profiled code block
     #------------------------------------------------------------------------------
         # include profiled code here
 
 
     #------------------------------------------------------------------------------
-    # End profiler & print results to std out - do not modify below
+    # END profiled code block
     #------------------------------------------------------------------------------
     pr.disable()
     s = StringIO.StringIO()
