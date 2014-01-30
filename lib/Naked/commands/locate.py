@@ -27,7 +27,7 @@ class Locator:
 
 def help():
     help_string = """
-Naked locate command help
+Naked locate Command Help
 -------------------------
 
 The Naked locate command identifies the file path to commonly used files in your project directory.

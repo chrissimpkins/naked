@@ -54,7 +54,7 @@ class Dist:
 
 def help():
     help_string = """
-Naked dist command help
+Naked dist Command Help
 -----------------------
 The dist secondary commands run the standard distutils 'python setup.py <command>' source/binary distribution commands.
 

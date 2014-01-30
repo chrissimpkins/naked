@@ -354,7 +354,7 @@ class FileBuilder:
 def help():
     from Naked.toolshed.system import exit_success
     help_string = """
-Naked make command help
+Naked make Command Help
 -----------------------
 The make command builds a new Naked project.  The project can be built from either responses that you give on the command line, or from a naked.yaml project settings file.
 

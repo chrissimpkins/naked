@@ -15,7 +15,7 @@ def compile_c_code(abs_dirpath):
 def help():
 	from Naked.toolshed.system import exit_success
 	help_string = """
-Naked build command help
+Naked build Command Help
 ------------------------
 The build command compiles the Naked C libraries.  This requires an installed C compiler.
 
