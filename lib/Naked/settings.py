@@ -39,7 +39,7 @@ help = """
 
 ABOUT
 
-The Naked framework includes the "naked" executable and a Python extension library that can be used for application development.  The naked executable creates a complete directory structure for a command suite application with appropriate file stubs.  The library provides parsing of user entered commands into a Python object as well as type, method, & function extensions to the Python standard library.
+The Naked framework includes the "naked" executable and the Python toolshed library.  The naked executable is a command line tool for application development, testing, profiling, and deployment.  The toolshed library contains numerous useful tools for application development that can be used through standard Python module imports.  These features are detailed in the documentation (link below).
 
 USAGE
 
@@ -47,19 +47,19 @@ The naked executable syntax is:
 
   naked <primary command> [secondary command] [option(s)] [argument(s)]
 
-The <primary command> is mandatory and includes one of the commands in the following section.  The [bracketed] syntax structure is optional and dependent upon the primary command that you use.  Use the command 'naked <primary command> help' for more information about a specific primary command.
+The <primary command> is mandatory and includes one of the commands in the following section.  The [bracketed] syntax structure is optional and dependent upon the primary command that you use.  Use the command 'naked <primary command> help' for details about a command.
 
-PRIMARY COMMANDS   [Secondary Commands]
+PRIMARY COMMANDS     SECONDARY COMMANDS
 
-  build                 - none -
-  dist            all, sdist, wheel, win
-  help                  - none -
-  locate          main, settings, setup
-  make                  - none -
-  profile               - none -
-  test          nose, pytest, tox, unittest
-  usage                 - none -
-  version               - none -
+   build                   help
+   dist           all•help•sdist•wheel•win
+   help                  - none -
+   locate         main•help•settings•setup
+   make                    help
+   profile                 help
+   test           nose•pytest•tox•unittest
+   usage                 - none -
+   version               - none -
 
 HELP
 
@@ -67,6 +67,9 @@ To learn more about a primary command, use the following syntax:
 
   naked <primary command> help
 
+DOCUMENTATION
+
+  http://docs.naked-py.com
 
 SOURCE REPOSITORY
 
