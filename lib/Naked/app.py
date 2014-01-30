@@ -113,12 +113,27 @@ def main():
             m = MakeController(None)
         m.run()
     #------------------------------------------------------------------------------
-    # [ test ] - Run tox tests on the project (2)= tox  (args)=tox py_version arg
+    # [ profile ] - run the profiler.py file in the Naked project
+    #------------------------------------------------------------------------------
+    elif c.cmd == "profile":
+        from Naked.commands.profile import Profiler
+        p = Profiler()
+        p.run()
+    #------------------------------------------------------------------------------
+    # [ test ] - Run unit tests on the project (2)= help,nose,pytest,tox,unittest (see help for args)
     #------------------------------------------------------------------------------
     elif c.cmd == "test":
         if c.cmd2 == "help":
                 from Naked.commands.test import help as tox_help
                 tox_help()
+        elif c.cmd2 == "nose":
+            from Naked.commands.test import NoseTester
+            n = NoseTester()
+            n.run()
+        elif c.cmd2 == "pytest":
+            from Naked.commands.test import PyTester
+            p = PyTester()
+            p.run()
         elif c.cmd2 == "tox":
             from Naked.commands.test import ToxTester
             if c.arg2: #user specified a python version to run with one of the tox version defs
@@ -126,6 +141,14 @@ def main():
             else:
                 t = ToxTester()
             t.run()
+        elif c.cmd2 == "unittest":
+            from Naked.commands.test import UnitTester
+            if c.arg2:
+                t = UnitTester(c.arg2)
+                t.run()
+            else:
+                stderr("Please include a unit test file path.  Use 'naked test help' for more information.", 1)
+
     #------------------------------------------------------------------------------------------
     # [ NAKED FRAMEWORK COMMANDS ]
     # Naked framework provides default help, usage, and version commands for all applications
