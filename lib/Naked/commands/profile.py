@@ -30,3 +30,23 @@ class Profiler:
             return True
         else:
             return False
+
+
+def help():
+    help_string = """
+Naked profile Command Help
+--------------------------
+The profile command runs cProfile and pstats on the code that you enter in test code block of your PROJECT/lib/profiler.py file.
+
+USAGE
+  naked profile
+
+ARGUMENTS
+  none
+
+OPTIONS
+  none
+
+This command searches bottom to top (from the working directory) through up to 6 directory levels to identify the lib/profiler.py path."""
+
+    print(help_string)
