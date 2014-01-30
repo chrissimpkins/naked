@@ -1,0 +1,18 @@
+{
+  "data": "",
+  "args": {},
+  "url": "http://httpbin.org/post",
+  "origin": "50.133.135.46",
+  "headers": {
+    "User-Agent": "python-requests/2.2.1 PyPy/2.2.1 Darwin/13.0.0",
+    "Content-Length": "0",
+    "Connection": "close",
+    "Accept": "*/*",
+    "Host": "httpbin.org",
+    "Accept-Encoding": "gzip, deflate, compress",
+    "X-Request-Id": "56e6596b-bd8e-4882-b318-2bd2332aa4ab"
+  },
+  "form": {},
+  "files": {},
+  "json": null
+}
