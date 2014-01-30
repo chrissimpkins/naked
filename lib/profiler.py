@@ -28,7 +28,7 @@ def profile():
         renderer.render()
 
     #------------------------------------------------------------------------------
-    # End profiler & print results to std out - do not modify below
+    # End profiled code
     #------------------------------------------------------------------------------
     pr.disable()
     s = StringIO.StringIO()
