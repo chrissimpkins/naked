@@ -1,7 +1,12 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+# VARS = year
+pypush_file_string = """
 #!/bin/sh
 # Scriptacular - pypush.sh
 # Create a Python source distribution and push it to PyPI
-# Copyright 2014 Christopher Simpkins
+# Copyright {{year}} Christopher Simpkins
 # MIT License
 
 
@@ -24,3 +29,4 @@ fi
 
 # Exit success
 exit 0
+"""
