@@ -7,6 +7,7 @@ Issue reporting is available on the `GitHub repository <http://github.com/chriss
 
 Applications that are currently testing the Naked framework include:
 
+• naked executable
 • `status <http://pypi.python.org/status>`_
 
 I would greatly appreciate feedback from anyone who is interested in testing the framework.  Feel free to contact me on Twitter (@csimpkins) if you have questions, comments, or problems.  Please use the issue reporting link above for bug reports.

@@ -72,6 +72,8 @@ def main():
                 d.run('register')
             elif c.cmd2 == "sdist":  # python setup.py sdist upload
                 d.run('sdist')
+            elif c.cmd2 == "swheel": # python setup.py sdist bdist_wheel upload
+                d.run('swheel')
             elif c.cmd2 == "wheel":  # python setup.py bdist_wheel upload
                 d.run('wheel')
             elif c.cmd2 == "win":    # python setup.py bdist_wininst upload

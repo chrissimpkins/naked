@@ -15,12 +15,12 @@ class Dist:
         self.all = "python setup.py sdist bdist_wheel bdist_wininst upload"
 
     #------------------------------------------------------------------------------
-    # [ run method ] - iterates through up to 4 directories above current working
+    # [ run method ] - iterates through up to 6 directories above current working
     #                  directory and then runs command if setup.py found
     #------------------------------------------------------------------------------
     def run(self, command):
         setuppy_found = False
-        for i in range(4): # navigate up at most 4 directory levels to search for the setup.py file
+        for i in range(6): # navigate up at most 4 directory levels to search for the setup.py file
             if not self._is_setup_py_at_this_level():
                 os.chdir(os.pardir)
             else:
