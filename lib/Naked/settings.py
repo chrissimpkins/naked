@@ -52,7 +52,7 @@ The <primary command> is mandatory and includes one of the commands in the follo
 PRIMARY COMMANDS     SECONDARY COMMANDS
 
    build                   help
-   dist           all•help•sdist•wheel•win
+   dist        all•help•sdist•swheel•wheel•win
    help                  - none -
    locate         main•help•settings•setup
    make                    help
