@@ -3,7 +3,7 @@
 
 import os
 from Naked.toolshed.system import file_exists, stderr, exit_success
-from Naked.toolshed.shell import run
+from Naked.toolshed.shell import run as shell_run
 
 class Dist:
     def __init__(self):
@@ -39,15 +39,15 @@ class Dist:
     # run the user requested command
     def _run_dist_command(self, the_command):
         if the_command in "register":
-            run(self.register)
+            shell_run(self.register)
         elif the_command in "sdist":
-            run(self.sdist)
+            shell_run(self.sdist)
         elif the_command in "wheel":
-            run(self.wheel)
+            shell_run(self.wheel)
         elif the_command in "win":
-            run(self.win)
+            shell_run(self.win)
         elif the_command in "all":
-            run(self.all)
+            shell_run(self.all)
         else:
             stderr("Unrecognized command.  Use 'naked dist help' to view the supported commands.", 1)
 
