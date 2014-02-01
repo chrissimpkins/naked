@@ -55,17 +55,18 @@ def main():
     # Naked framework provides default help, usage, and version commands for all applications
     #   --> settings for user messages are assigned in the lib/{{app_name}}/settings.py file
     #------------------------------------------------------------------------------------------
-    if c.help():      # User requested {{app_name}} help
+    if c.help():      # User requested {{app_name}} help information
         from {{app_name}}.settings import help as {{app_name}}_help
         print({{app_name}}_help)
         sys.exit(0)
-    elif c.usage():   # User requested {{app_name}} usage info
+    elif c.usage():   # User requested {{app_name}} usage information
         from {{app_name}}.settings import usage as {{app_name}}_usage
         print({{app_name}}_usage)
         sys.exit(0)
-    elif c.version(): # User requested {{app_name}} version
-        from {{app_name}}.settings import version as {{app_name}}_version
-        print({{app_name}}_version)
+    elif c.version(): # User requested {{app_name}} version information
+        from {{app_name}}.settings import app_name, major_version, minor_version, patch_version
+        version_display_string = app_name + ' ' + major_version + '.' + minor_version + '.' + patch_version
+        print(version_display_string)
         sys.exit(0)
     #------------------------------------------------------------------------------------------
     # [ PRIMARY COMMAND LOGIC ]
