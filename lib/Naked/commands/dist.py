@@ -10,6 +10,7 @@ class Dist:
         self.register = "python setup.py register"
         self.sdist = "python setup.py sdist upload"
         self.wheel = "python setup.py bdist_wheel upload"
+        self.swheel = "python setup.py sdist bdist_wheel upload"
         self.win = "python setup.py bdist_wininst upload"
         self.all = "python setup.py sdist bdist_wheel bdist_wininst upload"
 
@@ -44,6 +45,8 @@ class Dist:
             shell_run(self.sdist)
         elif the_command in "wheel":
             shell_run(self.wheel)
+        elif the_command in "swheel":
+            shell_run(self.swheel)
         elif the_command in "win":
             shell_run(self.win)
         elif the_command in "all":
@@ -65,8 +68,9 @@ SECONDARY COMMANDS   python setup.py <command(s)>
   all                  sdist bdist_wheel bdist_wininst upload
   register             register
   sdist                sdist upload
+  swheel               sdist bdist_wheel upload
   wheel                bdist_wheel upload
-  win                  bdist_wininst
+  win                  bdist_wininst upload
 
 OPTIONS
   none"""
