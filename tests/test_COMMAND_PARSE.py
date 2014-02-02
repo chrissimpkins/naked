@@ -70,16 +70,34 @@ class NakedCommandParseTest(unittest.TestCase):
 		self.assertEqual(self.cmd_obj.argv, self.test_argv) #argv = test_argv in this test suite
 		self.assertEqual(self.cmd_obj.argc, 12) # 12 arguments in command
 		self.assertEqual(self.cmd_obj.arg0, "nakedtest")
-		self.assertEqual(self.cmd_obj.cmd, "nakedtest")
 		self.assertEqual(self.cmd_obj.arg1, "testcmd2")
+		self.assertEqual(self.cmd_obj.arg2, "-s")
+		self.assertEqual(self.cmd_obj.arg3, "--long")
+		self.assertEqual(self.cmd_obj.arg4, "-f")
+		self.assertEqual(self.cmd_obj.first, "nakedtest")
+		self.assertEqual(self.cmd_obj.second, "testcmd2")
+		self.assertEqual(self.cmd_obj.third, "-s")
+		self.assertEqual(self.cmd_obj.fourth, "--long")
+		self.assertEqual(self.cmd_obj.fifth, "-f")
+		self.assertEqual(self.cmd_obj.cmd, "nakedtest")
 		self.assertEqual(self.cmd_obj.arglp, "lparg") # test last positional argument
-		self.assertEqual(self.cmd_obj.arg_to_cmd, "nakedtest")
-		self.assertEqual(self.cmd_obj.arg_to_cmd2, "testcmd2")
+		self.assertEqual(self.cmd_obj.arg_to_exec, "nakedtest")
+		self.assertEqual(self.cmd_obj.arg_to_cmd, "testcmd2")
 
 
 	#------------------------------------------------------------------------------
 	# Options tests
 	#------------------------------------------------------------------------------
+	def test_detection_options_present(self):
+		"""Test for the presence of at least one option in the command"""
+		self.assertEqual(True, self.cmd_obj.option_exists()) #method test
+		self.assertEqual(True, self.cmd_obj.options) #attribute test
+
+	def test_detection_options_absent(self):
+		"""Test for absence of at least one option in the command"""
+		self.assertEqual(False, self.cmd_no_secondary_cmd_obj.option_exists()) #method test
+		self.assertEqual(False, self.cmd_no_secondary_cmd_obj.options) #attribute test
+
 	def test_options_present(self):
 		"""Test detection of presence of option in the command string"""
 		self.assertEqual(self.cmd_obj.option("-s"), True) #short option exists
@@ -121,6 +139,14 @@ class NakedCommandParseTest(unittest.TestCase):
 	#------------------------------------------------------------------------------
 	# Flag tests (definition: flag is a long option with an = assignment on the command line, e.g. --flag=arg)
 	#------------------------------------------------------------------------------
+	def test_flag_test_present(self):
+		"""Test that at least one flag is present in a command"""
+		self.assertEqual(self.cmd_with_flag.flag_exists(), True)
+
+	def test_flag_test_absent(self):
+		"""Test that there are no flags in the command"""
+		self.assertEqual(self.cmd_obj.flag_exists(), False)
+
 	def test_flag_present(self):
 		"""Test that flag is appropriately detected in command"""
 		self.assertEqual(self.cmd_with_flag.flag("--flag"), True)
