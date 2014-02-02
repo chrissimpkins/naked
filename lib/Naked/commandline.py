@@ -25,9 +25,17 @@ class Command:
         self.arg0 = self.argobj._getArg(0) # define the first positional argument
         self.arg1 = self.argobj._getArg(1) # define the second positional argument
         self.arg2 = self.argobj._getArg(2) # define the third postitional argument
+        self.arg3 = self.argobj._getArg(3) # define the fourth positional argument
+        self.arg4 = self.argobj._getArg(4) # define the fifth positional argument
         self.arglp = self.argobj._getArg(len(argv) - 1) # define the last positional argument
-        self.arg_to_cmd = self.arg0 # argument to the primary command
-        self.arg_to_cmd2 = self.arg1 # argument to the secondary command
+        self.first = self.arg0
+        self.second = self.arg1
+        self.third = self.arg2
+        self.fourth = self.arg3
+        self.fifth = self.arg4
+        self.last = self.arglp
+        self.arg_to_exec = self.arg0 # argument to the executable
+        self.arg_to_cmd = self.arg1 # argument to the primary command
         self.cmd = self.arg0  # define the primary command variable as the first positional argument (user dependent & optional, may be something else)
         self.cmd2 = self.arg1 # define the secondary command variable as the second positional argument (user dependent & optional, may be something else)
 
@@ -235,6 +243,21 @@ class Command:
                 sys.stderr.write("Naked Framework Error: Error parsing option and argument with option_with_arg() method (Naked.commandline.py).")
             raise e
 
+    #------------------------------------------------------------------------------
+    # [ option_exists method ] (boolean)
+    #  Test whether there are any options in the command string
+    #  returns boolean value for test "Is there at least one option?"
+    #------------------------------------------------------------------------------
+    def option_exists(self):
+        try:
+            if len(self.optobj) > 0:
+                return True
+            else:
+                return False
+        except Exception as e:
+            if DEBUG_FLAG:
+                sys.stderr.write("Naked Framework Error: Error testing for the presence of at least one option with option_exists() method (Naked.commandline.py).")
+            raise e
     #------------------------------------------------------------------------------
     #  Naked provides the following commands for all applications that use the framework:
     #  -- help
