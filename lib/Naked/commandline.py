@@ -38,8 +38,8 @@ class Command:
         self.arg_to_cmd = self.arg1 # argument to the primary command
         self.cmd = self.arg0  # define the primary command variable as the first positional argument (user dependent & optional, may be something else)
         self.cmd2 = self.arg1 # define the secondary command variable as the second positional argument (user dependent & optional, may be something else)
-        self.options = self.option_exists()
-        self.flags = self.flag_exists()
+        self.options = self.option_exists() # test for presence of at least one option (boolean)
+        self.flags = self.flag_exists() # test for presence of at least one flag (boolean)
 
     #------------------------------------------------------------------------------
     # [ app_validates_args method ] (boolean)
