@@ -31,7 +31,7 @@ setup(
     version=version_read(),
     description='A command line application framework',
     long_description=(docs_read('README.rst')),
-    url='http://github.com/chrissimpkins/naked/',
+    url='http://naked-py.com',
     license='MIT',
     author='Christopher Simpkins',
     author_email='chris@zerolabs.net',
@@ -47,7 +47,6 @@ setup(
     keywords='python,command line,system,application,framework,CLI,bootstrap',
     include_package_data=True,
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Natural Language :: English',
         'License :: OSI Approved :: MIT License',
