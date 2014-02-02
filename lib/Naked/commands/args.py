@@ -51,31 +51,39 @@ class Args:
         print('c.cmd = ' + c.cmd)
         print('c.cmd2 = ' + c.cmd2)
         print(' ')
-        print('Option Exists Test')
+        print('Option Exists Tests')
         print('------------------')
         print('c.option_exists() = ' + str(c.option_exists()))
+        print('c.options = ' + str(c.options))
         print(' ')
         print('Option Argument Assignment')
         print('--------------------------')
         if c.option_exists(): # if there are options, iterate through and print arguments to them
+            non_flag_options = False
             for x in range(len(c.optobj)):
                 if '=' in c.optobj[x]:
                     continue # don't print flags, they are handled below
                 else:
                     print('c.arg("' + c.optobj[x] + '") = ' + c.arg(c.optobj[x]))
+                    non_flag_options = True
+            if not non_flag_options:
+                print("There are no short or long options in the command.")
         else: # otherwise, inform user that there are no options
             print("There are no short options, long options, or flags in your command.")
         print(' ')
+        print('Flag Exists Tests')
+        print('----------------')
+        print('c.flag_exists() = ' + str(c.flag_exists()))
+        print('c.flags = ' + str(c.flags))
+        print(' ')
         print('Flag Argument Assignment')
         print('------------------------')
-        flags_present = False # indicator for presence of flags in the options list
-        if c.option_exists():
+        if c.flag_exists():
             for y in c.optobj:
                 if '=' in y:
                     the_flag = y.split('=')[0]
                     print('c.flag_arg("' + the_flag + '") = ' + c.flag_arg(the_flag))
-                    flags_present = True
-        if not flags_present: # provide message if there are no flags
+        else: # provide message if there are no flags
             print("There are no flag style arguments (--flag=argument) in your command.")
 
 
