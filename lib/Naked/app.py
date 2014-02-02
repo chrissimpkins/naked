@@ -50,9 +50,22 @@ def main():
     #   Test for primary commands and handle them
     #------------------------------------------------------------------------------------------
     #------------------------------------------------------------------------------
+    # [ args ] - identify the parsed arguments for a command string
+    #------------------------------------------------------------------------------
+    if c.cmd == "args":
+        if c.cmd2 == "help":
+            from Naked.commands.args import help as args_help
+            args_help()
+        if c.argc > 0: # there is an argument to where that is not help
+            from Naked.commands.args import Args
+            a = Args(c.arg_to_cmd)
+            a.run()
+        else:
+            stderr("The args command requires an example command as an argument. Use 'naked args help' for more information.", 1)
+    #------------------------------------------------------------------------------
     # [ build ] - build the C code in the Naked library (2)= help
     #------------------------------------------------------------------------------
-    if c.cmd == "build":
+    elif c.cmd == "build":
         if c.cmd2 == "help":
             from Naked.commands.build import help as build_help
             build_help()
@@ -109,7 +122,7 @@ def main():
         if c.cmd2 == "help":
             from Naked.commands.make import help as make_help
             make_help()
-        if c.arg1:
+        if c.arg1: # arg1 is not help so use it as the argument to the make command
             m = MakeController(c.arg1)
         else:
             m = MakeController(None)
