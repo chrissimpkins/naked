@@ -12,7 +12,7 @@ def profile():
     # Enter setup code below
     #------------------------------------------------------------------------------
     # Optional: include setup code below
-    from Naked.toolshed.c.ink import Template, Renderer
+    from Naked.toolshed.ink import Template, Renderer
     #------------------------------------------------------------------------------
     # Start profiler
     #------------------------------------------------------------------------------
