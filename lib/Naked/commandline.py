@@ -170,17 +170,32 @@ class Command:
     #------------------------------------------------------------------------------
     # [flag_arg method] (string)
     #   Return the argument string assigned to a flag
-    #
     #------------------------------------------------------------------------------
     def flag_arg(self, flag_string):
         try:
             for match_string in self.optobj:
-                if match_string.startswith(flag_string):
+                if match_string.startswith(flag_string) and '=' in match_string:
                     flag_list = match_string.split("=") #split the flag on the equal symbol = list with [option, argument]
                     return flag_list[1] #return the argument to the flag option
                 else:
                     pass
             return "" # return an empty string if unable to parse the argument
+        except Exception as e:
+            if DEBUG_FLAG:
+                sys.stderr.write("Naked Framework Error: Error parsing flags with the flag_arg() method (Naked.commandline.py).")
+            raise e
+
+    #------------------------------------------------------------------------------
+    # [ flag_exists method ] (boolean)
+    #  Test for the presence of a flag style option (--flag=argument) in the command
+    #------------------------------------------------------------------------------
+    def flag_exists(self):
+        try:
+            for item in self.optobj:
+                if '=' in item: #test for presence of an = symbol in the option
+                    return True # if present return True
+                    break
+            return False        # if didn't match across all options, return False
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Error parsing flags with the flag_arg() method (Naked.commandline.py).")
