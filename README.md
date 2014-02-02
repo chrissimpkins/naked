@@ -10,6 +10,8 @@ It features:
 
 The main project site is [http://naked-py.com](http://naked-py.com)
 
+The developer log (for update information) is [http://devlog.naked-py.com](http://devlog.naked-py.com)
+
 The documentation is in development and is available at [http://docs.naked-py.com](http://docs.naked-py.com)
 
 Contributions to the source and feedback are definitely welcomed!  Please submit any bug reports with the GitHub issue tracker.
