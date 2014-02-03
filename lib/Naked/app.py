@@ -19,8 +19,6 @@
 # c.flag_arg(flag_string) = returns the flag assignment for a "--option=argument" style flag
 #------------------------------------------------------------------------------------
 
-## TODO: a yaml & json library module?
-## TODO: add argument to primary command and secondary command attributes to the CL object
 # Application start
 def main():
     import sys
@@ -50,7 +48,7 @@ def main():
     #   Test for primary commands and handle them
     #------------------------------------------------------------------------------------------
     #------------------------------------------------------------------------------
-    # [ args ] - identify the parsed arguments for a command string
+    # [ args ] - identify the parsed arguments for a command string (2)= help
     #------------------------------------------------------------------------------
     if c.cmd == "args":
         if c.cmd2 == "help":
@@ -75,7 +73,22 @@ def main():
             abs_dirpath = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), "toolshed", "c")
             compile_c_code(abs_dirpath) # function calls exit status code
     #------------------------------------------------------------------------------
-    # [ dist ] - distribute source files to PyPI (2)=register, sdist, wheel, win, all, help
+    # [ classify ] - search Python application classifiers and display to user (args)-search string
+    #------------------------------------------------------------------------------
+    elif c.cmd == "classify":
+        if c.cmd2 == "help":
+            from Naked.commands.classifier import help as classifier_help
+            classifier_help()
+        else:
+            if c.second: # if search string was given
+                search_string = c.second
+            else:
+                search_string = "" # absence of search string detected in Classifier, defaults to the entire list instead of search
+            from Naked.commands.classifier import Classifier
+            c = Classifier(search_string)
+            c.run()
+    #------------------------------------------------------------------------------
+    # [ dist ] - distribute source files to PyPI (2)=register, sdist, swheel, wheel, win, all, help
     #------------------------------------------------------------------------------
     elif c.cmd == "dist":
         if c.argc > 1:
@@ -99,7 +112,7 @@ def main():
         else:
             stderr("Please enter a secondary command", 1)
     #------------------------------------------------------------------------------
-    # [ locate ] - locate Naked project files (2)= main, settings, setup
+    # [ locate ] - locate Naked project files (2)= main, settings, setup, help
     #------------------------------------------------------------------------------
     elif c.cmd == "locate":
         from Naked.commands.locate import Locator
@@ -115,7 +128,7 @@ def main():
         else:
             l = Locator('') #handles error report to user
     #------------------------------------------------------------------------------
-    # [ make ] - make a new Naked project (args)=project name
+    # [ make ] - make a new Naked project (2)=help (args)=project name
     #------------------------------------------------------------------------------
     elif c.cmd == "make":
         from Naked.commands.make import MakeController
@@ -128,7 +141,7 @@ def main():
             m = MakeController(None)
         m.run()
     #------------------------------------------------------------------------------
-    # [ profile ] - run the profiler.py file in the Naked project
+    # [ profile ] - run the profiler.py file in the Naked project (2)=help
     #------------------------------------------------------------------------------
     elif c.cmd == "profile":
         if c.cmd2 == "help":

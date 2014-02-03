@@ -53,6 +53,7 @@ PRIMARY COMMANDS     SECONDARY COMMANDS
 
    args                    help
    build                   help
+   classify                help
    dist        all•help•sdist•swheel•wheel•win
    help                  - none -
    locate         main•help•settings•setup
