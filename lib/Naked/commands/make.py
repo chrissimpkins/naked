@@ -355,7 +355,7 @@ def help():
     from Naked.toolshed.system import exit_success
     help_string = """
 Naked make Command Help
------------------------
+=======================
 The make command builds a new Naked project.  The project can be built from either responses that you give on the command line, or from a naked.yaml project settings file.
 
 USAGE
@@ -371,8 +371,15 @@ The naked.yaml settings file has the following structure:
 
 Place this in the top level of an empty directory and use `naked make` in the same directory.  Naked will confirm your settings and then build the project directories and files from these settings.
 
+SECONDARY COMMANDS
+  none
+
 OPTIONS
-  none """
+  none
+
+EXAMPLES
+  naked make
+  naked make testapp"""
     print(help_string)
     exit_success()
 

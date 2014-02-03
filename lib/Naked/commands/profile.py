@@ -33,15 +33,16 @@ class Profiler:
 
 
 def help():
+    from Naked.toolshed.system import exit_success
     help_string = """
 Naked profile Command Help
---------------------------
+==========================
 The profile command runs cProfile and pstats on the code that you enter in test code block of your PROJECT/lib/profiler.py file.
 
 USAGE
   naked profile
 
-ARGUMENTS
+SECONDARY COMMANDS
   none
 
 OPTIONS
@@ -50,3 +51,5 @@ OPTIONS
 This command searches bottom to top (from the working directory) through up to 6 directory levels to identify the lib/profiler.py path."""
 
     print(help_string)
+    exit_success()
+

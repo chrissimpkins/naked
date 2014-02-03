@@ -40,16 +40,22 @@ class Dist:
     # run the user requested command
     def _run_dist_command(self, the_command):
         if the_command in "register":
+            print('•naked• Running register...')
             shell_run(self.register)
         elif the_command in "sdist":
+            print('•naked• Running sdist...')
             shell_run(self.sdist)
         elif the_command in "wheel":
+            print('•naked• Running wheel...')
             shell_run(self.wheel)
         elif the_command in "swheel":
+            print('•naked• Running swheel...')
             shell_run(self.swheel)
         elif the_command in "win":
+            print('•naked• Running win...')
             shell_run(self.win)
         elif the_command in "all":
+            print('•naked• Running all...')
             shell_run(self.all)
         else:
             stderr("Unrecognized command.  Use 'naked dist help' to view the supported commands.", 1)
@@ -58,7 +64,7 @@ class Dist:
 def help():
     help_string = """
 Naked dist Command Help
------------------------
+=======================
 The dist secondary commands run the standard distutils 'python setup.py <command>' source/binary distribution commands.
 
 USAGE
@@ -73,7 +79,11 @@ SECONDARY COMMANDS   python setup.py <command(s)>
   win                  bdist_wininst upload
 
 OPTIONS
-  none"""
+  none
+
+EXAMPLES
+  naked dist register
+  naked dist sdist"""
     print(help_string)
     exit_success()
 

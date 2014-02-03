@@ -11,7 +11,7 @@ class Args:
         cmd_list = self.com_string.split()
         c = Command(cmd_list[0], cmd_list[1:])
         print(' ')
-        print("Assuming that your Command object is instantiated as an instance named 'c', the command that you entered would be parsed as follows:")
+        print("•naked• Assuming that your Command object is instantiated as an instance named 'c', the command that you entered would be parsed as follows:")
         print(' ')
         print('Application')
         print('-----------')
@@ -91,9 +91,10 @@ class Args:
 # [ help function ] - help for the where command
 #------------------------------------------------------------------------------
 def help():
+    from Naked.toolshed.system import exit_success
     help_string = """
 Naked args Command Help
------------------------
+=======================
 The args command displays information about the data that are parsed from a command string to Command object attributes and that are obtained from Command object methods.  It is intended to help with the design of your application logic when you use the Naked command line parser.
 
 USAGE
@@ -101,9 +102,16 @@ USAGE
 
 The command statement is a mandatory argument to the command.  It should include a complete command as it would be entered on the command line, including the executable.  The argument should be completely enclosed within quotes.
 
+SECONDARY COMMANDS
+  none
+
+OPTIONS
+  none
+
 EXAMPLE
   naked args 'testapp save somestring --unicode -s --name=file.txt'"""
     print(help_string)
+    exit_success()
 
 if __name__ == '__main__':
 	pass

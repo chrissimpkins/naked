@@ -150,7 +150,7 @@ class UnitTester:
 def help():
     help_string = """
 Naked test Command Help
------------------------
+=======================
 The test command allows you to run unit tests from any working directory in your project.
 
 USAGE
@@ -178,6 +178,9 @@ ARGUMENTS
   unittest <test file>
      -- Mandatory unit test file path (relative to the tests directory)
 
+OPTIONS
+  none
+
 EXAMPLES
   naked test nose
   naked test pytest
@@ -185,10 +188,7 @@ EXAMPLES
   naked test tox py27
   naked test unittest test_app.py
 
-A bottom to top search (from the working directory) is performed over up to 6 directory levels to find the 'tests' directory.
-
-OPTIONS
-  none"""
+A bottom to top search (from the working directory) is performed over up to 6 directory levels to find the 'tests' directory."""
     print(help_string)
     exit_success()
 

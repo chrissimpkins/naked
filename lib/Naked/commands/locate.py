@@ -11,11 +11,11 @@ class Locator:
 
     def _display_location(self):
         if self.needle == 'main':
-            main_path = os.path.join('<PROJECT>', 'lib', 'app.py')
+            main_path = os.path.join('<PROJECT>', 'lib', '<PROJECT>', 'app.py')
             print("app.py : " + main_path)
             exit_success()
         elif self.needle == "settings":
-            settings_path = os.path.join('<PROJECT>', 'lib', 'settings.py')
+            settings_path = os.path.join('<PROJECT>', 'lib', '<PROJECT>','settings.py')
             print("settings.py : " + settings_path)
             exit_success()
         elif self.needle == "setup":
@@ -28,9 +28,8 @@ class Locator:
 def help():
     help_string = """
 Naked locate Command Help
--------------------------
-
-The Naked locate command identifies the file path to commonly used files in your project directory.
+=========================
+The locate command identifies the file path to commonly used files in your project directory.
 
 USAGE
   naked locate <argument>
@@ -41,7 +40,10 @@ SECONDARY COMMANDS
   settings -  the project settings files, settings.py
 
 OPTIONS
-  none"""
+  none
+
+EXAMPLE
+  naked locate main"""
     print(help_string)
     exit_success()
 
