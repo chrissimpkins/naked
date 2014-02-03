@@ -91,7 +91,19 @@ class Args:
 # [ help function ] - help for the where command
 #------------------------------------------------------------------------------
 def help():
-    pass
+    help_string = """
+Naked args Command Help
+-----------------------
+The args command displays information about the data that is parsed from a command string to Command object attributes and that is obtained from Command object methods.  It is intended to help with the design of your application logic when you use the Naked command line parser.
+
+USAGE
+  naked args '<command statement>'
+
+The command statement is a mandatory argument to the command.  It should include a complete command as it would be entered on the command line, including the executable.  The argument should be completely enclosed within quotes.
+
+EXAMPLE
+  naked args 'testapp save somestring --unicode -s --name=file.txt'"""
+    print(help_string)
 
 if __name__ == '__main__':
 	pass
