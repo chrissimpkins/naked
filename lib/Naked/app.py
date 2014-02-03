@@ -56,7 +56,7 @@ def main():
         if c.cmd2 == "help":
             from Naked.commands.args import help as args_help
             args_help()
-        if c.argc > 0: # there is an argument to where that is not help
+        elif c.argc > 0: # there is an argument to where that is not help
             from Naked.commands.args import Args
             a = Args(c.arg_to_cmd)
             a.run()
