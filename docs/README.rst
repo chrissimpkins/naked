@@ -1,7 +1,7 @@
 
 **Naked** is a new Python command line application framework that is in active development.  The current release is a stable, testing release.
 
-Development is occurring at a reasonable clip at this stage.  A `developer log <http://nakedpy.wordpress.com/>`_  is available to keep up to date.
+Stay current with changes & updates on the `developer log <http://nakedpy.wordpress.com/>`_.
 
 Documentation is in development at `http://docs.naked-py.com/ <http://docs.naked-py.com/>`_
 
@@ -12,4 +12,4 @@ Applications that are currently testing the Naked framework include:
 • naked executable
 • `status <http://pypi.python.org/pypi/status>`_
 
-I would greatly appreciate feedback from anyone who is interested in testing the framework.  Feel free to contact me on Twitter (@csimpkins) if you have questions, comments, or problems.  Please use the issue reporting link above for bug reports.
+I would greatly appreciate feedback from anyone who is testing the framework.  Feel free to contact me on Twitter (@csimpkins) if you have questions, comments, or problems.  Please use the issue reporting link above for bug reports.

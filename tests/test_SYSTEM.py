@@ -113,7 +113,7 @@ class NakedSystemTest(unittest.TestCase):
 
 	def test_sys_meta_file_mod(self):
 		"""Test file modification date and time metadata read"""
-		self.assertEqual("Wed Jan  1 23:13:17 2014", system.file_mod_time(self.metafilepath))
+		self.assertEqual("Wed Jan 29 23:49:04 2014", system.file_mod_time(self.metafilepath))
 
 	#------------------------------------------------------------------------------
 	# FILE LISTING TESTS

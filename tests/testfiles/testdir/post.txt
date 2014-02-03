@@ -1,19 +1,18 @@
 {
-  "headers": {
-    "Content-Length": "0",
-    "X-Bluecoat-Via": "2057f8aa4c680061",
-    "X-Request-Id": "5526dc97-66b9-4022-a1d4-642c5474d86e",
-    "Connection": "close",
-    "Host": "httpbin.org",
-    "User-Agent": "python-requests/2.2.1 PyPy/2.2.1 Darwin/13.0.0",
-    "Accept-Encoding": "gzip, deflate, compress",
-    "Accept": "*/*"
-  },
-  "origin": "130.189.10.65",
-  "form": {},
-  "args": {},
-  "files": {},
   "url": "http://httpbin.org/post",
+  "args": {},
+  "origin": "50.133.135.46",
+  "form": {},
+  "files": {},
   "data": "",
+  "headers": {
+    "Host": "httpbin.org",
+    "Accept": "*/*",
+    "User-Agent": "python-requests/2.2.1 PyPy/2.2.1 Darwin/13.0.0",
+    "X-Request-Id": "6fec7318-19cc-48e4-b84b-84a68941325e",
+    "Accept-Encoding": "gzip, deflate, compress",
+    "Connection": "close",
+    "Content-Length": "0"
+  },
   "json": null
 }
