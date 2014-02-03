@@ -94,7 +94,7 @@ def help():
     help_string = """
 Naked args Command Help
 -----------------------
-The args command displays information about the data that is parsed from a command string to Command object attributes and that is obtained from Command object methods.  It is intended to help with the design of your application logic when you use the Naked command line parser.
+The args command displays information about the data that are parsed from a command string to Command object attributes and that are obtained from Command object methods.  It is intended to help with the design of your application logic when you use the Naked command line parser.
 
 USAGE
   naked args '<command statement>'
