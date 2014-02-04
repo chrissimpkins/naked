@@ -1,18 +1,18 @@
 {
-  "url": "http://httpbin.org/post",
   "args": {},
-  "origin": "50.133.135.46",
-  "form": {},
-  "files": {},
-  "data": "",
   "headers": {
-    "Host": "httpbin.org",
-    "Accept": "*/*",
-    "User-Agent": "python-requests/2.2.1 PyPy/2.2.1 Darwin/13.0.0",
-    "X-Request-Id": "6fec7318-19cc-48e4-b84b-84a68941325e",
     "Accept-Encoding": "gzip, deflate, compress",
+    "Content-Length": "0",
+    "X-Request-Id": "93fe1252-bb7d-4aab-89c5-7b4b80c08712",
+    "Host": "httpbin.org",
     "Connection": "close",
-    "Content-Length": "0"
+    "Accept": "*/*",
+    "User-Agent": "python-requests/2.2.1 PyPy/2.2.1 Darwin/13.0.0"
   },
-  "json": null
+  "url": "http://httpbin.org/post",
+  "data": "",
+  "origin": "50.133.135.46",
+  "json": null,
+  "files": {},
+  "form": {}
 }
