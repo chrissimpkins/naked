@@ -2,17 +2,19 @@
 
 NOSE_FLAGS="--verbosity=2"
 TEST_COMMAND="nosetests"
+
 CAST_TESTS="test_CASTS.py"
 COM_PARSE_TESTS="test_COMMAND_PARSE.py"
 COM_ALL_COMMANDS="test_COMMANDS.py"
 IO_TESTS="test_IO.py"
+PYTHON_TESTS="test_PYTHON.py"
 SYS_TESTS="test_SYSTEM.py"
 TEMPLATE_TESTS="test_INK_TEMPLATE.py"
 NETWORK_TESTS="test_NETWORK.py"
 
 
 if [ "$1" = "all" ];then
-	"$TEST_COMMAND" "$NOSE_FLAGS" "$COM_PARSE_TESTS" "$COM_ALL_COMMANDS" "$IO_TESTS" "$SYS_TESTS" "$TEMPLATE_TESTS" "$NETWORK_TESTS"
+	"$TEST_COMMAND" "$NOSE_FLAGS" "$CAST_TESTS" "$COM_PARSE_TESTS" "$COM_ALL_COMMANDS" "$IO_TESTS" "$PYTHON_TESTS" "$SYS_TESTS" "$TEMPLATE_TESTS" "$NETWORK_TESTS"
 elif [ "$1" = "casts" ];then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$CAST_TESTS"
 elif [ "$1" = "commands" ];then
@@ -23,6 +25,8 @@ elif [ "$1" = "net" ];then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$NETWORK_TESTS"
 elif [ "$1" = "parse" ];then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$COM_PARSE_TESTS"
+elif [ "$1" = "python" ]; then
+	"$TEST_COMMAND" "$NOSE_FLAGS" "$PYTHON_TESTS"
 elif [ "$1" = "sys" ]; then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$SYS_TESTS"
 elif [ "$1" = "template" ]; then

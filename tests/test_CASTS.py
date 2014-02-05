@@ -2,7 +2,6 @@
 # encoding: utf-8
 
 import unittest
-import Naked.commandline
 from Naked.toolshed.types import XString, XDict, XList, XSet, XFSet, XTuple, NakedObject
 from Naked.toolshed.casts import xstr, xd, xl, xq, xset, xfset, xt, nobj
 

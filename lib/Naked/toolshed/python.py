@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
+# tests: test_PYTHON.py
 
 from sys import version_info
 
