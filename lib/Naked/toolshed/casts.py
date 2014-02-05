@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
+# tests in test_CASTS.py
 
 from Naked.toolshed.types import NakedObject, XFSet, XDict, XList, XQueue, XSet, XString, XTuple
 from Naked.settings import debug as DEBUG_FLAG
