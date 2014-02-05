@@ -590,12 +590,13 @@ class XFSet(frozenset):
         attr_dict = self._getAttributeDict()
         return XSet(self, attr_dict)
 
+
 #------------------------------------------------------------------------------
 # [[ XString class ]]
 #   An inherited extension to the immutable string object that permits attribute assignment
 #   Immutable so there is no setter method, attributes must be set in the constructor
 #   Python 2: byte string by default, can cast to normalized UTF-8 with XString().unicode() method
-#   Python 3: unicode string by default, can normalize with XString().unicode() method
+#   Python 3: string (that permits unicode) by default, can normalize with XString().unicode() method
 #------------------------------------------------------------------------------
 class XString(str):
     def __new__(cls, string_text, attributes={}):
@@ -666,6 +667,78 @@ class XString(str):
             return normalize('NFKD', self.decode('UTF-8'))
         else:
             return normalize('NFKD', self)
+
+class XUnicode:
+    def __init__(self, string_text, attributes={}):
+        import sys
+        import unicodedata
+        norm_text = unicodedata.normalize('NFKD', string_text) # normalize the text
+        if sys.version_info[0] == 2:
+            self._naked_unicode_string = XUnicode2(string_text).encode('utf-8')
+        else:
+            self._naked_unicode_string = XUnicode3(string_text).encode('utf-8')
+        if len(attributes) > 0:
+            for key in attributes:
+                setattr(self, key, attributes[key])
+
+    def __str__(self): # string form of the type
+        return self._naked_unicode_string
+
+    def __repr__(self):
+        return self._naked_unicode_string
+
+
+class XUnicode_A:
+    def __init__(self, string_text, attributes={}):
+        import sys
+        import unicodedata
+        norm_text = unicodedata.normalize('NFKD', string_text)
+
+        class XUnicode_2(unicode):
+            def __new__(cls, the_string_text, attributes={}):
+                str_obj = unicode.__new__(cls, the_string_text)
+                if len(attributes) > 0:
+                    for key in attributes:
+                        setattr(str_obj, key, attributes[key])
+                return str_obj
+
+        class XUnicode_3(str):
+            def __new__(cls, the_string_text, attributes={}):
+                str_obj = str.__new__(cls, the_string_text)
+                if len(attributes) > 0:
+                    for key in attributes:
+                        setattr(str_obj, key, attributes[key])
+                return str_obj
+
+
+        if sys.version_info[0] == 2:
+            self.naked_u_string = XUnicode_2(norm_text, attributes).encode('utf-8')
+        elif sys.version_info[0] == 3:
+            self.naked_u_string = XUnicode_3(norm_text, attributes).encode('utf-8')
+
+    def __str__(self):
+        return self.naked_u_string
+
+    def __repr__(self):
+        return self.naked_u_string
+
+    def __getattr__(self, the_attribute):
+        return getattr(self.naked_u_string, the_attribute)
+
+    def __cmp__(self, other_string):
+        return hash(self.naked_u_string) ==  hash(other_string)
+
+
+class XUnicode2(unicode):
+    def __new__(cls, string_text):
+        str_obj = unicode.__new__(cls, string_text)
+        return str_obj
+
+class XUnicode3(str):
+    def __new__(cls, string_text):
+        str_obj = str.__new__(cls, string_text)
+        return str_obj
+
 
 #------------------------------------------------------------------------------
 # [[ XTuple class ]]
