@@ -22,7 +22,7 @@ class FileWriter(IO):
 
     #------------------------------------------------------------------------------
     # [ append method ]
-    #   Universal text file writer that appends to existing file using system default text encoding
+    #   Universal text file writer that appends to existing file using system default text encoding or utf-8 if throws unicode error
     #   Tests: test_IO.py:: test_file_ascii_readwrite_append, test_file_append_missingfile
     #------------------------------------------------------------------------------
     def append(self, text):
@@ -32,6 +32,8 @@ class FileWriter(IO):
                 raise IOError("The file specified for the text append does not exist (Naked.toolshed.file.py:append).")
             with open(self.filepath, 'a') as appender:
                 appender.write(text)
+        except UnicodeEncodeError as ue:
+            self.append_utf8(text) #try writing as utf-8
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to append text to the file with the append() method (Naked.toolshed.file.py).")
@@ -86,7 +88,7 @@ class FileWriter(IO):
 
     #------------------------------------------------------------------------------
     # [ write method ]
-    #   Universal text file writer that uses system default text encoding
+    #   Universal text file writer that writes by system default or utf-8 encoded unicode if throws UnicdeEncodeError
     #   Tests: test_IO.py :: test_file_ascii_readwrite, test_file_ascii_readwrite_missing_file,
     #    test_file_utf8_write_raises_unicodeerror
     #------------------------------------------------------------------------------
@@ -94,6 +96,8 @@ class FileWriter(IO):
         try:
             with open(self.filepath, 'wt') as writer:
                 writer.write(text)
+        except UnicodeEncodeError as ue:
+            self.write_utf8(text) # attempt to write with utf-8 encoding
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to write to requested file with the write() method (Naked.toolshed.file.py).")
@@ -132,23 +136,26 @@ class FileWriter(IO):
 
     #------------------------------------------------------------------------------
     # [ safe_write method ] (boolean)
-    #   Universal text file writer (system default text encoding) that will NOT overwrite existing file at the requested filepath
+    #   Universal text file writer (writes in default encoding unless throws unicode error) that will NOT overwrite existing file at the requested filepath
     #   returns boolean indicator for success of write based upon test for existence of file (False = write failed because file exists)
-    #   Tests: test_IO.py :: test_file_ascii_safewrite
+    #   Tests: test_IO.py :: test_file_ascii_safewrite, test_file_utf8_safewrite
     #------------------------------------------------------------------------------
     def safe_write(self, text):
-        try:
-            import os.path
-            if not os.path.exists(self.filepath):
+        import os.path
+        if not os.path.exists(self.filepath): # if the file does not exist, then can write
+            try:
                 with open(self.filepath, 'wt') as writer:
                     writer.write(text)
                 return True
-            else:
-                return False
-        except Exception as e:
-            if DEBUG_FLAG:
-                sys.stderr.write("Naked Framework Error: Unable to write to requested file with the safe_write() method (Naked.toolshed.file.py).")
-            raise e
+            except UnicodeEncodeError as ue:
+                self.write_utf8(text)
+                return True
+            except Exception as e:
+                if DEBUG_FLAG:
+                    sys.stderr.write("Naked Framework Error: Unable to write to requested file with the safe_write() method (Naked.toolshed.file.py).")
+                raise e
+        else:
+            return False # if file exists, do not write and return False
 
     #------------------------------------------------------------------------------
     # [ safe_write_bin method ]
@@ -207,15 +214,13 @@ class FileReader(IO):
 
     #------------------------------------------------------------------------------
     # [ read method ] (string)
-    #    Universal text file reader that uses the default system text encoding
-    #    returns string that is encoded in the default system text encoding
+    #    Universal text file reader that will read utf-8 encoded unicode or non-unicode text as utf-8
+    #    returns string or unicode (py3 = string for unicode and non-unicode, py2 = str for non-unicode, unicode for unicode)
     #    Tests: test_IO.py :: test_file_ascii_readwrite, test_file_read_missing_file,
     #------------------------------------------------------------------------------
     def read(self):
         try:
-            with open(self.filepath, 'rt') as reader:
-                data = reader.read()
-                return data
+            return self.read_utf8() #reads everything as unicode in utf8 encoding
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to read text from the requested file with the read() method (Naked.toolshed.file.py).")
@@ -259,15 +264,13 @@ class FileReader(IO):
 
     #------------------------------------------------------------------------------
     # [ readlines method ] (list of strings)
-    #   Read text from file line by line, uses default system text encoding
-    #   returns list of file lines as strings
+    #   Read text from file line by line, uses utf8 encoding by default
+    #   returns list of utf8 encoded file lines as strings
     #   Tests: test_IO.py :: test_file_readlines, test_file_readlines_missing_file
     #------------------------------------------------------------------------------
     def readlines(self):
         try:
-            with open(self.filepath, 'rt') as reader:
-                file_list = reader.readlines()
-                return file_list
+            return self.readlines_utf8() # read as utf8 encoded file
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to read text from the requested file with the readlines() method (Naked.toolshed.file.py).")
@@ -345,7 +348,7 @@ class FileReader(IO):
     # [ read_utf8 method ] (string)
     #   read data from a file with explicit UTF-8 encoding
     #   uses filepath from class constructor
-    #   returns a string containing the file data
+    #   returns a unicode string containing the file data (unicode in py2, str in py3)
     #   Tests: test_IO.py :: test_file_utf8_readwrite, test_file_utf8_readwrite_append,
     #           test_file_read_utf8_missing_file
     #------------------------------------------------------------------------------
