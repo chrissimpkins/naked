@@ -10,13 +10,15 @@ def print_scratch(func):
     return print_wrapper
 
 
-@print_scratch
 def run_scratchpad():
     from Naked.toolshed.file import FileReader
+    from Naked.toolshed.types import XString, XUnicode
 
-    r = FileReader('/Users/ces/Desktop/code/naked/tests/testfiles/ascii.txt')
-    test = r.read_utf8()
-    return type(test)
+    r = FileReader('/Users/ces/Desktop/code/naked/tests/testfiles/unicode.txt')
+    test1 = r.read_utf8()
+    test2 = XUnicode(test1, {'a': 'b'})
+    test3 = "Hey! It's Bengali ব য,and here is some more ২"
+    print(unicode(test2))
 
 
 
