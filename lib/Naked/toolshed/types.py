@@ -668,27 +668,9 @@ class XString(str):
         else:
             return normalize('NFKD', self)
 
+
+# this version works
 class XUnicode:
-    def __init__(self, string_text, attributes={}):
-        import sys
-        import unicodedata
-        norm_text = unicodedata.normalize('NFKD', string_text) # normalize the text
-        if sys.version_info[0] == 2:
-            self._naked_unicode_string = XUnicode2(string_text).encode('utf-8')
-        else:
-            self._naked_unicode_string = XUnicode3(string_text).encode('utf-8')
-        if len(attributes) > 0:
-            for key in attributes:
-                setattr(self, key, attributes[key])
-
-    def __str__(self): # string form of the type
-        return self._naked_unicode_string
-
-    def __repr__(self):
-        return self._naked_unicode_string
-
-
-class XUnicode_A:
     def __init__(self, string_text, attributes={}):
         import sys
         import unicodedata
@@ -712,32 +694,24 @@ class XUnicode_A:
 
 
         if sys.version_info[0] == 2:
-            self.naked_u_string = XUnicode_2(norm_text, attributes).encode('utf-8')
+            self.obj = XUnicode_2(norm_text, attributes)
+            self.norm_unicode = norm_text
+            self.naked_u_string = self.obj.encode('utf-8') # utf-8 encoded byte string
         elif sys.version_info[0] == 3:
-            self.naked_u_string = XUnicode_3(norm_text, attributes).encode('utf-8')
+            self.naked_u_string = XUnicode_3(norm_text, attributes).encode('utf-8') # ?
 
     def __str__(self):
-        return self.naked_u_string
+        # return self.naked_u_string
+        return self.obj
 
     def __repr__(self):
         return self.naked_u_string
 
     def __getattr__(self, the_attribute):
-        return getattr(self.naked_u_string, the_attribute)
+        return self.obj.__dict__[the_attribute]
 
     def __cmp__(self, other_string):
         return hash(self.naked_u_string) ==  hash(other_string)
-
-
-class XUnicode2(unicode):
-    def __new__(cls, string_text):
-        str_obj = unicode.__new__(cls, string_text)
-        return str_obj
-
-class XUnicode3(str):
-    def __new__(cls, string_text):
-        str_obj = str.__new__(cls, string_text)
-        return str_obj
 
 
 #------------------------------------------------------------------------------
