@@ -1,18 +1,4 @@
-{
-  "origin": "50.133.135.46",
-  "form": {},
-  "args": {},
-  "url": "http://httpbin.org/post",
-  "json": null,
-  "headers": {
-    "Content-Length": "0",
-    "Accept-Encoding": "gzip, deflate, compress",
-    "Connection": "close",
-    "User-Agent": "python-requests/2.2.1 PyPy/2.2.1 Darwin/13.0.0",
-    "Accept": "*/*",
-    "Host": "httpbin.org",
-    "X-Request-Id": "b1207d67-2da3-4e38-9e3a-659c77fb0ec0"
-  },
-  "files": {},
-  "data": ""
-}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<title>405 Method Not Allowed</title>
+<h1>Method Not Allowed</h1>
+<p>The method POST is not allowed for the requested URL.</p>

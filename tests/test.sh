@@ -10,11 +10,13 @@ IO_TESTS="test_IO.py"
 PYTHON_TESTS="test_PYTHON.py"
 SYS_TESTS="test_SYSTEM.py"
 TEMPLATE_TESTS="test_INK_TEMPLATE.py"
+TEMPLATE_TESTS_C="test_INK_TEMPLATE_c.py"
 NETWORK_TESTS="test_NETWORK.py"
+NETWORK_TESTS_C="test_NETWORK_c.py"
 
 
 if [ "$1" = "all" ];then
-	"$TEST_COMMAND" "$NOSE_FLAGS" "$CAST_TESTS" "$COM_PARSE_TESTS" "$COM_ALL_COMMANDS" "$IO_TESTS" "$PYTHON_TESTS" "$SYS_TESTS" "$TEMPLATE_TESTS" "$NETWORK_TESTS"
+	"$TEST_COMMAND" "$NOSE_FLAGS" "$CAST_TESTS" "$COM_PARSE_TESTS" "$COM_ALL_COMMANDS" "$IO_TESTS" "$NETWORK_TESTS" "$NETWORK_TESTS_C" "$PYTHON_TESTS" "$SYS_TESTS" "$TEMPLATE_TESTS" "$TEMPLATE_TESTS_C"
 elif [ "$1" = "casts" ];then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$CAST_TESTS"
 elif [ "$1" = "commands" ];then
@@ -22,7 +24,7 @@ elif [ "$1" = "commands" ];then
 elif [ "$1" = "io" ];then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$IO_TESTS"
 elif [ "$1" = "net" ];then
-	"$TEST_COMMAND" "$NOSE_FLAGS" "$NETWORK_TESTS"
+	"$TEST_COMMAND" "$NOSE_FLAGS" "$NETWORK_TESTS" "$NETWORK_TESTS_C"
 elif [ "$1" = "parse" ];then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$COM_PARSE_TESTS"
 elif [ "$1" = "python" ]; then
@@ -30,7 +32,7 @@ elif [ "$1" = "python" ]; then
 elif [ "$1" = "sys" ]; then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$SYS_TESTS"
 elif [ "$1" = "template" ]; then
-	"$TEST_COMMAND" "$NOSE_FLAGS" "$TEMPLATE_TESTS"
+	"$TEST_COMMAND" "$NOSE_FLAGS" "$TEMPLATE_TESTS" "$TEMPLATE_TESTS_C"
 else
 	echo "Enter 'all' or a command suite to test."
 	exit 1

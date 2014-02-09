@@ -14,7 +14,7 @@ class NakedSystemTest(unittest.TestCase):
 		self.bogusfilepath = make_path("testfiles", "testdir", "bogusfile.text")
 		self.metafilepath = make_path("testfiles", "keep", "metadata.txt")
 		self.dir_file_path = make_path("testfiles", "keep")
-		self.dir_file_list = ["file1.txt", "file2.txt", "file3.py", "metadata.txt"]
+		self.dir_file_list = ["file1.txt", "file2.txt", "file3.py", "metadata.txt", "test.tar.gz"]
 		FileWriter(self.sysfilepath).write("test")
 
 	def tearDown(self):
