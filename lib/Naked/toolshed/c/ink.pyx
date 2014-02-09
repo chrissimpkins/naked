@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# cython: profile=True
+# cython: profile=False
 
 #------------------------------------------------------------------------------
 # The Ink Templating System
@@ -97,6 +97,7 @@ class Renderer:
         return local_template
 
     ##TODO : multiple file render method?
+
 
 if __name__ == '__main__':
     pass
