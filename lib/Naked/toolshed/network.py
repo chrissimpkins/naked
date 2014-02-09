@@ -33,6 +33,8 @@ class HTTP():
             response = requests.get(self.url, timeout=self.request_timeout, allow_redirects=follow_redirects)
             self.res = response # assign the response object from requests to a property on the instance of HTTP class
             return response.text
+        except requests.exceptions.ConnectionError as ce:
+            return False
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to perform GET request with the URL " + self.url + " using the get() method (Naked.toolshed.network.py)")
@@ -43,11 +45,13 @@ class HTTP():
     #   HTTP GET request, return binary data
     #   returns data stream with raw binary data
     #------------------------------------------------------------------------------
-    def get_data(self):
+    def get_bin(self):
         try:
             response = requests.get(self.url, timeout=self.request_timeout)
             self.res = response # assign the response object from requests to a property on the instance
             return response.content # return binary data instead of text (get() returns text)
+        except requests.exceptions.ConnectionError as ce:
+            return False
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to perform GET request with the URL " + self.url + " using the get_data() method (Naked.toolshed.network.py)")
@@ -85,8 +89,10 @@ class HTTP():
                     os.fsync(f.fileno()) # flush all internal buffers to disk
             if not suppress_output:
                 print(" ")
-                print("Dowload complete.")
+                print("Download complete.")
             return True # return True if successful write
+        except requests.exceptions.ConnectionError as ce:
+            return False
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to perform GET request and write file with the URL " + self.url + " using the get_bin_write_file() method (Naked.toolshed.network.py)")
@@ -99,11 +105,21 @@ class HTTP():
     #   return True on successful pull and write to disk
     #   Tests: test_NETWORK.py :: test_http_get_text
     #------------------------------------------------------------------------------
-    def get_txt_write_file(self, filepath=""):
+    def get_txt_write_file(self, filepath="", suppress_output = False, overwrite_existing = False):
         try:
             import os # used for os.fsync() method in the write
+            # Confirm that the file does not exist and prevent overwrite if it does (unless developer indicates otherwise)
+            if not overwrite_existing:
+                from Naked.toolshed.system import file_exists
+                if file_exists(filepath):
+                    if not suppress_output:
+                        print("Download aborted.  A local file with the requested filename exists on the path.")
+                    return False
             if (filepath == "" and len(self.url) > 1):
                 filepath = self.url.split('/')[-1] # use the filename from URL and working directory as default if not specified
+            if not suppress_output:
+                sys.stdout.write("Downloading file from " + self.url + "...")
+                sys.stdout.flush()
             response = requests.get(self.url, timeout=self.request_timeout, stream=True)
             self.res = response
             import codecs
@@ -113,7 +129,12 @@ class HTTP():
                     f.write(chunk)
                     f.flush()
                     os.fsync(f.fileno()) # flush all internal buffers to disk
+            if not suppress_output:
+                print(" ")
+                print("Download complete.")
             return True # return True if successful write
+        except requests.exceptions.ConnectionError as ce:
+            return False
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to perform GET request and write file with the URL " + self.url + " using the get_data_write_txt() method (Naked.toolshed.network.py)")
@@ -133,6 +154,8 @@ class HTTP():
             response = requests.head(self.url, timeout=self.request_timeout)
             self.res = response # assign the response object from requests to a property on the instance of HTTP class
             return response.headers
+        except requests.exceptions.ConnectionError as ce:
+            return False
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to perform a HEAD request with the head() method (Naked.toolshed.network.py).")
@@ -149,22 +172,28 @@ class HTTP():
             response = requests.post(self.url, timeout=self.request_timeout, allow_redirects=follow_redirects)
             self.res = response # assign the response object from requests to a property on the instance of HTTP class
             return response.text
+        except requests.exceptions.ConnectionError as ce:
+            return False
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.exit("Naked Framework Error: Unable to perform a POST request with the post() method (Naked.toolshed.network.py).")
             raise e
 
     #------------------------------------------------------------------------------
-    # [ post_data method ] (binary data)
+    # [ post_bin method ] (binary data)
     #  HTTP POST request for binary data
     #  returns binary data from the URL
     #------------------------------------------------------------------------------
-    def post_data(self):
+    def post_bin(self):
         try:
             response = requests.post(self.url, timeout=self.request_timeout)
             self.res = response # assign the response object from requests to a property on the instance of HTTP class
             return response.content
+        except requests.exceptions.ConnectionError as ce:
+            return False
         except Exception as e:
+            if DEBUG_FLAG:
+                sys.stderr.exit("Naked Framework Error: Unable to perform POST request with the post_bin() method (Naked.toolshed.network.py).")
             raise e
 
     #------------------------------------------------------------------------------
@@ -173,11 +202,21 @@ class HTTP():
     #  default filepath is the basename of the URL file, may be set by passing an argument to the method
     #  returns a boolean that indicates the success of the file write
     #------------------------------------------------------------------------------
-    def post_bin_write_file(self, filepath=""):
+    def post_bin_write_file(self, filepath="", suppress_output = False, overwrite_existing = False):
         try:
             import os # used for os.fsync() method in the write
+            # Confirm that the file does not exist and prevent overwrite if it does (unless developer indicates otherwise)
+            if not overwrite_existing:
+                from Naked.toolshed.system import file_exists
+                if file_exists(filepath):
+                    if not suppress_output:
+                        print("Download aborted.  A local file with the requested filename exists on the path.")
+                    return False
             if (filepath == "" and len(self.url) > 1):
                 filepath = self.url.split('/')[-1] # use the filename from URL and working directory as default if not specified
+            if not suppress_output:
+                sys.stdout.write("Downloading file from " + self.url + "...") #provide information about the download to user
+                sys.stdout.flush()
             response = requests.post(self.url, timeout=self.request_timeout, stream=True)
             self.res = response
             with open(filepath, 'wb') as f: # write as binary data
@@ -185,7 +224,12 @@ class HTTP():
                     f.write(chunk)
                     f.flush()
                     os.fsync(f.fileno()) # flush all internal buffers to disk
+            if not suppress_output:
+                print(" ")
+                print("Download complete.") # provide user with completion information
             return True # return True if successful write
+        except requests.exceptions.ConnectionError as ce:
+            return False
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to perform POST request and write file with the URL " + self.url + " using the post_data_write_bin() method (Naked.toolshed.network.py)")
@@ -197,11 +241,21 @@ class HTTP():
     #   default filepath is the basename of the URL file, may be set by passing an argument to the method
     #   returns a boolean that indicates the success of the file write
     #------------------------------------------------------------------------------
-    def post_txt_write_file(self, filepath=""):
+    def post_txt_write_file(self, filepath="", suppress_output = False, overwrite_existing = False):
         try:
             import os # used for os.fsync() method in the write
+            # Confirm that the file does not exist and prevent overwrite if it does (unless developer indicates otherwise)
+            if not overwrite_existing:
+                from Naked.toolshed.system import file_exists
+                if file_exists(filepath):
+                    if not suppress_output:
+                        print("Download aborted.  A local file with the requested filename exists on the path.")
+                    return False
             if (filepath == "" and len(self.url) > 1):
                 filepath = self.url.split('/')[-1] # use the filename from URL and working directory as default if not specified
+            if not suppress_output:
+                sys.stdout.write("Downloading file from " + self.url + "...") #provide information about the download to user
+                sys.stdout.flush()
             response = requests.post(self.url, timeout=self.request_timeout, stream=True)
             self.res = response
             import codecs
@@ -211,7 +265,12 @@ class HTTP():
                     f.write(chunk)
                     f.flush()
                     os.fsync(f.fileno()) # flush all internal buffers to disk
+            if not suppress_output:
+                print(" ")
+                print("Download complete.") # provide user with completion information
             return True # return True if successful write
+        except requests.exceptions.ConnectionError as ce:
+            return False
         except Exception as e:
             if DEBUG_FLAG:
                 sys.stderr.write("Naked Framework Error: Unable to perform POST request and write file with the URL " + self.url + " using the post_data_write_bin() method (Naked.toolshed.network.py)")
@@ -234,7 +293,7 @@ class HTTP():
 
     #------------------------------------------------------------------------------
     # [ get_status_ok method ] (boolean)
-    #   return boolean whether HTTP response was in 200 status code range
+    #   return boolean whether HTTP response was in 200 status code range for GET request
     #   Note: this method runs its own GET request, does not need to be run separately
     #   Tests: test_NETWORK.py ::
     #------------------------------------------------------------------------------
@@ -252,6 +311,11 @@ class HTTP():
                 sys.stderr.write("Naked Framework Error: Unable to obtain the HTTP status with the get_status_ok() method (Naked.toolshed.network.py).")
             raise e
 
+    #------------------------------------------------------------------------------
+    # [ post_status_ok method ] (boolean)
+    #  return boolean whether HTTP response was in 200 status code range for POST request
+    #  Note: method runs its own post method, not necessary to run separately
+    #------------------------------------------------------------------------------
     def post_status_ok(self):
         try:
             self.post() #run the post request
