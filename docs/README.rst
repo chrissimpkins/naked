@@ -6,7 +6,12 @@ About
 Updates
 --------
 
-Stay current with changes & updates on the `developer log <http://nakedpy.wordpress.com/>`_.
+Changes, updates, and brief tutorials are available on the `developer log <http://nakedpy.wordpress.com/>`_.
+
+QuickStart Guide
+------------------
+
+The quickstart guide is available at `http://docs.naked-py.com/quickstart.html <http://docs.naked-py.com/quickstart.html>`_
 
 Documentation
 --------------
