@@ -22,9 +22,11 @@ def run_scratchpad():
 
     from Naked.toolshed.network import HTTP
 
-    http = HTTP("https://github.com/chrissimpkins/six-four/tarball/master")
-    bin_data = http.get_data()
-    print(bin_data)
+    http = HTTP('bogus.com')
+    if http.get():
+        status = http.res.status_code
+    else:
+        fail_status = http.res.status_code
 
 
 
