@@ -12,7 +12,7 @@ The main project site is [http://naked-py.com](http://naked-py.com)
 
 The developer log (for update information) is [http://devlog.naked-py.com](http://devlog.naked-py.com)
 
-A QuickStart Guide is available at [http://docs.naked-py.com/quickstart.html](http://docs.naked-py.com/quickstart.html).  This is a detailed overview of many of the available tools and a good place to get a feel for the project.
+A QuickStart Guide is available at [http://docs.naked-py.com/quickstart.html](http://docs.naked-py.com/quickstart.html).  It demonstrates how the available tools can be incorporated into your development workflow, spanning the entire period from an empty project directory to your first PyPI version release.
 
 The documentation is in development and is available at [http://docs.naked-py.com](http://docs.naked-py.com)
 

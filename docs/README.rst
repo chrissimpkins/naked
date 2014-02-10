@@ -11,7 +11,7 @@ Changes, updates, and brief tutorials are available on the `developer log <http:
 QuickStart Guide
 ------------------
 
-The quickstart guide is available at `http://docs.naked-py.com/quickstart.html <http://docs.naked-py.com/quickstart.html>`_
+The quickstart guide is available at `http://docs.naked-py.com/quickstart.html <http://docs.naked-py.com/quickstart.html>`_. It demonstrates how the available tools can be incorporated into your development workflow, spanning the entire period from an project empty directory to your first PyPI version release.
 
 Documentation
 --------------
