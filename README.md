@@ -1,4 +1,4 @@
-Naked
+Naked  [![PyPI version](https://badge.fury.io/py/Naked.png)](https://pypi.python.org/pypi/Naked)
 =====
 Naked is a MIT licensed Python command line application framework that is in development.  The current release is a stable, development version.
 
