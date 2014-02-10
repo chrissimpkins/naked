@@ -4,13 +4,15 @@ Naked is a MIT licensed Python command line application framework that is in dev
 
 It features:
 
-(1) a client application for automatic project generation with documentation, deployment, and testing project file stubs
+(1) an executable that supports simple Python project generation, testing, profiling, and distribution to PyPI.
 
-(2) a Python library with an easy to use command line string object parser and numerous Python type/method/function extensions (with the option to compile faster C versions).
+(2) a Python library with an easy to use command line string object parser and numerous Python type/method/function extensions.
 
 The main project site is [http://naked-py.com](http://naked-py.com)
 
 The developer log (for update information) is [http://devlog.naked-py.com](http://devlog.naked-py.com)
+
+A QuickStart Guide is available at [http://docs.naked-py.com/quickstart.html](http://docs.naked-py.com/quickstart.html).  This is a detailed overview of many of the available tools and a good place to get a feel for the project.
 
 The documentation is in development and is available at [http://docs.naked-py.com](http://docs.naked-py.com)
 
