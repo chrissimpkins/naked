@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
-# cython: profile=True
+# cython: profile=False
 
 from Naked.settings import debug as DEBUG_FLAG
 from Naked.toolshed.c.system import cwd
