@@ -6,7 +6,6 @@ import sys
 import subprocess
 from Naked.settings import debug as DEBUG_FLAG
 
-## TODO: add the try/except blocks in each of the system run commands (around stderr.write(cpe.output))
 #------------------------------------------------------------------------------
 # [ run function ] (byte string or False)
 #   run a shell command
@@ -85,9 +84,9 @@ def run_py(command, suppress_output=False, suppress_exit_status_call=False):
 def run_rb(file_path, args="", suppress_output=False, suppress_exit_status_call=False):
     try:
         if len(args) > 0:
-            rb_command = 'ruby ' + filepath + " " + args
+            rb_command = 'ruby ' + file_path + " " + args
         else:
-            rb_command = 'ruby ' + filepath
+            rb_command = 'ruby ' + file_path
         response = subprocess.check_output(rb_command, stderr=subprocess.STDOUT, shell=True)
         if not suppress_output:
             print(response)
@@ -121,9 +120,9 @@ def run_rb(file_path, args="", suppress_output=False, suppress_exit_status_call=
 def run_js(file_path, args="", suppress_output=False, suppress_exit_status_call=False):
     try:
         if len(args) > 0:
-            rb_command = 'node ' + filepath + " " + args
+            rb_command = 'node ' + file_path + " " + args
         else:
-            rb_command = 'node ' + filepath
+            rb_command = 'node ' + file_path
         response = subprocess.check_output(rb_command, stderr=subprocess.STDOUT, shell=True)
         if not suppress_output:
             print(response)
