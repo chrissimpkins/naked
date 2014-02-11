@@ -2,13 +2,14 @@
 # encoding: utf-8
 
 from Naked.commandline import Command
+import shlex
 
 class Args:
     def __init__(self, command_string):
         self.com_string = command_string
 
     def run(self):
-        cmd_list = self.com_string.split()
+        cmd_list = shlex.split(self.com_string)
         c = Command(cmd_list[0], cmd_list[1:])
         print(' ')
         print("•naked• Assuming that your Command object is instantiated as an instance named 'c', the command that you entered would be parsed as follows:")
