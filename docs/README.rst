@@ -27,3 +27,8 @@ Contribute
 -----------
 
 I would greatly appreciate feedback from anyone who is testing the framework.  Feel free to contact me on Twitter (@csimpkins) if you have questions, comments, or problems.  Please use the issue reporting link above for bug reports.
+
+Example Application
+-------------------
+
+`Status <https://pypi.python.org/pypi/status>`_ was built from the ground up with the Naked Framework.  If you'd like to check out the source, it is available on `GitHub <https://github.com/chrissimpkins/status/tree/master/lib/status>`_
