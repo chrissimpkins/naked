@@ -6,10 +6,9 @@ import sys
 import subprocess
 from Naked.settings import debug as DEBUG_FLAG
 
-
 #------------------------------------------------------------------------------
 # [ execute function ] (boolean)
-#  run a shell command immediately
+#  run a shell command and print std out / std err to terminal
 #  returns True if exit status = 0
 #  returns False if exit status != 0
 #------------------------------------------------------------------------------
@@ -23,31 +22,32 @@ def execute(command):
     except subprocess.CalledProcessError as cpe:
         try:
             sys.stderr.write(cpe.output)
-        except TypeError:
+        except TypeError as te:
             sys.stderr.write(str(cpe.output))
     except Exception as e:
         if DEBUG_FLAG:
-            sys.stderr.write("Naked Framework Error: unable to run the shell command with the execute() function (Naked.toolshed.shell.py)."
+            sys.stderr.write("Naked Framework Error: unable to run the shell command with the execute() function (Naked.toolshed.shell.py).")
         raise e
 
 
 #------------------------------------------------------------------------------
 # [ run function ] (bytes string or False)
 #   run a shell command
-#   print the standard output to the standard output stream by default
-#   set suppress_output to True to suppress stream to standard output.  String is still returned to calling function
-#   set suppress_exit_status_call to True to suppress raising sys.exit on failures with shell subprocess exit status code (if available) or 1 if not available
-#   returns the standard output byte string from the subprocess executable on success
-#   returns False if the subprocess exits with a non-zero exit code
+#   default =
+#       success:: print to std out and return the std out string
+#         error:: print to stderr return False, suppress SystemExit on error to permit ongoing run of calling script
+#   suppress_stdout = True >> suppress std output stream print (returns string)
+#   suppress_stderr = True >> suppress std err stream print (returns False)
+#   suppress_exit_status_call = False >> raise SystemExit with the returned status code
 #------------------------------------------------------------------------------
-def run(command, suppress_output=False, suppress_exit_status_call=False):
+def run(command, suppress_stdout=False, suppress_stderr=False, suppress_exit_status_call=True):
     try:
         response = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
-        if not suppress_output:
+        if not suppress_stdout:
             print(response)
         return response
     except subprocess.CalledProcessError as cpe:
-        if not suppress_output: # error in existing application (non-zero exit status)
+        if not suppress_stderr: # error in existing application (non-zero exit status)
             try:
                 sys.stderr.write(cpe.output)
             except TypeError as te: # deal with unusual errors from some system executables that return non string type through subprocess.check_output
@@ -63,40 +63,32 @@ def run(command, suppress_output=False, suppress_exit_status_call=False):
             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run() function (Naked.toolshed.shell.py).")
         raise e
 
-#------------------------------------------------------------------------------
-# PYTHON COMMAND EXECUTION
-#------------------------------------------------------------------------------
-#------------------------------------------------------------------------------
-# [ execute_py ] (boolean)
-#  execute a Python statement in a shell subprocess.
-#  subprocess manages stdout and stderr
-#  returns True for exit success, False for exit failure
-#------------------------------------------------------------------------------
-def execute_py(command):
-    try:
-        py_command = 'python -c "' + command + '"'
-        return execute(py_command) # return result of execute() of the python command
-    except Exception as e:
-        if DEBUG_FLAG:
-             sys.stderr.write("Naked Framework Error: unable to run the shell command with the execute_py() function (Naked.toolshed.shell.py)."
-        raise e
 
 #------------------------------------------------------------------------------
-# [ run_py function ] (bytes string or False)
-#  execute a python script in a shell subprocess, collect the returned data, and return to calling code
-#  print the standard output to the standard output stream by default
-#  set suppress_output to True to suppress stream to standard output.  String is still returned to calling function
-#  set suppress_exit_status_call to True to suppress raising sys.exit on failures with shell subprocess exit status code (if available) or 1 if not available
-#  returns the standard output byte string from the subprocess executable on success
-#  returns False if the subprocess exits with a non-zero exit code
+# [ muterun function ] (NakedObject with attributes for stdout, stderr, exitcode)
+#  run a shell command and return a response object
+#  return object attributes : stdout (bytes), stderr (bytes), exitcode (int)
 #------------------------------------------------------------------------------
-def run_py(command, suppress_output=False, suppress_exit_status_call=False):
+def muterun(command):
     try:
-        py_command = 'python -c "' + command + '"'
-        return run(py_command, suppress_output, suppress_exit_status_call) # return result of run() of the python command
+        from Naked.toolshed.types import NakedObject
+        response_obj = NakedObject()
+        response = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
+        response_obj.stdout = response
+        response_obj.exitcode = 0
+        response_obj.stderr = b""
+        return response_obj
+    except subprocess.CalledProcessError as cpe:
+        response_obj.stdout = b""
+        response_obj.stderr = cpe.output
+        if cpe.returncode:
+            response_obj.exitcode = cpe.returncode
+        else:
+            response_obj.exitcode = 1
+        return response_obj
     except Exception as e:
         if DEBUG_FLAG:
-             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_py() function (Naked.toolshed.shell.py)."
+            sys.stderr.write("Naked Framework Error: unable to run the shell command with the mute_run() function (Naked.toolshed.shell.py).")
         raise e
 
 
@@ -105,6 +97,7 @@ def run_py(command, suppress_output=False, suppress_exit_status_call=False):
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # [ execute_rb function ] (boolean)
+#  execute a ruby script file in a shell subprocess
 #------------------------------------------------------------------------------
 def execute_rb(file_path, args=""):
     try:
@@ -115,30 +108,39 @@ def execute_rb(file_path, args=""):
         return execute(rb_command) # return result of execute() of the ruby file
     except Exception as e:
         if DEBUG_FLAG:
-             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_rb() function (Naked.toolshed.shell.py)."
+             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_rb() function (Naked.toolshed.shell.py).")
         raise e
 
 #------------------------------------------------------------------------------
 # [ run_rb function ] (bytes string or False)
-#  execute a ruby script file in a shell subprocess
-#  print the standard output to the standard output stream by default
-#  set suppress_output to True to suppress stream to standard output.  String is still returned to calling function
-#  set suppress_exit_status_call to True to suppress raising sys.exit on failures with shell subprocess exit status code (if available) or 1 if not available
-#  returns the standard output byte string from the subprocess executable on success
-#  returns False if the subprocess exits with a non-zero exit code
+#  execute a ruby script file in a shell subprocess, return the output
 #------------------------------------------------------------------------------
-def run_rb(file_path, args="", suppress_output=False, suppress_exit_status_call=False):
+def run_rb(file_path, args="", suppress_stdout=False, suppress_stderr=False, suppress_exit_status_call=True):
     try:
         if len(args) > 0:
             rb_command = 'ruby ' + file_path + " " + args
         else:
             rb_command = 'ruby ' + file_path
-        return run(rb_command, suppress_output, suppress_exit_status_call) # return result of run() of the ruby file
+        return run(rb_command, suppress_stdout, suppress_stderr, suppress_exit_status_call) # return result of run() of the ruby file
     except Exception as e:
         if DEBUG_FLAG:
-             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_rb() function (Naked.toolshed.shell.py)."
+             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_rb() function (Naked.toolshed.shell.py).")
         raise e
 
+#------------------------------------------------------------------------------
+# [ muterun_rb function ] (NakedObject response object)
+#------------------------------------------------------------------------------
+def muterun_rb(command, args=""):
+    try:
+        if len(args) > 0:
+            rb_command = 'ruby ' + file_path + " " + args
+        else:
+            rb_command = 'ruby ' + file_path
+        return muterun(rb_command) # return result of muterun() of the ruby file
+    except Exception as e:
+        if DEBUG_FLAG:
+             sys.stderr.write("Naked Framework Error: unable to run the shell command with the muterun_rb() function (Naked.toolshed.shell.py).")
+        raise e
 
 #------------------------------------------------------------------------------
 # NODE.JS COMMAND EXECUTION
@@ -159,7 +161,7 @@ def execute_js(file_path, args=""):
         return execute(js_command) # return result of execute() of node.js file
     except Exception as e:
         if DEBUG_FLAG:
-             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_js() function (Naked.toolshed.shell.py)."
+             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_js() function (Naked.toolshed.shell.py).")
         raise e
 #------------------------------------------------------------------------------
 # [ run_js function ] (byte string or False)
@@ -170,16 +172,31 @@ def execute_js(file_path, args=""):
 #  returns the standard output byte string from the subprocess executable on success
 #  returns False if the subprocess exits with a non-zero exit code
 #------------------------------------------------------------------------------
-def run_js(file_path, args="", suppress_output=False, suppress_exit_status_call=False):
+def run_js(file_path, args="", suppress_stdout=False, suppress_stderr=False, suppress_exit_status_call=True):
     try:
         if len(args) > 0:
             js_command = 'node ' + file_path + " " + args
         else:
             js_command = 'node ' + file_path
-        return run(js_command, suppress_output, suppress_exit_status_call) # return result of run() of node.js file
+        return run(js_command, suppress_stdout, suppress_stderr, suppress_exit_status_call) # return result of run() of node.js file
     except Exception as e:
         if DEBUG_FLAG:
-             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_js() function (Naked.toolshed.shell.py)."
+             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_js() function (Naked.toolshed.shell.py).")
+        raise e
+
+#------------------------------------------------------------------------------
+# [ muterun_js function ] (NakedObject response object)
+#------------------------------------------------------------------------------
+def muterun_js(command, args=""):
+    try:
+        if len(args) > 0:
+            js_command = 'node ' + file_path + " " + args
+        else:
+            js_command = 'node ' + file_path
+        return muterun(js_command) # return result of muterun() of node.js file
+    except Exception as e:
+        if DEBUG_FLAG:
+             sys.stderr.write("Naked Framework Error: unable to run the shell command with the muterun_js() function (Naked.toolshed.shell.py).")
         raise e
 
 #------------------------------------------------------------------------------
