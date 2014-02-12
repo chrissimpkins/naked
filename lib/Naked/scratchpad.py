@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+import sys
 from functools import wraps
+from Naked.toolshed.shell import run, execute, muterun
 
 def print_scratch(func):
     @wraps(func)
@@ -20,14 +22,12 @@ def run_scratchpad():
     # test3 = "Hey! It's Bengali ব য,and here is some more ২"
     # print(unicode(test2))
 
-    from Naked.toolshed.network import HTTP
-
-    http = HTTP('bogus.com')
-    if http.get():
-        status = http.res.status_code
+    out = muterun('bogus')
+    if out.exitcode == 0:
+        print(test.stdout)
     else:
-        fail_status = http.res.status_code
-
+        sys.stderr.write(out.stderr)
+        sys.exit(out.exitcode)
 
 
 if __name__ == '__main__':
