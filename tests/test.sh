@@ -11,6 +11,7 @@ NETWORK_TESTS="test_NETWORK.py"
 NETWORK_TESTS_C="test_NETWORK_c.py"
 PYTHON_TESTS="test_PYTHON.py"
 PYTHON_TESTS_C="test_PYTHON_c.py"
+SHELL_TESTS="test_SHELL.py"
 STATE_TESTS="test_STATE.py"
 STATE_TESTS_C="test_STATE_c.py"
 SYS_TESTS="test_SYSTEM.py"
@@ -32,6 +33,8 @@ elif [ "$1" = "parse" ];then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$COM_PARSE_TESTS"
 elif [ "$1" = "python" ]; then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$PYTHON_TESTS" "$PYTHON_TESTS_C"
+elif [ "$1" = "shell" ]; then
+	"$TEST_COMMAND" "$SHELL_TESTS"
 elif [ "$1" = "state" ]; then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$STATE_TESTS" "$STATE_TESTS_C"
 elif [ "$1" = "sys" ]; then
