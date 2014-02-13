@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 import unittest
+import os
 from Naked.toolshed.shell import execute, execute_rb, execute_js, run, run_rb, run_js, muterun, muterun_rb, muterun_js
 from Naked.toolshed.types import NakedObject
 
@@ -11,6 +12,8 @@ class NakedShellTest(unittest.TestCase):
         self.good_command = "echo 'test command'"   #zero exit status, good command
         self.bad_command = "bogusapp -help" #non-zero exit status, missing executable
         self.missing_option = "ls --random" #non-zero exit status from an executable that is present
+        self.node_success_path = os.path.join('testfiles', 'keep', 'js', 'node_success.js')
+        self.node_fail_path = os.path.join('testfiles', 'keep', 'js', 'node_error.js')
 
     def tearDown(self):
         pass
@@ -96,6 +99,51 @@ class NakedShellTest(unittest.TestCase):
     def test_muterun_missing_option_stdout(self):
         out = muterun(self.missing_option)
         self.assertEqual(b"", out.stdout)  # std out is empty string on failure
+
+
+    #------------------------------------------------------------------------------
+    # Node.js script execution tests
+    #------------------------------------------------------------------------------
+    def test_execute_node_success(self):
+        self.assertTrue(execute_js(self.node_success_path))
+
+    def test_execute_node_fail(self):
+        self.assertFalse(execute_js(self.node_fail_path))
+
+    def test_muterun_node_success(self):
+        out = muterun_js(self.node_success_path)
+        self.assertEqual(b'success\n', out.stdout)
+        self.assertEqual(0, out.exitcode)
+        self.assertEqual(b'', out.stderr)
+
+    def test_muterun_node_fail(self):
+        out = muterun_js(self.node_fail_path)
+        self.assertEqual(b'error\n', out.stderr)
+        self.assertEqual(b'', out.stdout)
+        self.assertEqual(1, out.exitcode)
+
+    def test_run_node_success(self):
+        out = run_js(self.node_success_path)
+        self.assertEqual(b'success\n', out)
+
+    def test_run_node_success_suppress_stdout(self):
+        out = run_js(self.node_success_path, suppress_stdout=True)
+        self.assertEqual(b'success\n', out) # still returns a value, does not print to std out
+
+    def test_run_node_fail_suppress_stderr(self):
+        out = run_js(self.node_fail_path, suppress_stderr=True)
+        self.assertEqual(False, out)  # returns False
+
+    def test_run_node_fail_suppress_exitstatus_false(self):
+        with self.assertRaises(SystemExit):
+            out = run_js(self.node_fail_path, suppress_exit_status_call=False) # when suppress_exit_status=True, Python script stopped prematurely
+
+    def test_run_node_success_suppress_exitstatus_true(self):
+        out = run_js(self.node_success_path, suppress_exit_status_call=False) # when command succeeds SystemExit is not raised
+        self.assertEqual(b'success\n', out)
+
+    ##TODO : Ruby tests
+
 
 
 
