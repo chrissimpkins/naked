@@ -99,10 +99,10 @@ def muterun(command):
 # [ execute_rb function ] (boolean)
 #  execute a ruby script file in a shell subprocess
 #------------------------------------------------------------------------------
-def execute_rb(file_path, args=""):
+def execute_rb(file_path, arguments=""):
     try:
-        if len(args) > 0:
-            rb_command = 'ruby ' + file_path + " " + args
+        if len(arguments) > 0:
+            rb_command = 'ruby ' + file_path + " " + arguments
         else:
             rb_command = 'ruby ' + file_path
         return execute(rb_command) # return result of execute() of the ruby file
@@ -115,10 +115,10 @@ def execute_rb(file_path, args=""):
 # [ run_rb function ] (bytes string or False)
 #  execute a ruby script file in a shell subprocess, return the output
 #------------------------------------------------------------------------------
-def run_rb(file_path, args="", suppress_stdout=False, suppress_stderr=False, suppress_exit_status_call=True):
+def run_rb(file_path, arguments="", suppress_stdout=False, suppress_stderr=False, suppress_exit_status_call=True):
     try:
-        if len(args) > 0:
-            rb_command = 'ruby ' + file_path + " " + args
+        if len(arguments) > 0:
+            rb_command = 'ruby ' + file_path + " " + arguments
         else:
             rb_command = 'ruby ' + file_path
         return run(rb_command, suppress_stdout, suppress_stderr, suppress_exit_status_call) # return result of run() of the ruby file
@@ -130,10 +130,10 @@ def run_rb(file_path, args="", suppress_stdout=False, suppress_stderr=False, sup
 #------------------------------------------------------------------------------
 # [ muterun_rb function ] (NakedObject response object)
 #------------------------------------------------------------------------------
-def muterun_rb(command, args=""):
+def muterun_rb(file_path, arguments=""):
     try:
-        if len(args) > 0:
-            rb_command = 'ruby ' + file_path + " " + args
+        if len(arguments) > 0:
+            rb_command = 'ruby ' + file_path + " " + arguments
         else:
             rb_command = 'ruby ' + file_path
         return muterun(rb_command) # return result of muterun() of the ruby file
@@ -152,10 +152,10 @@ def muterun_rb(command, args=""):
 #  returns True for success (=0) exit status code
 #  returns False for unsuccessful (!=0) exit status code
 #------------------------------------------------------------------------------
-def execute_js(file_path, args=""):
+def execute_js(file_path, arguments=""):
     try:
-        if len(args) > 0:
-            js_command = 'node ' + file_path + " " + args
+        if len(arguments) > 0:
+            js_command = 'node ' + file_path + " " + arguments
         else:
             js_command = 'node ' + file_path
         return execute(js_command) # return result of execute() of node.js file
@@ -172,10 +172,10 @@ def execute_js(file_path, args=""):
 #  returns the standard output byte string from the subprocess executable on success
 #  returns False if the subprocess exits with a non-zero exit code
 #------------------------------------------------------------------------------
-def run_js(file_path, args="", suppress_stdout=False, suppress_stderr=False, suppress_exit_status_call=True):
+def run_js(file_path, arguments="", suppress_stdout=False, suppress_stderr=False, suppress_exit_status_call=True):
     try:
-        if len(args) > 0:
-            js_command = 'node ' + file_path + " " + args
+        if len(arguments) > 0:
+            js_command = 'node ' + file_path + " " + arguments
         else:
             js_command = 'node ' + file_path
         return run(js_command, suppress_stdout, suppress_stderr, suppress_exit_status_call) # return result of run() of node.js file
@@ -187,10 +187,10 @@ def run_js(file_path, args="", suppress_stdout=False, suppress_stderr=False, sup
 #------------------------------------------------------------------------------
 # [ muterun_js function ] (NakedObject response object)
 #------------------------------------------------------------------------------
-def muterun_js(command, args=""):
+def muterun_js(file_path, arguments=""):
     try:
-        if len(args) > 0:
-            js_command = 'node ' + file_path + " " + args
+        if len(arguments) > 0:
+            js_command = 'node ' + file_path + " " + arguments
         else:
             js_command = 'node ' + file_path
         return muterun(js_command) # return result of muterun() of node.js file
