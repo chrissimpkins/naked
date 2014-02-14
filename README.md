@@ -18,4 +18,4 @@ It features:
 
 • Contributions to the source and feedback are definitely welcomed!  Please submit any bug reports with the GitHub issue tracker.
 
-• Feel free to contact me with questions @csimpkins on Twitter.
+• Feel free to contact me with questions @csimpkins on Twitter or @simpkins on ADN.
