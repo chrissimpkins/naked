@@ -3,7 +3,7 @@
 
 import sys
 from functools import wraps
-from Naked.toolshed.shell import run, execute, muterun
+from Naked.toolshed.shell import Environment
 
 def print_scratch(func):
     @wraps(func)
@@ -22,12 +22,10 @@ def run_scratchpad():
     # test3 = "Hey! It's Bengali ব য,and here is some more ২"
     # print(unicode(test2))
 
-    out = muterun('bogus')
-    if out.exitcode == 0:
-        print(test.stdout)
-    else:
-        sys.stderr.write(out.stderr)
-        sys.exit(out.exitcode)
+    env = Environment()
+    if (env.is_var('PATH')):
+        for i in env.get_split_var_list('PATH'):
+            print(i)
 
 
 if __name__ == '__main__':
