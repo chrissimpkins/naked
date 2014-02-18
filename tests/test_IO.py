@@ -247,55 +247,6 @@ class NakedIOReadWriteTest(unittest.TestCase):
             self.assertEqual(gzip_contents, self.unicode_string)
 
     #------------------------------------------------------------------------------
-    # FILE READER + MODIFIER function tests
-    #------------------------------------------------------------------------------
-    def test_file_read_apply_function(self):
-        """Test apply function to text read from file with read_apply_function"""
-        def add_a_char(text):
-            mod_text = "A" + text
-            return mod_text
-        FileWriter(self.ascii_path).write(self.ascii_string)
-        func_text = FileReader(self.ascii_path).read_apply_function(add_a_char)
-        self.assertEqual(func_text, ("A" + self.ascii_string))
-
-    def test_file_read_apply_function_unicode(self):
-        """Test apply function to unicode text read from file with read_apply_function"""
-        def add_a_char(text):
-            mod_text = "A" + text
-            return mod_text
-        FileWriter(self.unicode_path).write_utf8(self.unicode_string)
-        func_text = FileReader(self.unicode_path).read_apply_function(add_a_char)
-        if state.py2:
-            decoded_text = func_text.decode("utf-8") # have to decode binary string as utf-8 if the original file contained unicode
-        else:
-            decoded_text = func_text
-        self.assertEqual(decoded_text, ("A" + self.unicode_string))
-
-    def test_file_readlines_apply_function(self):
-        """Test apply function to each line of a file with readlines_apply_function"""
-        def add_a_char(text):
-            mod_text = "A" + text
-            return mod_text
-        FileWriter(self.multiline_path).write(self.multiline_string)
-        file_line_list = FileReader(self.multiline_path).readlines_apply_function(add_a_char)
-        self.assertEqual(file_line_list, self.mod_multi_list)
-
-    def test_file_readlines_apply_function_unicode(self):
-        """Test apply function to each line of a file with readlines_apply_function on unicode file"""
-        def add_a_char(text):
-            mod_text = "A" + text
-            return mod_text
-        FileWriter(self.unicode_path).write_utf8(self.unicode_string)
-        file_line_list = FileReader(self.unicode_path).readlines_apply_function(add_a_char)
-        decoded_list = []
-        for line in file_line_list:
-            if state.py2:
-                decoded_line = line.decode("utf-8")
-            else:
-                decoded_line = line
-            decoded_list.append(decoded_line)
-        self.assertEqual(decoded_list, self.mod_uni_multi_list)
-    #------------------------------------------------------------------------------
     # MISSING FILE tests
     #------------------------------------------------------------------------------
     def test_file_read_missing_file(self):
