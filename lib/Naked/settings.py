@@ -11,7 +11,7 @@ app_name = "naked"
 #------------------------------------------------------------------------------
 major_version = "0"
 minor_version = "1"
-patch_version = "24"
+patch_version = "25"
 
 #------------------------------------------------------------------------------
 # Debug Flag (switch to False for production release code)
