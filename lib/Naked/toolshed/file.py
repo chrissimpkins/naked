@@ -226,7 +226,6 @@ class FileReader(IO):
                 sys.stderr.write("Naked Framework Error: Unable to read text from the requested file with the read() method (Naked.toolshed.file.py).")
             raise e
 
-    ## TODO: test for read_bin method
     #------------------------------------------------------------------------------
     # [ read_bin method ] (binary byte string)
     #   Universal binary data file reader
@@ -371,68 +370,6 @@ class FileReader(IO):
             raise e
         finally:
             f.close()
-
-    #------------------------------------------------------------------------------
-    # FILE TEXT READER & MODIFIER METHODS
-    #------------------------------------------------------------------------------
-
-    #------------------------------------------------------------------------------
-    # [ read_apply_function ] (string)
-    #   read a text file and modify with a developer specified function that takes single parameter for the text in the file
-    #   the developer's function should return the modified string
-    #   returns a string that contains the modified file text (for ascii strings)
-    #   returns a binary string that contains modified file text (for utf-8 encoded strings) - must .decode('utf-8') string on receiving side
-    #   Tests: test_IO.py :: test_file_read_apply_function, test_file_read_apply_function_unicode
-    #------------------------------------------------------------------------------
-    def read_apply_function(self, function):
-        try:
-            with open(self.filepath, 'rt') as read_data:
-                raw_data = read_data.read()
-                modified_data = function(raw_data)
-            return modified_data
-        except UnicodeEncodeError:
-            import codecs
-            with codecs.open(self.filepath, encoding='utf-8', mode='r') as uni_reader:
-                raw_data = uni_reader.read()
-                import unicodedata
-                norm_data = unicodedata.normalize('NFKD', raw_data) # NKFD normalization of the unicode data before write
-                modified_data = function(norm_data)
-            return modified_data
-        except Exception as e:
-            if DEBUG_FLAG:
-                sys.stderr.write("Naked Framework Error: Unable to read and modify file text with the read_with_function() method (Naked.toolshed.file.py).")
-            raise e
-
-    #------------------------------------------------------------------------------
-    # [ readlines_apply_function ] (list of strings)
-    #   read a text file by line, apply a developer specified function to each line
-    #   the developer's function should include single parameter (the line string) & return the modified string
-    #   returns a list containing each modified line string from the original file
-    #   returns a list of utf-8 encoded strings for unicode encoded file data
-    #   Tests: test_IO.py :: test_file_readlines_apply_function, test_file_readlines_apply_function_unicode
-    #------------------------------------------------------------------------------
-    def readlines_apply_function(self, function):
-        try:
-            with open(self.filepath, 'rt') as read_data:
-                modified_text_list = []
-                for line in read_data:
-                    modified_line = function(line)
-                    modified_text_list.append(modified_line)
-                return modified_text_list
-        except UnicodeEncodeError:
-            import codecs
-            with codecs.open(self.filepath, encoding='utf-8', mode='r') as uni_reader:
-                modified_text_list = []
-                for line in uni_reader:
-                    import unicodedata
-                    norm_line = unicodedata.normalize('NFKD', line) # NKFD normalization of the unicode data before use
-                    modified_line = function(norm_line)
-                    modified_text_list.append(modified_line)
-                return modified_text_list
-        except Exception as e:
-            if DEBUG_FLAG:
-                sys.stderr.write("Naked Framework Error: Unable to read and modify file text with the readlines_with_function() method (Naked.toolshed.file.py).")
-            raise e
 
 
 if __name__ == '__main__':
