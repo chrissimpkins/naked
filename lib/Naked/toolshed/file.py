@@ -61,7 +61,7 @@ class FileWriter(IO):
 
     #------------------------------------------------------------------------------
     # [ gzip method (writer) ]
-    #   writes text to gzip compressed file
+    #   writes data to gzip compressed file
     #   Note: adds .gz extension to filename if user did not specify it in the FileWriter class constructor
     #   Note: uses compresslevel = 6 as default to balance speed and compression level (which in general is not significantly less than 9)
     #   Tests: test_IO.py :: test_file_gzip_ascii_readwrite, test_file_gzip_utf8_readwrite,
@@ -108,12 +108,12 @@ class FileWriter(IO):
     #   text file writer that uses developer specified text encoding
     #   Tests: test_IO.py :: test_file_utf8_readas_writeas
     #------------------------------------------------------------------------------
-    def write_as(self, text, dev_spec_encoding=""):
+    def write_as(self, text, the_encoding=""):
         try:
-            if dev_spec_encoding == "": #if the developer did not include the encoding type, raise an exception
+            if the_encoding == "": #if the developer did not include the encoding type, raise an exception
                 raise RuntimeError("The text encoding was not specified as an argument to the write_as() method (Naked.toolshed.file.py:write_as).")
             import codecs
-            with codecs.open(self.filepath, encoding=dev_spec_encoding, mode='w') as f:
+            with codecs.open(self.filepath, encoding=the_encoding, mode='w') as f:
                 f.write(text)
         except Exception as e:
             if DEBUG_FLAG:
@@ -248,12 +248,12 @@ class FileReader(IO):
     #   returns file contents in developer specified text encoding
     #   Tests: test_IO.py :: test_file_utf8_readas_writeas, test_file_readas_missing_file
     #------------------------------------------------------------------------------
-    def read_as(self, dev_spec_encoding):
+    def read_as(self, the_encoding):
         try:
-            if dev_spec_encoding == "":
+            if the_encoding == "":
                 raise RuntimeError("The text file encoding was not specified as an argument to the read_as method (Naked.toolshed.file.py:read_as).")
             import codecs
-            with codecs.open(self.filepath, encoding=dev_spec_encoding, mode='r') as f:
+            with codecs.open(self.filepath, encoding=the_encoding, mode='r') as f:
                 data = f.read()
             return data
         except Exception as e:
