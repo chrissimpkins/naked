@@ -67,7 +67,7 @@ def make_path(*path_list):
 
 #------------------------------------------------------------------------------
 #  [ currentdir_to_basefile decorator function ] (returns decorated original function)
-#    adds the full working directory path to the basename of file in the first argument of the undecorated function
+#    concatenates the absolute working directory path to the basename of file in the first parameter of the undecorated function
 #    Tests: test_SYSTEM.py :: test_sys_add_currentdir_path_to_basefile
 #------------------------------------------------------------------------------
 def currentdir_to_basefile(func):
@@ -86,11 +86,11 @@ def currentdir_to_basefile(func):
         raise e
 
 #------------------------------------------------------------------------------
-# [ currentdir_firstargument decorator function ] (returns decorated original function)
-#   adds the current working directory as the first function argument to the original function
+# [ currentdir_firstparam decorator function ] (returns decorated original function)
+#   adds the current working directory as the first function parameter of the decorated function
 #   Tests: test_SYSTEM.py :: test_sys_add_currentdir_path_first_arg
 #------------------------------------------------------------------------------
-def currentdir_firstargument(func):
+def currentdir_firstparam(func):
     try:
         from functools import wraps
 
@@ -107,12 +107,12 @@ def currentdir_firstargument(func):
 
 #------------------------------------------------------------------------------
 # [ currentdir_lastargument decorator function ] (returns decorated original function)
-#   adds the current working directory as the last function argument to the original function
+#   adds the current working directory as the last function parameter of the decorated function
 #   Note: you cannot use other named arguments in the original function with this decorator
 #   Note: the current directory argument in the last position must be named current_dir
 #   Tests: test_SYSTEM.py :: test_sys_add_currentdir_last_arg
 #------------------------------------------------------------------------------
-def currentdir_lastargument(func):
+def currentdir_lastparam(func):
     try:
         from functools import wraps
 
@@ -128,7 +128,7 @@ def currentdir_lastargument(func):
 
 #------------------------------------------------------------------------------
 #  [ fullpath function ] (string)
-#    returns the full path to a filename that is in the current working directory
+#    returns the absolute path to a file that is in the current working directory
 #    file_name = the basename of the file in the current working directory
 #       Example usage where test.txt is in working directory:
 #           filepath = fullpath("test.txt")
@@ -151,7 +151,7 @@ def fullpath(file_name):
 #           current_dir = cwd()
 #   Tests: test_SYSTEM.py :: test_sys_cwd_path
 #------------------------------------------------------------------------------
-@currentdir_firstargument
+@currentdir_firstparam
 def cwd(dir=""):
     try:
         return dir
@@ -177,11 +177,14 @@ def make_dirs(dirpath):
         import os
         import errno
         os.makedirs(dirpath)
+        return True
     except OSError as ose:
         if ose.errno != errno.EEXIST: # directory already exists
             if DEBUG_FLAG:
-                sys.stderr.write("Naked Framework Error: the directory path passed as an argument to the make_dirs() function already exists (Naked.toolshed.system).")
+                sys.stderr.write("Naked Framework Error: Could not write the directory path passed as an argument to the make_dirs() function (Naked.toolshed.system).")
             raise ose
+        else:
+            return False
     except Exception as e:
         raise e
 
@@ -198,7 +201,10 @@ def make_dirs(dirpath):
 #------------------------------------------------------------------------------
 def file_exists(filepath):
     try:
-        return os.path.exists(filepath)
+        if os.path.exists(filepath) and os.path.isfile(filepath): # test that exists and is a file
+            return True
+        else:
+            return False
     except Exception as e:
         if DEBUG_FLAG:
             sys.stderr.write("Naked Framework Error: error with test for the presence of the file with the file_exists() method (Naked.toolshed.system).")
@@ -225,7 +231,10 @@ def is_file(filepath):
 #------------------------------------------------------------------------------
 def dir_exists(dirpath):
     try:
-        return os.path.exists(dirpath)
+        if os.path.exists(dirpath) and os.path.isdir(dirpath): # test that exists and is a directory
+            return True
+        else:
+            return False
     except Exception as e:
         if DEBUG_FLAG:
             sys.stderr.write("Naked Framework Error: error with test for directory with the dir_exists() function (Naked.toolshed.system).")
@@ -233,13 +242,13 @@ def dir_exists(dirpath):
 
 #------------------------------------------------------------------------------
 # [ is_dir function ] (boolean)
-#   returns boolean for determination of whether filepath is a directory
+#   returns boolean for determination of whether dirpath is a directory
 #   Tests: test_SYSTEM.py :: test_sys_dir_is_dir, test_sys_dir_is_dir_when_file,
 #           test_sys_dir_is_dir_when_missing
 #------------------------------------------------------------------------------
-def is_dir(filepath):
+def is_dir(dirpath):
     try:
-        return os.path.isdir(filepath)
+        return os.path.isdir(dirpath)
     except Exception as e:
         if DEBUG_FLAG:
             sys.stderr.write("Naked Framework Error: error with test for directory with the is_dir() function (Naked.toolshed.system).")
@@ -252,7 +261,7 @@ def is_dir(filepath):
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-# [ filesize function ] (string)
+# [ filesize function ] (int)
 #   return file size in bytes
 #   Tests: test_SYSTEM.py :: test_sys_meta_file_size
 #------------------------------------------------------------------------------
@@ -265,7 +274,7 @@ def file_size(filepath):
         raise e
 
 #------------------------------------------------------------------------------
-# [ mod_time function ] (string)
+# [ file_mod_time function ] (string)
 #   return the last file modification date/time
 #   Tests: test_SYSTEM.py :: test_sys_meta_file_mod
 #------------------------------------------------------------------------------
@@ -324,7 +333,7 @@ def list_filter_files(extension_filter, dir):
 #           file_list = list_all_files_cwd()
 #   Tests: test_SYSTEM.py :: test_sys_list_all_files_cwd
 #------------------------------------------------------------------------------
-@currentdir_firstargument
+@currentdir_firstparam
 def list_all_files_cwd(dir=""):
     try:
         return list_all_files(dir)
@@ -341,7 +350,7 @@ def list_all_files_cwd(dir=""):
 #           file_list = list_filter_files_cwd(".py")
 #   Tests: test_SYSTEM.py :: test_sys_filter_files_cwd, test_sys_filter_files_cwd_nomatch
 #------------------------------------------------------------------------------
-@currentdir_lastargument
+@currentdir_lastparam
 def list_filter_files_cwd(extension_filter, current_dir=""):
     try:
         return list_filter_files(extension_filter, current_dir)
@@ -440,9 +449,23 @@ def stdout_xnl(text):
 
 #------------------------------------------------------------------------------
 # [ stdout_iter function ]
-#   print items in an iterable to the standard output stream without newlines with each print
+#   print items in an iterable to the standard output stream with newlines after each string
 #------------------------------------------------------------------------------
 def stdout_iter(iter):
+    try:
+        for x in iter:
+            stdout(x)
+    except Exception as e:
+        if DEBUG_FLAG:
+            sys.stderr.write("Naked Framework Error: unable to print to the standard output stream with the stdout_iter() function (Naked.toolshed.system).")
+        raise e
+
+
+#------------------------------------------------------------------------------
+# [ stdout_iter_xnl function ]
+#   print items in an iterable to the standard output stream without newlines after each string
+#------------------------------------------------------------------------------
+def stdout_iter_xnl(iter):
     try:
         for x in iter:
             stdout_xnl(x)
@@ -450,6 +473,7 @@ def stdout_iter(iter):
         if DEBUG_FLAG:
             sys.stderr.write("Naked Framework Error: unable to print to the standard output stream with the stdout_iter() function (Naked.toolshed.system).")
         raise e
+
 #------------------------------------------------------------------------------
 # [ stderr function ]
 #   print to std error stream
@@ -466,6 +490,20 @@ def stderr(text, exit=0):
         raise e
 
 #------------------------------------------------------------------------------
+# [ stderr_xnl function ]
+#  print to the standard error stream without a newline character after the `text` string
+#------------------------------------------------------------------------------
+def stderr_xnl(text, exit=0):
+    try:
+        sys.stderr.write(text)
+        if exit:
+            raise SystemExit(exit)
+    except Exception as e:
+        if DEBUG_FLAG:
+            sys.stderr.write("Naked Framework Error: unable to print to the standard error stream with the stderr() function (Naked.toolshed.system).")
+        raise e
+
+#------------------------------------------------------------------------------
 #
 # APPLICATION CONTROL
 #
@@ -473,11 +511,11 @@ def stderr(text, exit=0):
 
 #------------------------------------------------------------------------------
 # [ exit_with_status function ]
-#   application exit with developer specified exit status code (default = 1)
+#   application exit with developer specified exit status code (default = 0)
 #   use an exit status integer argument
 #   Tests: test_SYSTEM.py :: test_sys_exit_with_code
 #------------------------------------------------------------------------------
-def exit_with_status(exit=1):
+def exit_with_status(exit=0):
     raise SystemExit(exit)
 
 #------------------------------------------------------------------------------
@@ -485,16 +523,16 @@ def exit_with_status(exit=1):
 #   application exit with status code 1
 #   Tests: test_SYSTEM.py :: test_sys_exit_failure
 #------------------------------------------------------------------------------
-def exit_fail(func=None, *args, **kwargs):
-    sys.exit(1)
+def exit_fail():
+    raise SystemExit(1)
 
 #------------------------------------------------------------------------------
 # [ exit_success function]
 #   application exit with status code 0
 #   Tests: test_SYSTEM.py :: test_sys_exit_success
 #------------------------------------------------------------------------------
-def exit_success(func=None, *args, **kwargs):
-    sys.exit(0)
+def exit_success():
+    raise SystemExit(0)
 
 
 
