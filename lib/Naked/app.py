@@ -109,6 +109,8 @@ def main():
             elif c.cmd2 == "help":   # help for command
                 from Naked.commands.dist import help as dist_help
                 dist_help()
+            else:
+                stderr("The naked dist secondary command was not recognized. Use 'naked dist help' for more information.", 1)
         else:
             stderr("Please enter a secondary command", 1)
     #------------------------------------------------------------------------------
@@ -155,31 +157,36 @@ def main():
     # [ test ] - Run unit tests on the project (2)= help,nose,pytest,tox,unittest (see help for args)
     #------------------------------------------------------------------------------
     elif c.cmd == "test":
-        if c.cmd2 == "help":
+        if c.argc > 1:
+            if c.cmd2 == "help":
                 from Naked.commands.test import help as tox_help
                 tox_help()
-        elif c.cmd2 == "nose":
-            from Naked.commands.test import NoseTester
-            n = NoseTester()
-            n.run()
-        elif c.cmd2 == "pytest":
-            from Naked.commands.test import PyTester
-            p = PyTester()
-            p.run()
-        elif c.cmd2 == "tox":
-            from Naked.commands.test import ToxTester
-            if c.arg2: #user specified a python version to run with one of the tox version defs
-                t = ToxTester(c.arg2) #instantiate with the python version
-            else:
-                t = ToxTester()
-            t.run()
-        elif c.cmd2 == "unittest":
-            from Naked.commands.test import UnitTester
-            if c.arg2:
-                t = UnitTester(c.arg2)
+            elif c.cmd2 == "nose":
+                from Naked.commands.test import NoseTester
+                n = NoseTester()
+                n.run()
+            elif c.cmd2 == "pytest":
+                from Naked.commands.test import PyTester
+                p = PyTester()
+                p.run()
+            elif c.cmd2 == "tox":
+                from Naked.commands.test import ToxTester
+                if c.arg2: #user specified a python version to run with one of the tox version defs
+                    t = ToxTester(c.arg2) #instantiate with the python version
+                else:
+                    t = ToxTester()
                 t.run()
+            elif c.cmd2 == "unittest":
+                from Naked.commands.test import UnitTester
+                if c.arg2:
+                    t = UnitTester(c.arg2)
+                    t.run()
+                else:
+                    stderr("Please include a unit test file path.  Use 'naked test help' for more information.", 1)
             else:
-                stderr("Please include a unit test file path.  Use 'naked test help' for more information.", 1)
+                stderr("The secondary command was not recognized. Use 'naked test help' for more information.", 1)
+        else:
+            stderr("Please include a secondary command with the 'naked test' command.  Use 'naked dist help' for more information.", 1)
 
     #------------------------------------------------------------------------------------------
     # [ NAKED FRAMEWORK COMMANDS ]
