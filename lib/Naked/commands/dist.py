@@ -29,6 +29,8 @@ class Dist:
                 break
         if not setuppy_found:
             stderr("Unable to locate the setup.py file for your project.  Please confirm that you are in your project directory and try again.", 1)
+        else:
+            exit_success()
 
     # search for setup.py file
     def _is_setup_py_at_this_level(self):

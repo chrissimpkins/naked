@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 from Naked.commandline import Command
+from Naked.toolshed.system import exit_success
 import shlex
 
 class Args:
@@ -86,6 +87,7 @@ class Args:
                     print('c.flag_arg("' + the_flag + '") = ' + c.flag_arg(the_flag))
         else: # provide message if there are no flags
             print("There are no flag style arguments (--flag=argument) in your command.")
+        exit_success()
 
 
 #------------------------------------------------------------------------------

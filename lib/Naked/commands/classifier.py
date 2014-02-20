@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+from Naked.toolshed.system import exit_success
+
 class Classifier:
     def __init__(self, search_string):
         self.needle = search_string
@@ -28,8 +30,9 @@ class Classifier:
             for item in filtered_list:
                 print(item)
 
+        exit_success() # exit with zero status code
+
 def help():
-    from Naked.toolshed.system import exit_success
     help_string = """
 Naked classify Command Help
 ===========================

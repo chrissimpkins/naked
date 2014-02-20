@@ -6,7 +6,7 @@ import Naked.toolshed.python as python
 import Naked.toolshed.file as nfile
 import Naked.toolshed.ink as ink
 from Naked.toolshed.types import XDict, XString
-from Naked.toolshed.system import make_dirs, make_path
+from Naked.toolshed.system import make_dirs, make_path, exit_success
 import datetime
 import sys
 
@@ -47,7 +47,7 @@ class MakeController:
             print("-----")
             print(" ")
             print("Use 'python setup.py develop' from the top level of your project and you can begin testing your application with the executable, " + data_container.app_name)
-
+            exit_success()
 #------------------------------------------------------------------------------
 # [ InfoCompiler class ]
 #  obtain information from user in order to build a new project

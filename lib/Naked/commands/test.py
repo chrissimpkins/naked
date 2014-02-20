@@ -26,6 +26,8 @@ class ToxTester:
                 break
         if not tox_found:
             stderr("Unable to locate your tox.ini file.  Please navigate to your project directory.", 1)
+        else:
+            exit_success()
 
     def _is_tox_ini_at_this_level(self):
         if file_exists('tox.ini'):
@@ -60,6 +62,8 @@ class NoseTester:
                 break
         if not nose_found:
             stderr("Unable to locate your testing directory", 1)
+        else:
+            exit_success()
 
     def _is_testdir_at_this_level(self):
         if file_exists('setup.py'):
@@ -94,6 +98,8 @@ class PyTester:
                 break
         if not py_found:
             stderr("Unable to locate your testing directory", 1)
+        else:
+            exit_success()
 
     def _is_testdir_at_this_level(self):
         if file_exists('setup.py'):
@@ -132,6 +138,8 @@ class UnitTester:
                     stderr("The unit test file " + self.unittest + " could not be found in the tests directory.")
         if not unit_found:
             stderr("Unable to locate your testing directory", 1)
+        else:
+            exit_success()
 
     def _is_testdir_at_this_level(self):
         if file_exists('setup.py'):

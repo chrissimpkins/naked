@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 import os
-from Naked.toolshed.system import file_exists, dir_exists, stderr
+from Naked.toolshed.system import file_exists, dir_exists, stderr, exit_success
 
 class Profiler:
     def __init__(self, dir_levels = 6):
@@ -20,6 +20,7 @@ class Profiler:
             os.chdir('lib') # chdir to the lib directory if it is found
             if file_exists('profiler.py'): # confirm that profiler.py exists
                 os.system('python profiler.py') # run the profiler.py file
+                exit_success()
             else:
                 stderr("Unable to locate a profiler.py file in your lib directory.", 1)
         else:

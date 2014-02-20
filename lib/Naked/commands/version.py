@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 import Naked.settings
+from Naked.toolshed.system import exit_success
 
 class Version:
     def __init__(self):
@@ -14,6 +15,7 @@ class Version:
 
     def print_version(self):
         print(self.app_version_string)
+        exit_success()
 
     def get_version(self):
         return self.version_string
