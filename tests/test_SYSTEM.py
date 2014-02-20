@@ -186,7 +186,7 @@ class NakedSystemTest(unittest.TestCase):
 
 	def test_sys_add_currentdir_path_first_arg(self):
 		"""Test decorator addition of cwd path as first argument of decorated function"""
-		@system.currentdir_firstargument
+		@system.currentdir_firstparam
 		def path_returner(dir):
 			return dir
 
@@ -195,7 +195,7 @@ class NakedSystemTest(unittest.TestCase):
 
 	def test_sys_add_currentdir_last_arg(self):
 		"""Test decorator addition of cwd path as last argument of decorated function"""
-		@system.currentdir_lastargument
+		@system.currentdir_lastparam
 		def path_returner(bogus_param, current_dir=""):
 			return current_dir
 
@@ -218,8 +218,14 @@ class NakedSystemTest(unittest.TestCase):
 			self.assertEqual(1, sysexit.code)
 
 	def test_sys_exit_with_code(self):
+		"""Test application exit with developer assigned code 0"""
+		with (self.assertRaises(SystemExit)) as sysexit:
+			system.exit_with_status() #default status code is 0
+			self.assertEqual(0, sysexit.code)
+
+	def test_sys_exit_with_code_assigned(self):
 		"""Test application exit with developer assigned code 1"""
 		with (self.assertRaises(SystemExit)) as sysexit:
-			system.exit_with_status() #default status code is 1
+			system.exit_with_status(1) #default status code is 0
 			self.assertEqual(1, sysexit.code)
 
