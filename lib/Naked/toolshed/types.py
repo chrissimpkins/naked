@@ -9,7 +9,7 @@ from Naked.settings import debug as DEBUG_FLAG
 #   Assigns object attributes by key name in the dictionary argument to the constructor
 #   The methods are inherited by other mutable Naked object extension types
 #------------------------------------------------------------------------------
-class NakedObject:
+class NakedObject(object):
     # initialize with an attributes dictionary {attribute_name, attribute_value}
     def __init__(self, attributes={}):
         if len(attributes) > 0:
