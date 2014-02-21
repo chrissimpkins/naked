@@ -20,6 +20,7 @@ SYS_TESTS="test_SYSTEM.py"
 SYS_TESTS_C="test_SYSTEM_c.py"
 TEMPLATE_TESTS="test_INK_TEMPLATE.py"
 TEMPLATE_TESTS_C="test_INK_TEMPLATE_c.py"
+TYPES_TESTS="test_TYPES.py"
 
 
 if [ "$1" = "all" ];then
@@ -44,6 +45,8 @@ elif [ "$1" = "sys" ]; then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$SYS_TESTS" "$SYS_TESTS_C"
 elif [ "$1" = "template" ]; then
 	"$TEST_COMMAND" "$NOSE_FLAGS" "$TEMPLATE_TESTS" "$TEMPLATE_TESTS_C"
+elif [ "$1" = "types" ]; then
+	"$TEST_COMMAND" "$NOSE_FLAGS" "$TYPES_TESTS"
 else
 	echo "Enter 'all' or a command suite to test."
 	exit 1
