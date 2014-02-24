@@ -3,7 +3,7 @@
 
 import sys
 from functools import wraps
-from Naked.toolshed.system import stderr, stderr_xnl, stdout, stdout_xnl, stdout_iter, stdout_iter_xnl
+from Naked.toolshed.types import NakedObject, XDict
 
 def print_scratch(func):
     @wraps(func)
@@ -22,7 +22,7 @@ def run_scratchpad():
     # test3 = "Hey! It's Bengali ব য,and here is some more ২"
     # print(unicode(test2))
 
-    stdout_iter_xnl(['test', 'this', 'string'])
+
 
 
 
