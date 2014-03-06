@@ -11,7 +11,7 @@ app_name = "naked"
 #------------------------------------------------------------------------------
 major_version = "0"
 minor_version = "1"
-patch_version = "27"
+patch_version = "28"
 
 #------------------------------------------------------------------------------
 # Debug Flag (switch to False for production release code)
@@ -59,6 +59,7 @@ PRIMARY COMMANDS     SECONDARY COMMANDS
    locate         main•help•settings•setup
    make                    help
    profile                 help
+   pyh                     help
    test           nose•pytest•tox•unittest
    usage                 - none -
    version               - none -
