@@ -153,6 +153,21 @@ def main():
             from Naked.commands.profile import Profiler
             p = Profiler()
             p.run()
+
+    #------------------------------------------------------------------------------
+    # [ pyh ] - help for python built-in library modules, classes, methods, functions
+    #------------------------------------------------------------------------------
+    elif c.cmd == "pyh":
+        if c.cmd2 == "help":
+            from Naked.commands.pyh import pyh_help
+            pyh_help()
+        else:
+            if c.argc > 1:
+                from Naked.commands.pyh import python_help
+                python_help(c.arg1)
+            else:
+                stderr("Please enter a query term with the pyh command. Use 'naked pyh help' for more information.", 1)
+
     #------------------------------------------------------------------------------
     # [ test ] - Run unit tests on the project (2)= help,nose,pytest,tox,unittest (see help for args)
     #------------------------------------------------------------------------------
