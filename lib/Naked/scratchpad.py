@@ -22,7 +22,7 @@ def run_scratchpad():
     # test3 = "Hey! It's Bengali ব য,and here is some more ২"
     # print(unicode(test2))
 
-
+    help('unicode')
 
 
 
