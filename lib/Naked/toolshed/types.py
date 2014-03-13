@@ -321,33 +321,70 @@ class XList(list, NakedObject):
     #   extends XList with one or more other lists (`*other_lists`)
     #------------------------------------------------------------------------------
     def __add__(self, *other_lists):
-        for the_list in other_lists:
-            self.extend(the_list)
-        return self
+        try:
+            for the_list in other_lists:
+                # add attributes if it is an XList
+                if hasattr(the_list, '_naked_type_') and (getattr(the_list, '_naked_type_') == 'XList'):
+                    attr_dict = the_list._getAttributeDict() # get XList attribute dictionary
+                    if len(attr_dict) > 0:
+                        for key in attr_dict:
+                            setattr(self, key, attr_dict[key])
+                # extend the XList items
+                self.extend(the_list)
+            return self
+        except Exception as e:
+            if DEBUG_FLAG:
+                sys.stderr.write("Naked Framework Error: unable to combine XList with parameter provided (Naked.toolshed.types.py)")
+            raise e
 
     #------------------------------------------------------------------------------
     # += overload
     #  extends XList with one other list (`another_list`)
     #------------------------------------------------------------------------------
     def __iadd__(self, another_list):
-        self.extend(another_list)
-        return self
+        try:
+            #add attributes if it is an XList
+            if hasattr(another_list, '_naked_type_') and (getattr(another_list, '_naked_type_') == 'XList'):
+                    attr_dict = another_list._getAttributeDict() # get XList attribute dictionary
+                    if len(attr_dict) > 0:
+                        for key in attr_dict:
+                            setattr(self, key, attr_dict[key])
+            # extend the XList items
+            self.extend(another_list)
+            return self
+        except Exception as e:
+            if DEBUG_FLAG:
+                sys.stderr.write("Naked Framework Error: unable to combine XList with parameter provided (Naked.toolshed.types.py)")
+            raise e
 
     #------------------------------------------------------------------------------
-    # >> overload
-    #  extends the argument list with the self list (left extends right side)
+    # == overload
     #------------------------------------------------------------------------------
-    def __rshift__(self, another_list):
-        another_list.extend(self)
-        return another_list
+    def __eq__(self, other_obj):
+        return self.equals(other_obj)
 
     #------------------------------------------------------------------------------
-    # << overload
-    #  extends self list with the argument list (right extends left side)
+    # != overload
     #------------------------------------------------------------------------------
-    def __lshift__(self, another_list):
-        self.extend(another_list)
-        return self
+    def __ne__(self, other_obj):
+        result = self.equals(other_obj)
+        if result:
+            return False # reverse result of the equals method
+        else:
+            return True
+
+    #------------------------------------------------------------------------------
+    # [ equals method ] (boolean)
+    #   tests for equality of the XList (type, attributes, list equality)
+    #------------------------------------------------------------------------------
+    def equals(self, other_obj):
+        if self._equal_type(other_obj) and self._equal_attributes(other_obj):
+            if list(self) == list(other_obj):
+                return True
+            else:
+                return False
+        else:
+            return False
 
     #------------------------------------------------------------------------------
     # XList Methods
