@@ -760,9 +760,24 @@ class NakedTypesTest(unittest.TestCase):
         self.assertAlmostEqual(total, 6.8)
 
     def test_xlist_count_dupes_int(self):
-        xl = XList([1, 2, 2, 2, 3], {'first_attr': 1})
+        xl = XList([1, 2, 2, 3], {'first_attr': 1})
         dupes = xl.count_duplicates()
-        self.assertEqual(dupes, 2)
+        self.assertEqual(dupes, 1)
+
+    def test_xlist_count_dupes_int_twodupe(self):
+        xl = XList([1, 2, 2, 3, 3, 3], {'first_attr': 1})
+        dupes = xl.count_duplicates()
+        self.assertEqual(dupes, 3)
+
+    def test_xlist_count_dupes_string(self):
+        xl = XList(['test', 'test', 'another'], {'first_attr': 1})
+        dupes = xl.count_duplicates()
+        self.assertEqual(dupes, 1)
+
+    def test_xlist_count_dupes_string_twodupe(self):
+        xl = XList(['test', 'test', 'another', 'another', 'last', 'last'], {'first_attr': 1})
+        dupes = xl.count_duplicates()
+        self.assertEqual(dupes, 3)
 
 
 
