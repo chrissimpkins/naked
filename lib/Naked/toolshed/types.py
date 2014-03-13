@@ -419,7 +419,9 @@ class XList(list, NakedObject):
     # [ surround method ] (list of strings)
     #  Surround each list item string with a before and after string argument passed to the method
     #------------------------------------------------------------------------------
-    def surround(self, before, after):
+    def surround(self, before, after=""):
+        if after == "":
+            after = before
         return [ "".join([before, x, after]) for x in self ]
 
     #------------------------------------------------------------------------------
@@ -453,9 +455,7 @@ class XList(list, NakedObject):
     #   returns an integer count of number of duplicate values
     #------------------------------------------------------------------------------
     def count_duplicates(self):
-        length = len(self)
-        length_wo_dupes = len(set(self))
-        return length - length_wo_dupes
+        return len(self) - len(set(self))
 
     #------------------------------------------------------------------------------
     # [ remove_duplicates ] (XList)
@@ -463,6 +463,20 @@ class XList(list, NakedObject):
     #------------------------------------------------------------------------------
     def remove_duplicates(self):
         return XList( set(self), self._getAttributeDict() )
+
+    #------------------------------------------------------------------------------
+    # [ difference method ] (set)
+    #  returns a set containing items in XList that are not contained in `another_list`
+    #------------------------------------------------------------------------------
+    def difference(self, another_list):
+        return set(self) - set(another_list)
+
+    #------------------------------------------------------------------------------
+    # [ intersection method ] (set)
+    #  returns a set containing items that are in both XList and `another_list`
+    #------------------------------------------------------------------------------
+    def intersection(self, another_list):
+        return set(self) & set(another_list)
 
     #------------------------------------------------------------------------------
     # XList Function Mapping Methods
@@ -566,18 +580,6 @@ class XList(list, NakedObject):
     #------------------------------------------------------------------------------
     # XList Conversion Methods
     #------------------------------------------------------------------------------
-    # [ ndarray method ] (Numpy ndarray object)
-    #  returns a Numby ndarray object by conversion from the XList object
-    #  user must have Numpy installed or ImportError is raised
-    #------------------------------------------------------------------------------
-    def ndarray(self):
-        try:
-            import numpy as np
-            return np.array(self)
-        except ImportError as ie:
-            if DEBUG_FLAG:
-                sys.stderr.write("Naked Framework Error: unable to return base filename from filename() function (Naked.toolshed.system).")
-            raise ie
 
     #------------------------------------------------------------------------------
     # [ xset method ] (XSet)
