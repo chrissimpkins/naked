@@ -673,7 +673,96 @@ class NakedTypesTest(unittest.TestCase):
         mes = xl.join(',')
         self.assertEqual(mes, 'one,two,three')
 
+    def test_xlist_prefix_char(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        nl = xl.prefix('s')
+        self.assertTrue('sone' in nl)
+        self.assertTrue('stwo' in nl)
+        self.assertTrue('sthree' in nl)
 
+    def test_xlist_prefix_unicode_char(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        nl = xl.prefix('ত')
+        self.assertTrue('তone' in nl)
+        self.assertTrue('তtwo' in nl)
+        self.assertTrue('তthree' in nl)
+
+    def test_xlist_prefix_string(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        nl = xl.prefix('test')
+        self.assertTrue('testone' in nl)
+        self.assertTrue('testtwo' in nl)
+        self.assertTrue('testthree' in nl)
+
+    def test_xlist_postfix_char(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        nl = xl.postfix('s')
+        self.assertTrue('ones' in nl)
+        self.assertTrue('twos' in nl)
+        self.assertTrue('threes' in nl)
+
+    def test_xlist_postfix_unicode_char(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        nl = xl.postfix('ত')
+        self.assertTrue('oneত' in nl)
+        self.assertTrue('twoত' in nl)
+        self.assertTrue('threeত' in nl)
+
+    def test_xlist_postfix_string(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        nl = xl.postfix('test')
+        self.assertTrue('onetest' in nl)
+        self.assertTrue('twotest' in nl)
+        self.assertTrue('threetest' in nl)
+
+    def test_xlist_surround_one_string(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        nl = xl.surround('"')
+        self.assertTrue('"one"' in nl)
+        self.assertTrue('"two"' in nl)
+        self.assertTrue('"three"' in nl)
+
+    def test_xlist_surround_two_strings(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        nl = xl.surround('<p>', '</p>')
+        self.assertTrue('<p>one</p>' in nl)
+        self.assertTrue('<p>two</p>' in nl)
+        self.assertTrue('<p>three</p>' in nl)
+
+    def test_xlist_max_int(self):
+        xl = XList([1 , 2, 3], {'first_attr': 1})
+        max_num = xl.max()
+        self.assertEqual(max_num, 3)
+
+    def test_xlist_max_float(self):
+        xl = XList([1.25123 , 2.5234, 3.73423], {'first_attr': 1})
+        max_num = xl.max()
+        self.assertEqual(max_num, 3.73423)
+
+    def test_xlist_min_int(self):
+        xl = XList([1 , 2, 3], {'first_attr': 1})
+        min_num = xl.min()
+        self.assertEqual(min_num, 1)
+
+    def test_xlist_min_float(self):
+        xl = XList([1.25123 , 2.5234, 3.73423], {'first_attr': 1})
+        min_num = xl.min()
+        self.assertEqual(min_num, 1.25123)
+
+    def test_xlist_sum_int(self):
+        xl = XList([1 , 2, 3], {'first_attr': 1})
+        total = xl.sum()
+        self.assertEqual(total, 6)
+
+    def test_xlist_sum_float(self):
+        xl = XList([1.2 , 2.5, 3.1], {'first_attr': 1})
+        total = xl.sum()
+        self.assertAlmostEqual(total, 6.8)
+
+    def test_xlist_count_dupes_int(self):
+        xl = XList([1, 2, 2, 2, 3], {'first_attr': 1})
+        dupes = xl.count_duplicates()
+        self.assertEqual(dupes, 2)
 
 
 
