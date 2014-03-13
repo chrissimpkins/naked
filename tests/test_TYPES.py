@@ -524,6 +524,158 @@ class NakedTypesTest(unittest.TestCase):
             self.assertTrue('a_one' in keys or 'b_two' in keys or 'c_three' in keys)
             self.assertTrue('value_one' in values or 'value_two' in values or 'value_three' in values)
 
+    #------------------------------------------------------------------------------
+    # XList class tests
+    #------------------------------------------------------------------------------
+    # XList constructors
+    def test_xlist_constructor(self):
+        xl = XList(['one', 'two', 'three'])
+        self.assertTrue(hasattr(xl, '_naked_type_'))
+        self.assertEqual(xl._naked_type_, 'XList')
+
+    def test_xlist_constructor_withattr(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        self.assertTrue(hasattr(xl, '_naked_type_'))
+        self.assertEqual(xl._naked_type_, 'XList')
+
+    def test_xlist_constructor_itemcheck(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        self.assertEqual(xl[0], 'one')
+
+    def test_xlist_constructor_attrcheck(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        self.assertEqual(xl.first_attr, 1)
+
+    # XList type tests
+    def test_xlist_constructor_type(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        self.assertEqual(type(xl), type(XList(['test', 'again'])))
+
+    def test_xlist_constructor_instanceof_XList(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        self.assertTrue(isinstance(xl, XList)) #instance of XList
+
+    def test_xlist_constructor_instanceof_list(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        self.assertTrue(isinstance(xl, list)) #instance of list
+
+    # XList equality tests
+    def test_xlist_equality_self(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        self.assertTrue(xl == xl)
+
+    def test_xlist_equality_another_same_xlist(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        xl2 = XList(['one', 'two', 'three'], {'first_attr': 1})
+        self.assertTrue(xl == xl2)
+
+    def test_xlist_equality_another_list(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        a_list = ['one', 'two', 'three']
+        self.assertFalse(xl == a_list)
+
+    def test_xlist_equality_different_xlist_item(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        xl2 = XList(['different', 'two', 'three'], {'first_attr': 1})
+        self.assertFalse(xl == xl2)
+
+    def test_xlist_equality_different_attribute(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        xl2 = XList(['one', 'two', 'three'], {'different_attr': 1})
+        self.assertFalse(xl == xl2)
+
+    def test_xlist_equality_different_attrval(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        xl2 = XList(['one', 'two', 'three'], {'first_attr': 2})
+        self.assertFalse(xl == xl2)
+
+    def test_xlist_equality_set(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        a_set = {'one', 'two', 'three'}
+        self.assertFalse(xl == a_set)
+
+    def test_xlist_equality_tuple(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        a_tup = ('one', 'two', 'three')
+        self.assertFalse(xl == a_tup)
+
+    # + operator overload
+    def test_xlist_add_overload_list(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        a_list = ['four', 'five']
+        nl = xl + a_list    # note that xlist needs to be the left sided operand to include attributes
+        self.assertTrue('four' in nl)
+        self.assertTrue('one' in nl)
+        self.assertEqual(nl.first_attr, 1)
+
+    def test_xlist_add_overload_xlist(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        xl2 = XList(['four', 'five'], {'second_attr': 2})
+        nl = xl + xl2
+        self.assertTrue('four' in nl)
+        self.assertTrue('one' in nl)
+        self.assertEqual(nl.first_attr, 1)
+        self.assertEqual(nl.second_attr, 2)
+
+    def test_xlist_add_overload_multiplelist(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        a_list = ['four', 'five']
+        b_list = ['six', 'seven']
+        nl = xl + a_list + b_list
+        self.assertTrue('four' in nl)
+        self.assertTrue('one' in nl)
+        self.assertTrue('seven' in nl)
+        self.assertEqual(nl.first_attr, 1)
+
+    def test_xlist_add_overload_mutiple_xlist(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        xl2 = XList(['four', 'five'], {'second_attr': 2})
+        xl3 = XList(['six', 'seven'], {'third_attr': 3})
+        nl = xl + xl2 + xl3
+        self.assertTrue('one' in nl)
+        self.assertTrue('five' in nl)
+        self.assertTrue('seven' in nl)
+        self.assertEqual(nl.first_attr, 1)
+        self.assertEqual(nl.second_attr, 2)
+        self.assertEqual(nl.third_attr, 3)
+
+    # += operand
+    def test_xlist_addeq_overload_list(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        a_list = ['four', 'five']
+        xl += a_list
+        self.assertTrue('four' in xl)
+        self.assertTrue('one' in xl)
+        self.assertEqual(xl.first_attr, 1)
+
+    def test_xlist_addeq_overload_xlist(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        xl2 = XList(['four', 'five'], {'second_attr': 2})
+        xl += xl2
+        self.assertTrue('four' in xl)
+        self.assertTrue('one' in xl)
+        self.assertEqual(xl.first_attr, 1)
+        self.assertEqual(xl.second_attr, 2)
+
+    # XList string methods
+    def test_xlist_join(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        mes = xl.join(" ")
+        self.assertEqual(mes, 'one two three')
+
+    def test_xlist_join_typeerror(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        with self.assertRaises(AttributeError): # incorrect type raises attribute error
+            mes = xl.join(1)
+
+    def test_xlist_join_diffstring(self):
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        mes = xl.join(',')
+        self.assertEqual(mes, 'one,two,three')
+
+
+
+
 
 
 
