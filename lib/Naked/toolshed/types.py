@@ -506,17 +506,18 @@ class XList(list, NakedObject):
     # XList Stats/Distribution Methods
     #------------------------------------------------------------------------------
     #------------------------------------------------------------------------------
-    # [ count_item method ] (integer)
-    #  returns an integer count of the number of items in the list that == `test_obj`
+    # [ count_ci method ] (integer)
+    #  returns an integer count of the number of case-insensitive items that match `test_string`
     #------------------------------------------------------------------------------
-    def count_item(self, test_obj):
+    def count_ci(self, test_string):
         count = 0
-        for item_value in self:
-            if test_obj == item_value:
-                count += 1
+        for item in self:
+            try:
+                if test_string.lower() in item.lower():
+                    count += 1
+            except AttributeError: # the test_value was not a string, catch exception and continue count attempt
+                continue
         return count
-
-    ## TODO : add a case-insensitive count_item method for strings
 
     #------------------------------------------------------------------------------
     # [ random method ] (list)
