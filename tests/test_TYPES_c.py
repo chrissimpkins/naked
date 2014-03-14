@@ -899,13 +899,6 @@ if sys.version_info[0] == 2 and sys.version_info[1] == 7: # do not run with tox 
             nl = xl.multi_wildcard_match('z*|*l')
             self.assertTrue(len(nl) == 0)
 
-        def test_xlist_chain_iter(self):
-            xl = XList([1, 2, 3], {'first_attr': 1})
-            xl2 = XList([4, 5])
-            xl3 = XList([6, 7])
-            xl.append(xl.chain_iter(xl2, xl3))
-
-
         def test_xlist_cast_xset(self):
             xl = XList(['many', 'tom', 'Many'], {'first_attr': 1})
             xs = xl.xset()
