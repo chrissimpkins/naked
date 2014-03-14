@@ -3,7 +3,7 @@
 
 
 import unittest
-from Naked.toolshed.types import NakedObject, XDict, XList
+from Naked.toolshed.types import NakedObject, XDict, XList, XSet, XFSet, XTuple
 
 class NakedTypesTest(unittest.TestCase):
     def setUp(self):
@@ -779,8 +779,145 @@ class NakedTypesTest(unittest.TestCase):
         dupes = xl.count_duplicates()
         self.assertEqual(dupes, 3)
 
+    def test_xlist_remove_dupes_int(self):
+        xl = XList([1, 2, 2, 3, 3, 3], {'first_attr': 1})
+        nodupe = xl.remove_duplicates()
+        self.assertEqual(type(nodupe), type(XList(['test', 'again'])))
+        self.assertEqual(nodupe.count(1), 1)
+        self.assertEqual(nodupe.count(2), 1)
+        self.assertEqual(nodupe.count(3), 1)
+
+    def test_xlist_difference(self):
+        xl = XList([1 , 2, 3], {'first_attr': 1})
+        xl2 = XList([2, 4, 5])
+        diff = xl.difference(xl2)  # returns items in XList that are not in parameter list/XList as set
+        self.assertTrue(1 in diff)
+        self.assertTrue(3 in diff)
+        self.assertFalse(2 in diff)
+        self.assertFalse(4 in diff)
+        self.assertFalse(5 in diff)
+
+    def test_xlist_intersection(self):
+        xl = XList([1 , 2, 3], {'first_attr': 1})
+        xl2 = XList([2, 4, 5])
+        inter = xl.intersection(xl2) # returns items in both XList and parameter list/XList
+        self.assertTrue(2 in inter)
+        self.assertFalse(1 in inter)
+        self.assertFalse(3 in inter)
+        self.assertFalse(4 in inter)
+        self.assertFalse(5 in inter)
+
+    def test_xlist_map_items(self):
+        def cap_val(xlist_item):
+            return xlist_item.upper()
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        nl = xl.map_to_items(cap_val)
+        self.assertTrue('ONE' in nl)
+        self.assertTrue('TWO' in nl)
+        self.assertTrue('THREE' in nl)
+        self.assertFalse('one' in nl)
+        self.assertFalse('two' in nl)
+        self.assertFalse('three' in nl)
+
+    def test_xlist_map_items_noreturn_value(self):
+        def no_return(xlist_val):
+            x = 1
+        xl = XList(['one', 'two', 'three'], {'first_attr': 1})
+        nl = xl.map_to_items(no_return)
+        self.assertTrue(nl[0] == None)
+
+    def test_xlist_conditional_map_items(self):
+        def true_a(xdict_key):
+            return xdict_key.startswith('a')
+
+        def cap_val(xdict_val):
+            return xdict_val.upper()
+
+        xl = XList(['all', 'many', 'none'], {'first_attr': 1})
+        nl = xl.conditional_map_to_items(true_a, cap_val)
+        self.assertTrue('ALL' in nl)
+        self.assertFalse('all' in nl)
+        self.assertFalse('MANY' in nl)
+        self.assertFalse('NONE' in nl)
+        self.assertTrue(nl[0] == 'ALL')
+        self.assertTrue(nl[1] == 'many')
+        self.assertTrue(nl[2] == 'none')
+
+    def test_xlist_count_case_insensitive(self):
+        xl = XList(['MANY', 'many', 'Many'], {'first_attr': 1})
+        nl = xl.count_ci('Many')
+        self.assertTrue(nl == 3)
+
+    def test_xlist_count_case_insensitive_withother(self):
+        xl = XList(['MANY', 1, 'many'], {'first_attr': 1})
+        nl = xl.count_ci('Many')
+        self.assertTrue(nl == 2)
+
+    def test_xlist_random_noexception(self): # just confirm that it does not raise exception, can't test result
+        xl = XList([1 , 2, 3], {'first_attr': 1})
+        nl = xl.random()
+        self.assertTrue(type(nl) == type(1))
+
+    def test_xlist_random_sample_noexception(self):
+        xl = XList([1 , 2, 3], {'first_attr': 1})
+        nl = xl.random_sample(2)
+        self.assertTrue(len(nl) == 2)
+
+    def test_xlist_shuffle(self):
+        xl = XList([1 , 2, 3], {'first_attr': 1})
+        nl = xl.random_sample(2)
+        # no test, just confirm no exception
+
+    def test_xlist_wildcard_match_nonstring(self):
+        xl = XList(['MANY', 1, 'many'], {'first_attr': 1})
+        with self.assertRaises(TypeError):
+            nl = xl.wildcard_match('m*') # when the list contains non-string types, TypeError is raised
+
+    def test_xlist_wildcard_match(self):
+        xl = XList(['MANY', 'many', 'Many'], {'first_attr': 1})
+        nl = xl.wildcard_match('m*')
+        self.assertTrue(len(nl) == 1)
+        self.assertEqual(nl[0], 'many')
+
+    def test_xlist_wildcard_match_nomatches(self):
+        xl = XList(['MANY', 'many', 'Many'], {'first_attr': 1})
+        nl = xl.wildcard_match('t*')
+        self.assertTrue(len(nl) == 0)
+
+    def test_xlist_multi_wildcard_match(self):
+        xl = XList(['many', 'tom', 'Many'], {'first_attr': 1})
+        nl = xl.multi_wildcard_match('m*|t*')
+        self.assertTrue(len(nl) == 2)
+        self.assertTrue('many' in nl)
+        self.assertTrue('tom' in nl)
+        self.assertFalse('Many' in nl)
+
+    def test_xlist_multi_wildcard_match_nomatches(self):
+        xl = XList(['many', 'tom', 'Many'], {'first_attr': 1})
+        nl = xl.multi_wildcard_match('z*|*l')
+        self.assertTrue(len(nl) == 0)
+
+    def test_xlist_chain_iter(self):
+        xl = XList([1, 2, 3], {'first_attr': 1})
+        xl2 = XList([4, 5])
+        xl3 = XList([6, 7])
+        xl.append(xl.chain_iter(xl2, xl3))
 
 
+    def test_xlist_cast_xset(self):
+        xl = XList(['many', 'tom', 'Many'], {'first_attr': 1})
+        xs = xl.xset()
+        self.assertEqual(type(xs), type(XSet({1,2})))
+
+    def test_xlist_cast_xfset(self):
+        xl = XList(['many', 'tom', 'Many'], {'first_attr': 1})
+        xs = xl.xfset()
+        self.assertEqual(type(xs), type(XFSet({1,2})))
+
+    def test_xlist_cast_xtuple(self):
+        xl = XList(['many', 'tom', 'Many'], {'first_attr': 1})
+        xs = xl.xtuple()
+        self.assertEqual( type(xs), type(XTuple((1,2))) )
 
 
 
