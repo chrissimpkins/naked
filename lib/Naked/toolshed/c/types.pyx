@@ -322,33 +322,70 @@ class XList(list, NakedObject):
     #   extends XList with one or more other lists (`*other_lists`)
     #------------------------------------------------------------------------------
     def __add__(self, *other_lists):
-        for the_list in other_lists:
-            self.extend(the_list)
-        return self
+        try:
+            for the_list in other_lists:
+                # add attributes if it is an XList
+                if hasattr(the_list, '_naked_type_') and (getattr(the_list, '_naked_type_') == 'XList'):
+                    attr_dict = the_list._getAttributeDict() # get XList attribute dictionary
+                    if len(attr_dict) > 0:
+                        for key in attr_dict:
+                            setattr(self, key, attr_dict[key])
+                # extend the XList items
+                self.extend(the_list)
+            return self
+        except Exception as e:
+            if DEBUG_FLAG:
+                sys.stderr.write("Naked Framework Error: unable to combine XList with parameter provided (Naked.toolshed.types.py)")
+            raise e
 
     #------------------------------------------------------------------------------
     # += overload
     #  extends XList with one other list (`another_list`)
     #------------------------------------------------------------------------------
     def __iadd__(self, another_list):
-        self.extend(another_list)
-        return self
+        try:
+            #add attributes if it is an XList
+            if hasattr(another_list, '_naked_type_') and (getattr(another_list, '_naked_type_') == 'XList'):
+                    attr_dict = another_list._getAttributeDict() # get XList attribute dictionary
+                    if len(attr_dict) > 0:
+                        for key in attr_dict:
+                            setattr(self, key, attr_dict[key])
+            # extend the XList items
+            self.extend(another_list)
+            return self
+        except Exception as e:
+            if DEBUG_FLAG:
+                sys.stderr.write("Naked Framework Error: unable to combine XList with parameter provided (Naked.toolshed.types.py)")
+            raise e
 
     #------------------------------------------------------------------------------
-    # >> overload
-    #  extends the argument list with the self list (left extends right side)
+    # == overload
     #------------------------------------------------------------------------------
-    def __rshift__(self, another_list):
-        another_list.extend(self)
-        return another_list
+    def __eq__(self, other_obj):
+        return self.equals(other_obj)
 
     #------------------------------------------------------------------------------
-    # << overload
-    #  extends self list with the argument list (right extends left side)
+    # != overload
     #------------------------------------------------------------------------------
-    def __lshift__(self, another_list):
-        self.extend(another_list)
-        return self
+    def __ne__(self, other_obj):
+        result = self.equals(other_obj)
+        if result:
+            return False # reverse result of the equals method
+        else:
+            return True
+
+    #------------------------------------------------------------------------------
+    # [ equals method ] (boolean)
+    #   tests for equality of the XList (type, attributes, list equality)
+    #------------------------------------------------------------------------------
+    def equals(self, other_obj):
+        if self._equal_type(other_obj) and self._equal_attributes(other_obj):
+            if list(self) == list(other_obj):
+                return True
+            else:
+                return False
+        else:
+            return False
 
     #------------------------------------------------------------------------------
     # XList Methods
@@ -383,7 +420,9 @@ class XList(list, NakedObject):
     # [ surround method ] (list of strings)
     #  Surround each list item string with a before and after string argument passed to the method
     #------------------------------------------------------------------------------
-    def surround(self, before, after):
+    def surround(self, before, after=""):
+        if after == "":
+            after = before
         return [ "".join([before, x, after]) for x in self ]
 
     #------------------------------------------------------------------------------
@@ -417,9 +456,7 @@ class XList(list, NakedObject):
     #   returns an integer count of number of duplicate values
     #------------------------------------------------------------------------------
     def count_duplicates(self):
-        length = len(self)
-        length_wo_dupes = len(set(self))
-        return length - length_wo_dupes
+        return len(self) - len(set(self))
 
     #------------------------------------------------------------------------------
     # [ remove_duplicates ] (XList)
@@ -427,6 +464,20 @@ class XList(list, NakedObject):
     #------------------------------------------------------------------------------
     def remove_duplicates(self):
         return XList( set(self), self._getAttributeDict() )
+
+    #------------------------------------------------------------------------------
+    # [ difference method ] (set)
+    #  returns a set containing items in XList that are not contained in `another_list`
+    #------------------------------------------------------------------------------
+    def difference(self, another_list):
+        return set(self) - set(another_list)
+
+    #------------------------------------------------------------------------------
+    # [ intersection method ] (set)
+    #  returns a set containing items that are in both XList and `another_list`
+    #------------------------------------------------------------------------------
+    def intersection(self, another_list):
+        return set(self) & set(another_list)
 
     #------------------------------------------------------------------------------
     # XList Function Mapping Methods
@@ -453,20 +504,21 @@ class XList(list, NakedObject):
         return self
 
     #------------------------------------------------------------------------------
-    # XList Stats/Distribution Methods
+    # XList Descriptive Stats Methods
     #------------------------------------------------------------------------------
     #------------------------------------------------------------------------------
-    # [ count_item method ] (integer)
-    #  returns an integer count of the number of items in the list that == `test_obj`
+    # [ count_ci method ] (integer)
+    #  returns an integer count of the number of case-insensitive items that match `test_string`
     #------------------------------------------------------------------------------
-    def count_item(self, test_obj):
+    def count_ci(self, test_string):
         count = 0
-        for item_value in self:
-            if test_obj == item_value:
-                count += 1
+        for item in self:
+            try:
+                if test_string.lower() in item.lower():
+                    count += 1
+            except AttributeError: # the test_value was not a string, catch exception and continue count attempt
+                continue
         return count
-
-    ## TODO : add a case-insensitive count_item method for strings
 
     #------------------------------------------------------------------------------
     # [ random method ] (list)
@@ -502,7 +554,7 @@ class XList(list, NakedObject):
     #  returns a list of items that match the `wildcard` argument
     #------------------------------------------------------------------------------
     def wildcard_match(self, wildcard):
-        if self.hasAttribute('nkd_fnmatchcase'):
+        if hasattr(self, 'nkd_fnmatchcase'):
             fnmatchcase = self.nkd_fnmatchcase
         else:
             from fnmatch import fnmatchcase
@@ -514,7 +566,7 @@ class XList(list, NakedObject):
     #  returns a list of items that match one or more | separated wildcards passed as string
     #------------------------------------------------------------------------------
     def multi_wildcard_match(self, wildcards):
-        if self.hasAttribute('nkd_fnmatchcase'):
+        if hasattr(self, 'nkd_fnmatchcase'):
             fnmatchcase = self.nkd_fnmatchcase
         else:
             from fnmatch import fnmatchcase
@@ -528,21 +580,8 @@ class XList(list, NakedObject):
         return return_list
 
     #------------------------------------------------------------------------------
-    # XList Conversion Methods
+    # XList Cast Methods
     #------------------------------------------------------------------------------
-    # [ ndarray method ] (Numpy ndarray object)
-    #  returns a Numby ndarray object by conversion from the XList object
-    #  user must have Numpy installed or ImportError is raised
-    #------------------------------------------------------------------------------
-    def ndarray(self):
-        try:
-            import numpy as np
-            return np.array(self)
-        except ImportError as ie:
-            if DEBUG_FLAG:
-                sys.stderr.write("Naked Framework Error: unable to return base filename from filename() function (Naked.toolshed.system).")
-            raise ie
-
     #------------------------------------------------------------------------------
     # [ xset method ] (XSet)
     #  return an XSet with unique XList item values and XList attributes
@@ -566,17 +605,6 @@ class XList(list, NakedObject):
     def xtuple(self):
         attr_dict = self._getAttributeDict()
         return XTuple(tuple(self), attr_dict)
-
-    #------------------------------------------------------------------------------
-    # XList Iterables
-    #------------------------------------------------------------------------------
-    # [ chain_iter method ] (iterable items of type contained in multiple list arguments)
-    #   Generator that returns iterable for each item in the multiple list arguments in sequence (does not require new list)
-    #------------------------------------------------------------------------------
-    def chain_iter(self, *lists):
-        from itertools import chain
-        return chain(*lists)
-
 
 #------------------------------------------------------------------------------
 # [[ XPriorityQueue class ]]
