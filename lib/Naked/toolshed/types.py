@@ -503,7 +503,7 @@ class XList(list, NakedObject):
         return self
 
     #------------------------------------------------------------------------------
-    # XList Stats/Distribution Methods
+    # XList Descriptive Stats Methods
     #------------------------------------------------------------------------------
     #------------------------------------------------------------------------------
     # [ count_ci method ] (integer)
@@ -553,7 +553,7 @@ class XList(list, NakedObject):
     #  returns a list of items that match the `wildcard` argument
     #------------------------------------------------------------------------------
     def wildcard_match(self, wildcard):
-        if self.hasAttribute('nkd_fnmatchcase'):
+        if hasattr(self, 'nkd_fnmatchcase'):
             fnmatchcase = self.nkd_fnmatchcase
         else:
             from fnmatch import fnmatchcase
@@ -565,7 +565,7 @@ class XList(list, NakedObject):
     #  returns a list of items that match one or more | separated wildcards passed as string
     #------------------------------------------------------------------------------
     def multi_wildcard_match(self, wildcards):
-        if self.hasAttribute('nkd_fnmatchcase'):
+        if hasattr(self, 'nkd_fnmatchcase'):
             fnmatchcase = self.nkd_fnmatchcase
         else:
             from fnmatch import fnmatchcase
@@ -579,9 +579,8 @@ class XList(list, NakedObject):
         return return_list
 
     #------------------------------------------------------------------------------
-    # XList Conversion Methods
+    # XList Cast Methods
     #------------------------------------------------------------------------------
-
     #------------------------------------------------------------------------------
     # [ xset method ] (XSet)
     #  return an XSet with unique XList item values and XList attributes
@@ -605,17 +604,6 @@ class XList(list, NakedObject):
     def xtuple(self):
         attr_dict = self._getAttributeDict()
         return XTuple(tuple(self), attr_dict)
-
-    #------------------------------------------------------------------------------
-    # XList Iterables
-    #------------------------------------------------------------------------------
-    # [ chain_iter method ] (iterable items of type contained in multiple list arguments)
-    #   Generator that returns iterable for each item in the multiple list arguments in sequence (does not require new list)
-    #------------------------------------------------------------------------------
-    def chain_iter(self, *lists):
-        from itertools import chain
-        return chain(*lists)
-
 
 #------------------------------------------------------------------------------
 # [[ XPriorityQueue class ]]
