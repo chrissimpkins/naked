@@ -22,11 +22,14 @@ def run_scratchpad():
     # test3 = "Hey! It's Bengali ব য,and here is some more ২"
     # print(unicode(test2))
 
-    xl = XList([1, 2, 3], {'first_attr': 1})
-    xl2 = XList([4, 5])
-    xl3 = XList([6, 7])
-    for x in xl.chain_iter(xl2, xl3):
-        print(x)
+    def true_a(xlist_item):
+            return xlist_item.startswith('a')
+
+    def cap_val(xlist_item):
+        return xlist_item.upper()
+
+    xl = XList(['one', 'two', 'three'], {'type': 'orderlist'})
+    print(xl.multi_wildcard_match('o*|*hre*')) # prints ['one', 'three']
 
 
 if __name__ == '__main__':
