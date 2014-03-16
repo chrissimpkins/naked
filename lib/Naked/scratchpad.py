@@ -3,7 +3,7 @@
 
 import sys
 from functools import wraps
-from Naked.toolshed.types import NakedObject, XList
+from Naked.toolshed.types import XMaxHeap, XMinHeap
 
 def print_scratch(func):
     @wraps(func)
@@ -22,14 +22,6 @@ def run_scratchpad():
     # test3 = "Hey! It's Bengali ব য,and here is some more ২"
     # print(unicode(test2))
 
-    def true_a(xlist_item):
-            return xlist_item.startswith('a')
-
-    def cap_val(xlist_item):
-        return xlist_item.upper()
-
-    xl = XList(['one', 'two', 'three'], {'type': 'orderlist'})
-    print(xl.multi_wildcard_match('o*|*hre*')) # prints ['one', 'three']
 
 
 if __name__ == '__main__':
