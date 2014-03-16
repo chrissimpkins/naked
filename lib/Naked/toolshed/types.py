@@ -611,10 +611,14 @@ class XList(list, NakedObject):
 #------------------------------------------------------------------------------
 from heapq import heappush, heappop
 class XMaxHeap(NakedObject):
-    def __init__(self, initial_iterable=[], attributes={}, naked_type='XMaxHeap'):
+    def __init__(self, attributes={}, naked_type='XMaxHeap'):
         NakedObject.__init__(self, attributes, naked_type)
         self._queue = []
         self._index = 0
+
+    # length of the queue
+    def __len__(self):
+        return len(self._queue)
 
     # O(log n) complexity
     def push(self, the_object, priority):
@@ -647,10 +651,15 @@ class XMaxHeap(NakedObject):
 #------------------------------------------------------------------------------
 from heapq import heappush, heappop
 class XMinHeap(NakedObject):
-    def __init__(self, initial_iterable=[], attributes={}, naked_type='XMinHeap'):
+    def __init__(self, attributes={}, naked_type='XMinHeap'):
         NakedObject.__init__(self, attributes, naked_type)
         self._queue = []
         self._index = 0
+
+
+    # length of the queue
+    def __len__(self):
+        return len(self._queue)
 
     # O(log n) complexity
     def push(self, the_object, priority):
