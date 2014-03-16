@@ -3,7 +3,7 @@
 
 
 import unittest
-from Naked.toolshed.types import NakedObject, XDict, XList, XSet, XFSet, XTuple
+from Naked.toolshed.types import NakedObject, XDict, XList, XSet, XFSet, XTuple, XMaxHeap, XMinHeap
 
 class NakedTypesTest(unittest.TestCase):
     def setUp(self):
@@ -911,6 +911,72 @@ class NakedTypesTest(unittest.TestCase):
         xl = XList(['many', 'tom', 'Many'], {'first_attr': 1})
         xs = xl.xtuple()
         self.assertEqual( type(xs), type(XTuple((1,2))) )
+
+    #------------------------------------------------------------------------------
+    # XMaxHeap Tests
+    #------------------------------------------------------------------------------
+
+    def test_xmaxheap_contructor(self):
+        mh = XMaxHeap()
+        self.assertFalse(mh) # queu that is empty is False
+        mh.push('first', 1)
+        self.assertTrue(mh) # queue that contains item is True
+
+    def test_xmaxheap_type(self):
+        mh = XMaxHeap()
+        self.assertTrue(type(mh) == type(XMaxHeap()))
+
+    def test_xmaxheap_constructor_attributes(self):
+        mh = XMaxHeap({'first': 'test'})
+        self.assertEqual(mh.first, 'test')
+
+    def test_xmaxheap_push_and_pop_items(self):
+        mh = XMaxHeap({'first': 'test'})
+        mh.push('first', 1)
+        mh.push('second', 2)
+        mh.push('third', 2)
+        mh.push('fourth', 3)
+        self.assertEqual(len(mh), 4)
+        # pop first item off
+        firstpop = mh.pop()
+        self.assertEqual(len(mh), 3)
+        self.assertEqual(firstpop, 'fourth')
+        # pop second item off
+        secondpop = mh.pop()
+        self.assertEqual(len(mh), 2)
+        self.assertEqual(secondpop, 'second') # when matching priority, uses FIFO
+        # pop third item off
+        thirdpop = mh.pop()
+        self.assertEqual(len(mh), 1)
+        self.assertEqual(thirdpop, 'third')  # FIFO sequence
+        # pop fourth and last item
+        fourthpop = mh.pop()
+        self.assertEqual(len(mh), 0)
+        self.assertEqual(fourthpop, 'first')
+        # pop on an empty queue returns None
+        fifthpop = mh.pop()
+        self.assertEqual(len(mh), 0)
+        self.assertEqual(fifthpop, None)
+
+    def test_xmaxheap_pushpop_method(self):
+        mh = XMaxHeap({'first': 'test'})
+        mh.push('first', 1)
+        result = mh.pushpop('second', 2)
+        self.assertEqual(len(mh), 1)
+        self.assertEqual(result, 'second') # get the highest priority item back, even if it is the one that was just placed on queue
+        result2 = mh.pop()
+        self.assertEqual(result2, 'first')
+
+    def test_xmaxheap_pushpop_method_lower_priority(self):
+        mh = XMaxHeap({'first': 'test'})
+        mh.push('first', 2)
+        result = mh.pushpop('second', 1)
+        self.assertEqual(len(mh), 1)
+        self.assertEqual(result, 'first') # get the highest priority item back
+        result2 = mh.pop()
+        self.assertEqual(result2, 'second')
+
+
 
 
 
