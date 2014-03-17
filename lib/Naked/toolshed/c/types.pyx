@@ -607,15 +607,19 @@ class XList(list, NakedObject):
         return XTuple(tuple(self), attr_dict)
 
 #------------------------------------------------------------------------------
-# [[ XPriorityQueue class ]]
-#
+# [[ XMaxHeap class ]]
+#    max heap queue
 #------------------------------------------------------------------------------
 from heapq import heappush, heappop
-class XPriorityQueue(NakedObject):
-    def __init__(self, initial_iterable=[], attributes={}, naked_type='XPriorityQueue'):
+class XMaxHeap(NakedObject):
+    def __init__(self, attributes={}, naked_type='XMaxHeap'):
         NakedObject.__init__(self, attributes, naked_type)
         self._queue = []
         self._index = 0
+
+    # length of the queue
+    def __len__(self):
+        return len(self._queue)
 
     # O(log n) complexity
     def push(self, the_object, priority):
@@ -624,13 +628,64 @@ class XPriorityQueue(NakedObject):
 
     # O(log n) complexity
     def pop(self):
-        return heappop(self._queue)[-1]
+        if self._queue:
+            return heappop(self._queue)[-1]
+        else:
+            return None
 
     # push new object and return the highest priority object
-    def push_and_pop(self, the_object, priority):
+    def pushpop(self, the_object, priority):
         heappush(self._queue, (-priority, self._index, the_object))
         self._index += 1
-        return heappop(self._queue)[-1]
+        if self._queue:
+            return heappop(self._queue)[-1]
+        else:
+            return None # return None if the queue is empty
+
+    # the length of the queue
+    def length(self):
+        return len(self._queue)
+
+#------------------------------------------------------------------------------
+# [[ XMinHeap class ]]
+#    min heap queue
+#------------------------------------------------------------------------------
+from heapq import heappush, heappop
+class XMinHeap(NakedObject):
+    def __init__(self, attributes={}, naked_type='XMinHeap'):
+        NakedObject.__init__(self, attributes, naked_type)
+        self._queue = []
+        self._index = 0
+
+
+    # length of the queue
+    def __len__(self):
+        return len(self._queue)
+
+    # O(log n) complexity
+    def push(self, the_object, priority):
+        heappush(self._queue, (priority, self._index, the_object))
+        self._index += 1
+
+    # O(log n) complexity
+    def pop(self):
+        if self._queue:
+            return heappop(self._queue)[-1]
+        else:
+            return None # return None if the queue is empty
+
+    # push new object and return the lowest priority object
+    def pushpop(self, the_object, priority):
+        heappush(self._queue, (priority, self._index, the_object))
+        self._index += 1
+        if self._queue:
+            return heappop(self._queue)[-1]
+        else:
+            return None  #return None if the queue is empty
+
+    # the length of the queue
+    def length(self):
+        return len(self._queue)
 
 
 #------------------------------------------------------------------------------
