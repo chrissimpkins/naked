@@ -707,11 +707,6 @@ class XSet(set, NakedObject):
         set.__init__(self, set_obj)
         NakedObject.__init__(self, attributes, naked_type)
 
-    #   << operator is overloaded to extend the XSet with a second set
-    def __lshift__(self, another_set):
-        self.update(another_set)
-        return self
-
     #   += operator overload to extend the XSet with a second set
     def __iadd__(self, another_set):
         self.update(another_set)
