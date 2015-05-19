@@ -88,9 +88,38 @@ def muterun(command):
         return response_obj
     except Exception as e:
         if DEBUG_FLAG:
-            sys.stderr.write("Naked Framework Error: unable to run the shell command with the mute_run() function (Naked.toolshed.shell.py).")
+            sys.stderr.write("Naked Framework Error: unable to run the shell command with the muterun() function (Naked.toolshed.shell.py).")
         raise e
 
+
+#------------------------------------------------------------------------------
+# [ securun function ] (NakedObject with attributes for stdout, stderr, exitcode)
+#  run a shell command, pipe secure_args and return a response object
+#  return object attributes : stdout (bytes), stderr (bytes), exitcode (int)
+#------------------------------------------------------------------------------
+def securun(command, *secure_args):
+    try:
+        from Naked.toolshed.types import NakedObject
+        response_obj = NakedObject()
+        processP = subprocess.Popen(command, bufsize=-1, stdin=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+        cmd = command + " " + " ".join(list(secure_args)) + "\n"
+        response = processP.communicate(cmd)[0]
+        response_obj.stdout = response
+        response_obj.exitcode = 0
+        response_obj.stderr = b""
+        return response_obj
+    except subprocess.CalledProcessError as cpe:
+        response_obj.stdout = b""
+        response_obj.stderr = cpe.output
+        if cpe.returncode:
+            response_obj.exitcode = cpe.returncode
+        else:
+            response_obj.exitcode = 1
+        return response_obj
+    except Exception as e:
+        if DEBUG_FLAG:
+            sys.stderr.write("Naked Framework Error: unable to run the shell command with the securun() function (Naked.toolshed.shell.py).")
+        raise e
 
 #------------------------------------------------------------------------------
 # RUBY COMMAND EXECUTION
@@ -108,7 +137,7 @@ def execute_rb(file_path, arguments=""):
         return execute(rb_command) # return result of execute() of the ruby file
     except Exception as e:
         if DEBUG_FLAG:
-             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_rb() function (Naked.toolshed.shell.py).")
+             sys.stderr.write("Naked Framework Error: unable to run the shell command with the execute_rb() function (Naked.toolshed.shell.py).")
         raise e
 
 #------------------------------------------------------------------------------
@@ -161,7 +190,7 @@ def execute_js(file_path, arguments=""):
         return execute(js_command) # return result of execute() of node.js file
     except Exception as e:
         if DEBUG_FLAG:
-             sys.stderr.write("Naked Framework Error: unable to run the shell command with the run_js() function (Naked.toolshed.shell.py).")
+             sys.stderr.write("Naked Framework Error: unable to run the shell command with the execute_js() function (Naked.toolshed.shell.py).")
         raise e
 #------------------------------------------------------------------------------
 # [ run_js function ] (byte string or False)
