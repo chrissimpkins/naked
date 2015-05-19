@@ -53,3 +53,6 @@ test.tar.gz
 test.txt
 tests/testfiles/testdir/post.gz
 tests/testfiles/testdir/post.txt
+
+#PyCharm
+.idea
