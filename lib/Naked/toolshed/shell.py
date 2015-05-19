@@ -93,30 +93,19 @@ def muterun(command):
 
 
 #------------------------------------------------------------------------------
-# [ securun function ] (NakedObject with attributes for stdout, stderr, exitcode)
-#  run a subprocess command, pipe secure_args and return a response object
+# [ piperun function ] (NakedObject with attributes for stdout, stderr, exitcode)
+#  run a subprocess command, pipe arguments to stdin and return a response object
 #  return object attributes : stdout (bytes), stderr (bytes), exitcode (int)
 #------------------------------------------------------------------------------
-def securun(command, pipe_args):
+def piperun(command, pipe_args):
     try:
         from Naked.toolshed.types import NakedObject
         response_obj = NakedObject()
-
-        keypipe = os.pipe()
-        os.write(keypipe[1], pipe_args + '\n')
-        os.close(keypipe[1])
-
-        #consider bufsize=-1,
-        processP = subprocess.Popen(list(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-
-        sys.stdout.write("CMD: " + str(command) + '\n')
-        sys.stdout.write("ARGS: " + str(pipe_args) + '\n')
-
-        response = processP.communicate(input=str(keypipe[0]))[0]
+        processP = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        processP.stdin.write(pipe_args)
+        processP.stdin.close()
         processP.wait()
-
-        os.close(keypipe[0])
-
+        response = str(processP.stdout)
         response_obj.stdout = response
         response_obj.exitcode = 0
         response_obj.stderr = b""
@@ -131,7 +120,7 @@ def securun(command, pipe_args):
         return response_obj
     except Exception as e:
         if DEBUG_FLAG:
-            sys.stderr.write("Naked Framework Error: unable to run the shell command with the securun() function (Naked.toolshed.shell.py).")
+            sys.stderr.write("Naked Framework Error: unable to run the shell command with the piperun() function (Naked.toolshed.shell.py).")
         raise e
 
 #------------------------------------------------------------------------------
