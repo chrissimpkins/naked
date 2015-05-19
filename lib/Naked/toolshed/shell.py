@@ -94,16 +94,29 @@ def muterun(command):
 
 #------------------------------------------------------------------------------
 # [ securun function ] (NakedObject with attributes for stdout, stderr, exitcode)
-#  run a shell command, pipe secure_args and return a response object
+#  run a subprocess command, pipe secure_args and return a response object
 #  return object attributes : stdout (bytes), stderr (bytes), exitcode (int)
 #------------------------------------------------------------------------------
-def securun(command, *secure_args):
+def securun(command, pipe_args):
     try:
         from Naked.toolshed.types import NakedObject
         response_obj = NakedObject()
-        processP = subprocess.Popen(command, bufsize=-1, stdin=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-        cmd = command + " " + " ".join(list(secure_args)) + "\n"
-        response = processP.communicate(cmd)[0]
+
+        keypipe = os.pipe()
+        os.write(keypipe[1], pipe_args + '\n')
+        os.close(keypipe[1])
+
+        #consider bufsize=-1,
+        processP = subprocess.Popen(list(command), stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+
+        sys.stdout.write("CMD: " + str(command) + '\n')
+        sys.stdout.write("ARGS: " + str(pipe_args) + '\n')
+
+        response = processP.communicate(input=str(keypipe[0]))[0]
+        processP.wait()
+
+        os.close(keypipe[0])
+
         response_obj.stdout = response
         response_obj.exitcode = 0
         response_obj.stderr = b""
