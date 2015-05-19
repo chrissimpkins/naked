@@ -101,7 +101,7 @@ def piperun(command, pipe_args):
     try:
         from Naked.toolshed.types import NakedObject
         response_obj = NakedObject()
-        processP = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        processP = subprocess.Popen(command, stdin=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         processP.stdin.write(pipe_args)
         processP.stdin.close()
         processP.wait()
