@@ -3,7 +3,7 @@
 
 import unittest
 import os
-from Naked.toolshed.shell import execute, execute_rb, execute_js, run, run_rb, run_js, muterun, muterun_rb, muterun_js
+from Naked.toolshed.shell import execute, execute_rb, execute_js, run, run_rb, run_js, muterun, muterun_rb, muterun_js, piperun
 from Naked.toolshed.types import NakedObject
 
 class NakedShellTest(unittest.TestCase):
@@ -16,6 +16,8 @@ class NakedShellTest(unittest.TestCase):
         self.node_fail_path = os.path.join('testfiles', 'keep', 'js', 'node_error.js')
         self.ruby_success_path = os.path.join('testfiles', 'keep', 'rb', 'ruby_success.rb')
         self.ruby_fail_path = os.path.join('testfiles', 'keep', 'rb', 'ruby_error.rb')
+        self.good_command_pipe = os.path.join("testfiles","pipe_input.sh")
+        self.pipe_response = b"test command"
 
     def tearDown(self):
         pass
@@ -101,6 +103,13 @@ class NakedShellTest(unittest.TestCase):
     def test_muterun_missing_option_stdout(self):
         out = muterun(self.missing_option)
         self.assertEqual(b"", out.stdout)  # std out is empty string on failure
+
+    #------------------------------------------------------------------------------
+    # piperun() tests
+    #------------------------------------------------------------------------------
+    def test_muterun_good_command_stdout(self):
+        out = piperun(self.good_command_py_pipe, self.pipe_response)
+        self.assertEqual(self.pipe_response, out.stdout) # returns self.pipe_response on success
 
 
     #------------------------------------------------------------------------------
