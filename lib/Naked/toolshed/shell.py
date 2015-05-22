@@ -95,20 +95,25 @@ def muterun(command):
 #------------------------------------------------------------------------------
 # [ piperun function ] (NakedObject with attributes for stdout, stderr, exitcode)
 #  run a subprocess command, pipe arguments to stdin and return a response object
+#   suppress_stdout = True >> suppress std output stream print (returns string)
 #  return object attributes : stdout (bytes), stderr (bytes), exitcode (int)
 #------------------------------------------------------------------------------
-def piperun(command, pipe_args):
+def piperun(command, pipe_args, suppress_stdout=False):
     try:
         from Naked.toolshed.types import NakedObject
         response_obj = NakedObject()
-        processP = subprocess.Popen(command, stdin=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-        processP.stdin.write(pipe_args)
+        processP = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+        processP.stdin.write(bytes(pipe_args, 'UTF-8'))
         processP.stdin.close()
         processP.wait()
-        response = str(processP.stdout)
-        response_obj.stdout = response
+        std_response = processP.stdout.readlines()
+        if not suppress_stdout:
+            for l in std_response:
+                print(l)
+        err_response = str(processP.stdout)
+        response_obj.stdout = std_response
         response_obj.exitcode = 0
-        response_obj.stderr = b""
+        response_obj.stderr = err_response
         return response_obj
     except subprocess.CalledProcessError as cpe:
         response_obj.stdout = b""
