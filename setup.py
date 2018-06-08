@@ -43,7 +43,7 @@ setup(
     },
     packages=find_packages("lib"),
     package_dir={'': 'lib'},
-    install_requires=['Naked', 'requests', 'pyyaml'],
+    install_requires=['requests', 'pyyaml'],
     keywords='python,command line,system,application,framework,CLI',
     include_package_data=True,
     classifiers=[
