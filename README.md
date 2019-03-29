@@ -12,10 +12,10 @@ profiling, and distribution to PyPI.
 (2) a Python library with an easy to use command line string object parser and
 numerous Python type/method/function extensions.
 
-• **Main Project Site**: [http://naked-py.com](http://naked-py.com)
+• **Main Project Site**: [http://naked.readthedocs.io/](http://naked.readthedocs.io/)
 
 • **QuickStart Guide**:
-[http://naked.readthedocs.io//quickstart.html](http://naked.readthedocs.io/quickstart.html).
+[http://naked.readthedocs.io/quickstart.html](http://naked.readthedocs.io/quickstart.html).
 It demonstrates how the available tools can be incorporated into your
 development workflow, spanning the entire period from an empty project
 directory to your first PyPI version release.
