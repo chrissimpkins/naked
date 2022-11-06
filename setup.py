@@ -30,11 +30,11 @@ setup(
     name='Naked',
     version=version_read(),
     description='A command line application framework',
-    long_description=(docs_read('README.rst')),
-    url='http://naked-py.com',
+    long_description='A command line application framework',
+    url='https://github.com/chrissimpkins/naked',
     license='MIT',
     author='Christopher Simpkins',
-    author_email='chris@zerolabs.net',
+    author_email='chris@sourcefoundry.org',
     platforms=['any'],
     entry_points = {
         'console_scripts': [
